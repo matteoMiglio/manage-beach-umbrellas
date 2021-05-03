@@ -26,7 +26,8 @@ export const NavigationBar = () => (
       <Navbar.Brand href="/">Calypso</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto"> 
+        <Nav className="ml-auto">
+          <Nav.Item><Nav.Link href="/umbrellas">Ombrelloni</Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/subscriptions">Abbonamenti</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link href="/reservations">Prenotazioni</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link href="/tmp">Tmp</Nav.Link></Nav.Item>

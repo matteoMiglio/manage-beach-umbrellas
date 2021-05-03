@@ -10,7 +10,9 @@ const items = [
     customerName: "Luca",
     beach_loungers: "1",
     startDate: "29-04-2021",
-    endDate: "29-09-2021"
+    endDate: "29-09-2021",
+    state: "paid",
+    freePeriodList: []
   },
   {
     id: 2,
@@ -18,7 +20,9 @@ const items = [
     customerName: "Matteo",
     beach_loungers: "2",
     startDate: "29-04-2021",
-    endDate: "29-09-2021"
+    endDate: "29-09-2021",
+    state: "paid",
+    freePeriodList: []
   },
   {
     id: 3,
@@ -26,7 +30,9 @@ const items = [
     customerName: "Luigi",
     beach_loungers: "3",
     startDate: "29-04-2021",
-    endDate: "29-09-2021"
+    endDate: "29-09-2021",
+    state: "wait",
+    freePeriodList: []
   },
   {
     id: 4,
@@ -34,8 +40,20 @@ const items = [
     customerName: "Gianni",
     beach_loungers: "3",
     startDate: "29-04-2021",
-    endDate: "29-09-2021"
+    endDate: "29-09-2021",
+    state: "wait",
+    freePeriodList: [{value: "ciao"}]
   },
+  {
+    id: 5,
+    position: "-",
+    customerName: "Gianni",
+    beach_loungers: "2",
+    startDate: "29-07-2021",
+    endDate: "29-09-2021",
+    state: "paid",
+    freePeriodList: [{value: "ultimo"}]
+  }
 ];
 
 class Subscriptions extends Component {
@@ -50,7 +68,8 @@ class Subscriptions extends Component {
         position: "",
         customerName: "",
         startDate: "",
-        endDate: ""
+        endDate: "",
+        freePeriodList: []
       },
     };
   }
@@ -66,7 +85,12 @@ class Subscriptions extends Component {
   };
 
   createItem = () => {
-    const item = { id: "", position: "", customerName: "", startDate: "", endDate: "" };
+    const item = { id: "", 
+                  position: "", 
+                  customerName: "", 
+                  startDate: "", 
+                  endDate: "",
+                  freePeriodList: [] };
 
     this.setState({ activeItem: item, modal: !this.state.modal, modal_title: "Crea nuovo abbonamento" });
   };
@@ -91,6 +115,7 @@ class Subscriptions extends Component {
         <td>{item.position}</td>
         <td>{item.customerName}</td>
         <td>{item.beach_loungers}</td>
+        <td>{item.state}</td>
         <td>{item.startDate}</td>
         <td>{item.endDate}</td>
         <td>
@@ -120,9 +145,10 @@ class Subscriptions extends Component {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Posizione ombrellone</th>
+                  <th>Ombrellone</th>
                   <th>Instestatario</th>
                   <th>Lettini</th>
+                  <th>Stato</th>
                   <th>Data inizio</th>
                   <th>Data fine</th>
                   <th>Action</th>

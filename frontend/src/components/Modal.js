@@ -13,6 +13,7 @@ import {
   Col,
   CustomInput
 } from "reactstrap";
+import FormFreePeriod from "./FormFreePeriod";
 
 const umbrellaListConst = [
   {
@@ -41,7 +42,7 @@ export default class CustomModal extends Component {
       umbrellaList: umbrellaListConst,
       modal_title: this.props.modal_title,
       periodicSubscriptions: false,
-      customSubscriptions: false
+      customSubscriptions: false,
     };
   }
 
@@ -72,6 +73,13 @@ export default class CustomModal extends Component {
     this.setState({ customSubscriptions: false });
     this.setState({ periodicSubscriptions: false });
   }
+
+  handleFreePeriodChange = (el) => {
+    
+    const activeItem = { ...this.state.activeItem, freePeriodList: el };
+
+    this.setState({ activeItem });
+  };
 
   renderUmbrellaSelection = () => {
 
@@ -113,6 +121,7 @@ export default class CustomModal extends Component {
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
                 <Input type="select" name="position" id="position-id">
+                  <option>-</option>
                   {this.renderUmbrellaSelection()}
                 </Input>
               </Col>
@@ -135,6 +144,16 @@ export default class CustomModal extends Component {
                 onChange={this.handleChange}
                 placeholder="Immetti nome cliente"
               />
+            </FormGroup>
+            <FormGroup>
+              <div>
+                { this.state.activeItem.id ? (
+                  <CustomInput type="switch" id="switch-state" name="state" label="Pagato"
+                      checked={this.state.activeItem.state == "paid"} />
+                ) : (
+                  <CustomInput type="switch" id="switch-state" name="state" label="Pagato" />
+                ) }
+              </div>
             </FormGroup>
             <FormGroup>
               <Label for="subcriptionType">Tipo abbonamento</Label>
@@ -254,10 +273,15 @@ export default class CustomModal extends Component {
               </Row>
             ) : null}
           </Form>
-        </ModalBody>
+
+          <FormFreePeriod 
+            action={(el) => this.handleFreePeriodChange(el)}
+            values={this.state.activeItem.freePeriodList} />
+
+        </ModalBody>   
         <ModalFooter>
           <Button color="success" onClick={() => onSave(this.state.activeItem)}>
-            Salva
+          { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
         </ModalFooter>
       </Modal>

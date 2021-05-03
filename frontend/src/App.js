@@ -20,6 +20,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NavigationBar } from './components/NavigationBar';
 import Reservations from './Views/Reservations';
 import Subscriptions from './Views/Subscriptions';
+import Umbrellas from './Views/Umbrellas';
 import Home from './Views/Home';
 import Tmp_app from './Views/Tmp_app';
 
@@ -57,6 +58,7 @@ function App() {
         <NavigationBar />
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route path="/umbrellas" component={Umbrellas} />
           <Route path="/reservations" component={Reservations} />
           <Route path="/subscriptions" component={Subscriptions} />
           <Route path="/tmp" component={Tmp_app} />
