@@ -1,57 +1,58 @@
 import React, { Component } from "react";
-import styled from 'styled-components';
 import Modal from "../components/Modal";
+import SearchBar from "../components/SearchBar";
+import DataTable from "../components/DataTable";
 import { Table, Button, Container, Row, Col } from 'reactstrap';
 
 const items = [
   {
-    id: 1,
+    id: 1001,
     position: "A1",
     customerName: "Luca",
     beach_loungers: "1",
     startDate: "29-04-2021",
     endDate: "29-09-2021",
-    state: "paid",
+    paid: true,
     freePeriodList: []
   },
   {
-    id: 2,
+    id: 1002,
     position: "A2",
     customerName: "Matteo",
     beach_loungers: "2",
     startDate: "29-04-2021",
     endDate: "29-09-2021",
-    state: "paid",
+    paid: true,
     freePeriodList: []
   },
   {
-    id: 3,
+    id: 1003,
     position: "B1",
     customerName: "Luigi",
     beach_loungers: "3",
     startDate: "29-04-2021",
     endDate: "29-09-2021",
-    state: "wait",
+    paid: false,
     freePeriodList: []
   },
   {
-    id: 4,
+    id: 1004,
     position: "B2",
     customerName: "Gianni",
     beach_loungers: "3",
     startDate: "29-04-2021",
     endDate: "29-09-2021",
-    state: "wait",
+    paid: false,
     freePeriodList: [{value: "ciao"}]
   },
   {
-    id: 5,
+    id: 1005,
     position: "-",
     customerName: "Gianni",
     beach_loungers: "2",
     startDate: "29-07-2021",
     endDate: "29-09-2021",
-    state: "paid",
+    paid: true,
     freePeriodList: [{value: "ultimo"}]
   }
 ];
@@ -60,8 +61,9 @@ class Subscriptions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //viewCompleted: false,
       itemList: items,
+      searchText: '',
+      itemsPaid: false,
       modal: false,
       activeItem: {
         id: 0,
@@ -92,42 +94,35 @@ class Subscriptions extends Component {
                   endDate: "",
                   freePeriodList: [] };
 
-    this.setState({ activeItem: item, modal: !this.state.modal, modal_title: "Crea nuovo abbonamento" });
+    this.setState({ 
+      activeItem: item, 
+      modal: !this.state.modal, 
+      modal_title: "Crea nuovo abbonamento" 
+    });
   };
 
-  editItem = (item) => {
-    this.setState({ activeItem: item, modal: !this.state.modal, modal_title: "Modifica abbonamento" });
+  handleEditItem = (item) => {
+    this.setState({ 
+      activeItem: item, 
+      modal: !this.state.modal, 
+      modal_title: "Modifica abbonamento" 
+    });
   };
 
-  handleDelete = (item) => {
+  handleDeleteItem = (item) => {
     alert("delete" + JSON.stringify(item));
   };
 
-  renderItems = () => {
-    // const newItems = this.state.todoList.filter(
-    //   (item) => item.completed === viewCompleted
-    // );
-    const newItems = this.state.itemList
+  handleFilterTextChange = (text) => {
+    this.setState({
+      searchText: text,
+    });
+  }
 
-    return newItems.map((item) => (
-      <tr>
-        <th scope="row">{item.id}</th>
-        <td>{item.position}</td>
-        <td>{item.customerName}</td>
-        <td>{item.beach_loungers}</td>
-        <td>{item.state}</td>
-        <td>{item.startDate}</td>
-        <td>{item.endDate}</td>
-        <td>
-          <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.editItem(item)}>
-            Modifica
-          </Button>
-          <Button className="btn btn-danger" size="sm" onClick={() => this.handleDelete(item)}>
-            Rimuovi
-          </Button>
-        </td>
-      </tr>
-    ));
+  handleShowPaidChange = (paid) => {
+    this.setState({
+      itemsPaid: paid,
+    });
   }
 
   render() {
@@ -135,31 +130,25 @@ class Subscriptions extends Component {
       <main className="container">
         <h1 className="text-black text-uppercase text-center my-4">Abbonamenti</h1>
         <Row>
-          <Col sm={{ size: 6, order: 2, offset: 1 }} className='p-0 mb-3'>
+          <Col sm={{ size: 2, offset: 1 }} className='mb-3'>
             <Button color="primary" onClick={this.createItem}>Crea nuovo</Button>
           </Col>
+          <Col sm={9}>
+            <SearchBar onFilterTextChange={this.handleFilterTextChange}
+                       onPaidItemsChange={this.handleShowPaidChange} 
+                       itemsPaid={this.state.itemsPaid}
+                       searchText={this.state.searchText} />
+          </Col>
         </Row>
-        <div className="row">
-          <div className="col-md-10 col-sm-6 mx-auto p-0">
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Ombrellone</th>
-                  <th>Instestatario</th>
-                  <th>Lettini</th>
-                  <th>Stato</th>
-                  <th>Data inizio</th>
-                  <th>Data fine</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.renderItems()}
-              </tbody>
-            </Table>
-          </div>
-        </div>
+        <Row>
+          <Col md={10} sm={6} className="mx-auto p-0">
+            <DataTable items={this.state.itemList}
+                       itemsPaid={this.state.itemsPaid}
+                       searchText={this.state.searchText} 
+                       onEditButtonClick={this.handleEditItem} 
+                       onDeleteButtonClick={this.handleDeleteItem} />
+          </Col>
+        </Row>
         {this.state.modal ? (
           <Modal
             activeItem={this.state.activeItem}
