@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Modal from "../components/Modal";
 import SearchBar from "../components/SearchBar";
 import DataTable from "../components/DataTable";
-import { Table, Button, Container, Row, Col } from 'reactstrap';
+import { Button, Container, Row, Col } from 'reactstrap';
 
 const items = [
   {
@@ -77,7 +77,9 @@ class Subscriptions extends Component {
   }
 
   toggle = () => {
-    this.setState({ modal: !this.state.modal });
+    this.setState({ 
+      modal: !this.state.modal 
+    });
   };
 
   handleSubmit = (item) => {
@@ -101,7 +103,7 @@ class Subscriptions extends Component {
     });
   };
 
-  handleEditItem = (item) => {
+  handleEditButtonClick = (item) => {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
@@ -109,7 +111,7 @@ class Subscriptions extends Component {
     });
   };
 
-  handleDeleteItem = (item) => {
+  handleDeleteButtonClick = (item) => {
     alert("delete" + JSON.stringify(item));
   };
 
@@ -127,7 +129,7 @@ class Subscriptions extends Component {
 
   render() {
     return (
-      <main className="container">
+      <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Abbonamenti</h1>
         <Row>
           <Col sm={{ size: 2, offset: 1 }} className='mb-3'>
@@ -141,12 +143,12 @@ class Subscriptions extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={10} sm={6} className="mx-auto p-0">
+          <Col md={12} sm={6} className="mx-auto p-0">
             <DataTable items={this.state.itemList}
                        itemsPaid={this.state.itemsPaid}
                        searchText={this.state.searchText} 
-                       onEditButtonClick={this.handleEditItem} 
-                       onDeleteButtonClick={this.handleDeleteItem} />
+                       onEditButtonClick={this.handleEditButtonClick} 
+                       onDeleteButtonClick={this.handleDeleteButtonClick} />
           </Col>
         </Row>
         {this.state.modal ? (
@@ -157,7 +159,7 @@ class Subscriptions extends Component {
             modal_title={this.state.modal_title}
           />
         ) : null}
-      </main>
+      </Container>
     );
   }
 }

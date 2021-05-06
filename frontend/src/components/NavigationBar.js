@@ -22,7 +22,7 @@ const Styles = styled.div`
 
 export const NavigationBar = () => (
   <Styles>
-    <Navbar expand="lg">
+    <Navbar fixed="top" expand="md">
       <Navbar.Brand href="/">Calipso</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
@@ -30,7 +30,7 @@ export const NavigationBar = () => (
           <Nav.Item><Nav.Link href="/umbrellas">Ombrelloni</Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/subscriptions">Abbonamenti</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link href="/reservations">Prenotazioni</Nav.Link></Nav.Item>
-          <Nav.Item><Nav.Link href="/tmp">Tmp</Nav.Link></Nav.Item>
+          <Nav.Item><Nav.Link href="/settings">Impostazioni</Nav.Link></Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

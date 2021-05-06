@@ -40,7 +40,6 @@ export default class CustomModal extends Component {
     this.state = {
       activeItem: this.props.activeItem,
       umbrellaList: umbrellaListConst,
-      modal_title: this.props.modal_title,
       periodicSubscriptions: false,
       customSubscriptions: false,
     };
@@ -105,10 +104,11 @@ export default class CustomModal extends Component {
 
   render() {
     const { toggle, onSave } = this.props;
+    const title = this.props.modal_title;
 
     return (
       <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}>{this.state.modal_title}</ModalHeader>
+        <ModalHeader toggle={toggle}>{title}</ModalHeader>
         <ModalBody>
           <Form>
             { this.state.activeItem.id ? (
@@ -148,10 +148,10 @@ export default class CustomModal extends Component {
             <FormGroup>
               <div>
                 { this.state.activeItem.id ? (
-                  <CustomInput type="switch" id="switch-state" name="state" label="Pagato"
-                      checked={this.state.activeItem.state == "paid"} />
+                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato"
+                      checked={this.state.activeItem.paid == "paid"} />
                 ) : (
-                  <CustomInput type="switch" id="switch-state" name="state" label="Pagato" />
+                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" />
                 ) }
               </div>
             </FormGroup>

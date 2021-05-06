@@ -121,7 +121,7 @@ class Umbrellas extends Component {
 
   render() {
     return (
-      <main className="container">
+      <main className="container pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Ombrelloni</h1>
         <Row>
           <Col sm={{ size: 6, order: 2, offset: 1 }} className='p-0 mb-3'>

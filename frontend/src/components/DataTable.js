@@ -3,120 +3,113 @@ import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
 
 class DataRows extends React.Component {
 
-    sendEditItem(e) {
-        this.props.editItem(e);
-    }
-    
-    sendDeleteItem(e) {
-        this.props.deleteItem(e);
-    }
+  render() {
+    const item = this.props.item;
+    const state = item.paid ? (
+        "Pagato"
+    ) : (
+        <span style={{color: 'red'}}>Da pagare</span>
+    );
 
-    render() {
-        const item = this.props.item;
-        const state = item.paid ? (
-            "Pagato"
-        ) : (
-            <span style={{color: 'red'}}>Da pagare</span>
-        );
-    
-        return (
-            <tr>
-                <th scope="row">{item.id}</th>
-                <td>{item.position}</td>
-                <td>{item.customerName}</td>
-                <td>{item.beach_loungers}</td>
-                <td>{state}</td>
-                <td>{item.startDate}</td>
-                <td>{item.endDate}</td>
-                <td>
-                    <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.sendEditItem(item)}>
-                        Modifica
-                    </Button>
-                    <Button className="btn btn-danger" size="sm" onClick={() => this.sendDeleteItem(item)}>
-                        Rimuovi
-                    </Button>
-                </td>
-            </tr>
-        );
-    }
+    return (
+      <tr>
+        <th scope="row">{item.id}</th>
+        <td>{item.position}</td>
+        <td>{item.customerName}</td>
+        <td>{item.beach_loungers}</td>
+        <td>{state}</td>
+        <td>{item.startDate}</td>
+        <td>{item.endDate}</td>
+        <td>
+          <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
+            Modifica
+          </Button>
+          <Button className="btn btn-danger" size="sm" onClick={() => this.props.deleteItem(item)}>
+            Rimuovi
+          </Button>
+        </td>
+      </tr>
+    );
+  }
 }
 
 class DataTable extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.handleEditItem = this.handleEditItem.bind(
-            this
-        );
-        this.handleDeleteItem = this.handleDeleteItem.bind(
-            this
-        );
-    }
+  constructor(props) {
+    super(props);
+    this.handleEditItem = this.handleEditItem.bind(
+      this
+    );
 
-    handleEditItem(e) {
-        this.props.onEditButtonClick(e);
-    }
-    
-    handleDeleteItem(e) {
-        this.props.onDeleteButtonClick(e);
-    }
+    this.handleDeleteItem = this.handleDeleteItem.bind(
+      this
+    );
+  }
 
-    render() {
+  handleEditItem(e) {
+    this.props.onEditButtonClick(e);
+  }
+  
+  handleDeleteItem(e) {
+    this.props.onDeleteButtonClick(e);
+  }
 
-        const searchText = this.props.searchText;
-        const itemsPaid = this.props.itemsPaid;
+  render() {
 
-        const rows = [];
+    const searchText = this.props.searchText;
+    const itemsPaid = this.props.itemsPaid;
 
-        this.props.items.forEach(item => {
+    const rows = [];
 
-            /* ricerco all'interno di tutte la chiavi dell'oggetto */
-            let founded = false
+    this.props.items.forEach(item => {
 
-            for (let key in item) {
-                if (String(item[key]).indexOf(searchText) != -1) {
-                    founded = true
-                }
-            }
+      /* ricerco all'interno di tutte la chiavi dell'oggetto */
+      let founded = false
 
-            if (!founded)
-                return;
+      for (let key in item) {
+        if (String(item[key]).indexOf(searchText) != -1) {
+          founded = true
+        }
+      }
 
-            /* filtro solo per quelli pagati */
-            if (itemsPaid && !item.paid) {
-                return;
-            }
+      if (!founded)
+        return;
 
-            rows.push(
-                <DataRows
-                    item={item}
-                    key={item.id}
-                    editItem={this.handleEditItem}
-                    deleteItem={this.handleDeleteItem}
-                />
-            );
-        });
+      /* filtro solo per quelli pagati */
+      if (itemsPaid && !item.paid) {
+        return;
+      }
 
-        return (
-            <Table responsive>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Ombrellone</th>
-                        <th>Instestatario</th>
-                        <th>Lettini</th>
-                        <th>Stato</th>
-                        <th>Data inizio</th>
-                        <th>Data fine</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </Table>
-        );
-    }
+      rows.push(
+        <DataRows
+          item={item}
+          key={item.id}
+          editItem={this.handleEditItem}
+          deleteItem={this.handleDeleteItem}
+        />
+      );
+    });
+
+    return (
+      <Table responsive>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Ombrellone</th>
+            <th>Instestatario</th>
+            <th>Lettini</th>
+            <th>Stato</th>
+            <th>Data inizio</th>
+            <th>Data fine</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </Table>
+    );
+  }
 }
 
 export default DataTable;
