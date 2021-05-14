@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Card, CardTitle, CardText } from 'reactstrap';
 
 
 class HomeRightPane extends React.Component {
@@ -12,20 +12,33 @@ class HomeRightPane extends React.Component {
     const totalUmbrella = parseInt(this.props.totalUmbrella);
     const reservedUmbrella = parseInt(this.props.reservedUmbrella);
     const freeUmbrella = totalUmbrella - reservedUmbrella;
+    const freeBeachLoungers = this.props.freeBeachLoungers;
 
     return (
-      <Row>
-        <Col lg="12" className='mb-5'>
-          <h4>Ombrelloni Totali</h4>
-          <h5 className="text-center mt-4">{totalUmbrella}</h5>
+      <Row className="my-4">
+        <Col md="3">
+          <Card className='text-center' body>
+            <CardTitle tag="h6">Ombrelloni Totali</CardTitle>
+            <CardText>{totalUmbrella}</CardText>
+          </Card>
         </Col>
-        <Col lg="12" className='mb-5'>
-          <h4>Ombrelloni Occupati</h4>
-          <h5 className="text-center mt-4">{reservedUmbrella}</h5>
+        <Col md="3">
+          <Card className='text-center' body>
+            <CardTitle tag="h6">Ombrelloni Occupati</CardTitle>
+            <CardText>{reservedUmbrella}</CardText>
+          </Card>
         </Col>
-        <Col lg="12" className='mb-5'>
-          <h4>Ombrelloni Liberi</h4>
-          <h5 className="text-center mt-4">{freeUmbrella}</h5>
+        <Col md="3">
+          <Card className='text-center' body>
+            <CardTitle tag="h6">Ombrelloni Liberi</CardTitle>
+            <CardText>{freeUmbrella}</CardText>
+          </Card>
+        </Col>
+        <Col md="3">
+          <Card className='text-center' body>
+            <CardTitle tag="h6">Lettini Liberi</CardTitle>
+            <CardText>{freeBeachLoungers}</CardText>
+          </Card>
         </Col>
       </Row>
     );

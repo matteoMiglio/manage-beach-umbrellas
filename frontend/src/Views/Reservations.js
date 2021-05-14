@@ -99,7 +99,7 @@ class Reservations extends Component {
         <h1 className="text-black text-uppercase text-center my-4">Prenotazioni</h1>
         <Row>
           <Col sm={{ size: 3, offset: 1 }} className='mb-3'>
-            <Button color="primary" onClick={this.createItem}>Nuova prenotazione</Button>
+            <Button color="primary" onClick={() => this.createItem()}>Nuova prenotazione</Button>
           </Col>
           <Col sm={8}>
             <ReservationsSearchBar onFilterDateChange={this.handleFilterDateChange}

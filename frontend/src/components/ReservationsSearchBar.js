@@ -12,7 +12,7 @@ class ReservationsSearchBar extends React.Component {
     );
     this.handleShowAllChange = this.handleShowAllChange.bind(
       this
-  );
+    );
   }
 
   // handleFilterDateChange(e) {
@@ -50,10 +50,10 @@ class ReservationsSearchBar extends React.Component {
       "Giugno",
       "Luglio",
       "Agosto",
-      "September",
-      "October",
-      "November",
-      "December"
+      "Settembre",
+      "Ottobre",
+      "Novembre",
+      "Dicembre"
     ];
     const CustomInputDatePicker = React.forwardRef(
       ({ value, onClick }, ref) => (

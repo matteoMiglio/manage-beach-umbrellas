@@ -143,7 +143,7 @@ class Subscriptions extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={12} sm={6} className="mx-auto p-0">
+          <Col md={10} sm={6} className="mx-auto p-0">
             <DataTable items={this.state.itemList}
                        itemsPaid={this.state.itemsPaid}
                        searchText={this.state.searchText} 

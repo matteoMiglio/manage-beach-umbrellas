@@ -1,6 +1,7 @@
 import React from 'react';
 import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 import styled from 'styled-components';
+import Logo from '../Logo';
 
 const Styles = styled.div`
   .navbar { background-color: #784877; }
@@ -23,6 +24,7 @@ const Styles = styled.div`
 export const NavigationBar = () => (
   <Styles>
     <Navbar fixed="top" expand="md">
+      {/* <Navbar.Brand href="/"><Logo /></Navbar.Brand> */}
       <Navbar.Brand href="/">Calipso</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">

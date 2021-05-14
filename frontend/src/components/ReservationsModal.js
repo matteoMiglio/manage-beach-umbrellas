@@ -14,31 +14,34 @@ import {
   CustomInput
 } from "reactstrap";
 
-const umbrellaListConst = [
-  {
-    id: 1,
-    position: "A1",
-  },
-  {
-    id: 2,
-    position: "A2",
-  },
-  {
-    id: 3,
-    position: "B1",
-  },
-  {
-    id: 4,
-    position: "B2",
-  },
-];
+const beachLoungersList = [1,2,3,4,5] // max numero di lettini concessi per ombrellone
+
+function fakerUmbrellas() {
+  var i = 0;
+
+  const createUmbrella = () => {
+    i++;
+    return {
+      id: i,
+      position: i,
+    }
+  }
+  
+  const createUmbrellas = (numUmbrella = 5) => {
+    return new Array(numUmbrella)
+      .fill(undefined)
+      .map(createUmbrella);
+  }
+  
+  return createUmbrellas(120);
+}
 
 export default class ReservationsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: this.props.activeItem,
-      umbrellaList: umbrellaListConst,
+      umbrellaList: fakerUmbrellas(),
       periodicSubscriptions: false,
       customSubscriptions: false,
     };
@@ -61,7 +64,7 @@ export default class ReservationsModal extends Component {
     const list = this.state.umbrellaList
 
     return list.map((item) => (
-      <option selected={item.position == this.state.activeItem.position}>
+      <option key={item.id} selected={item.position == this.state.activeItem.position}>
         {item.position}
       </option>
     ));
@@ -69,10 +72,8 @@ export default class ReservationsModal extends Component {
 
   renderBeachLoungersSelection = () => {
 
-    const beachLoungersList = [1,2,3,4,5]
-
     return beachLoungersList.map((item) => (
-      <option selected={item == this.state.activeItem.beachLoungers}>
+      <option key={item} selected={item == this.state.activeItem.beachLoungers}>
         {item}
       </option>
     ));
@@ -81,6 +82,9 @@ export default class ReservationsModal extends Component {
   render() {
     const { toggle, onSave } = this.props;
     const title = this.props.modal_title;
+
+    let tmp = this.state.activeItem.date.toISOString();
+    const dateSelected = tmp.substring(0, tmp.indexOf('T'));
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -96,7 +100,7 @@ export default class ReservationsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
-                <Input type="select" name="position" id="position-id">
+                <Input type="select" name="position" id="position-id" onChange={this.handleChange}>
                   <option>-</option>
                   {this.renderUmbrellaSelection()}
                 </Input>
@@ -105,7 +109,7 @@ export default class ReservationsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Lettini</Label>
               <Col sm={6}>
-                <Input type="select" name="beach_loungers" id="beach_loungers-id">
+                <Input type="select" name="beach_loungers" id="beach_loungers-id" onChange={this.handleChange}>
                   {this.renderBeachLoungersSelection()}
                 </Input>
               </Col>
@@ -124,12 +128,12 @@ export default class ReservationsModal extends Component {
             <FormGroup row>
               <Label sm={6} for="exampleDate">Data</Label>
               <Col sm={6}>
-                <Input type="date" name="date" id="exampleDate" />
+                <Input type="date" name="date" id="exampleDate" value={dateSelected} onChange={this.handleChange} />
               </Col>
             </FormGroup>
             <FormGroup>
               <div>
-                <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" />
+                <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" onChange={this.handleChange} />
               </div>
             </FormGroup>
           </Form>
