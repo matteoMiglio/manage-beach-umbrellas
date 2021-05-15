@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Modal from "../components/Modal";
+import SubscriptionsModal from "../components/SubscriptionsModal";
 import SearchBar from "../components/SearchBar";
 import DataTable from "../components/DataTable";
 import { Button, Container, Row, Col } from 'reactstrap';
@@ -57,6 +57,20 @@ const items = [
   }
 ];
 
+const createEmptyItem = () => {
+  const item = {
+    id: 0,
+    position: "",
+    customerName: "",
+    dateRange: [null, null],
+    // startDate: "",
+    // endDate: "",
+    freePeriodList: []
+  }
+
+  return item;
+}
+
 class Subscriptions extends Component {
   constructor(props) {
     super(props);
@@ -65,14 +79,7 @@ class Subscriptions extends Component {
       searchText: '',
       itemsPaid: false,
       modal: false,
-      activeItem: {
-        id: 0,
-        position: "",
-        customerName: "",
-        startDate: "",
-        endDate: "",
-        freePeriodList: []
-      },
+      activeItem: createEmptyItem(),
     };
   }
 
@@ -89,12 +96,7 @@ class Subscriptions extends Component {
   };
 
   createItem = () => {
-    const item = { id: "", 
-                  position: "", 
-                  customerName: "", 
-                  startDate: "", 
-                  endDate: "",
-                  freePeriodList: [] };
+    const item = createEmptyItem();
 
     this.setState({ 
       activeItem: item, 
@@ -152,7 +154,7 @@ class Subscriptions extends Component {
           </Col>
         </Row>
         {this.state.modal ? (
-          <Modal
+          <SubscriptionsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
             onSave={this.handleSubmit}

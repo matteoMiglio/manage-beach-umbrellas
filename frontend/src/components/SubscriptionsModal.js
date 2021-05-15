@@ -14,6 +14,10 @@ import {
   CustomInput
 } from "reactstrap";
 import FormFreePeriod from "./FormFreePeriod";
+import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import it from 'date-fns/locale/it';
+registerLocale('it', it);
 
 const umbrellaListConst = [
   {
@@ -34,7 +38,7 @@ const umbrellaListConst = [
   },
 ];
 
-export default class CustomModal extends Component {
+export default class SubscriptionsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,6 +50,7 @@ export default class CustomModal extends Component {
   }
 
   handleChange = (e) => {
+
     let { name, value } = e.target;
 
     if (e.target.type === "checkbox") {
@@ -80,6 +85,13 @@ export default class CustomModal extends Component {
     this.setState({ activeItem });
   };
 
+  handlePeriodicInputChange(update) {
+    console.log(update);
+    const activeItem = { ...this.state.activeItem, dateRange: update };
+
+    this.setState({ activeItem });
+  }
+
   renderUmbrellaSelection = () => {
 
     const list = this.state.umbrellaList
@@ -105,6 +117,7 @@ export default class CustomModal extends Component {
   render() {
     const { toggle, onSave } = this.props;
     const title = this.props.modal_title;
+    const [startDate, endDate] = this.state.activeItem.dateRange;
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -164,30 +177,20 @@ export default class CustomModal extends Component {
               </div>
             </FormGroup>
             {this.state.periodicSubscriptions ? (
-              <Row form>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="exampleDate">Data Inizio</Label>
-                    <Input
-                      type="date"
-                      id="startDate-id"
-                      name="startDate"
-                      onChange={this.handleChange}
-                    />
-                  </FormGroup>
+              <FormGroup row>
+                <Label for="exampleDate" sm={6}>Periodo dell'abbonamento</Label>
+                <Col sm={6}>
+                  <DatePicker
+                    selectsRange={true}
+                    startDate={startDate}
+                    endDate={endDate}
+                    locale="it"
+                    shouldCloseOnSelect={false}
+                    onChange={(update) => this.handlePeriodicInputChange(update)}
+                    // isClearable={true}
+                  />
                 </Col>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="todo-description">Data Fine</Label>
-                    <Input
-                      type="date"
-                      id="endDate-id"
-                      name="endDate"
-                      onChange={this.handleChange}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
+              </FormGroup>
             ) : null}
             {this.state.customSubscriptions ? (
               <Row form>

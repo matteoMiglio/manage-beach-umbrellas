@@ -59,6 +59,7 @@ class HomeSearchBar extends React.Component {
 
   render() {
     const filterDate = this.props.filterDate;
+    console.log(filterDate)
 
     const CustomInputDatePicker = React.forwardRef(
       ({ value, onClick }, ref) => (
@@ -72,20 +73,14 @@ class HomeSearchBar extends React.Component {
 
     return (
       <div className="mt-4">   
-          <DatePicker 
-            todayButton="Oggi"
-            locale="it"
-            selected={filterDate}
-            onChange={(date) => this.handleFilterDateChange(date)}
-            customInput={<CustomInputDatePicker />}
-          />
-        </div>
-    //   <Form inline>
-    //     <FormGroup className="my-4 mb-2 mx-sm-2 mb-sm-0">
-    //       <Input type="date" name="date"
-    //              value={filterDate} onChange={this.handleFilterDateChange} />
-    //     </FormGroup>
-    //   </Form>
+        <DatePicker 
+          todayButton="Oggi"
+          locale="it"
+          selected={filterDate}
+          onChange={(date) => this.handleFilterDateChange(date)}
+          customInput={<CustomInputDatePicker />}
+        />
+      </div>
     );
   }
 }

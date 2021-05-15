@@ -61,7 +61,7 @@ export default class ReservationsModal extends Component {
 
   renderUmbrellaSelection = () => {
 
-    const list = this.state.umbrellaList
+    const list = this.state.umbrellaList;
 
     return list.map((item) => (
       <option key={item.id} selected={item.position == this.state.activeItem.position}>

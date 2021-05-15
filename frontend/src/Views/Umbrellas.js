@@ -1,6 +1,5 @@
 import React, { Component, useState } from "react";
 import styled from 'styled-components';
-import Modal from "../components/Modal";
 import { Table, Button, Container, Row, Col } from 'reactstrap';
 import Calendar from "../components/Calendar";
 
@@ -133,14 +132,14 @@ class Umbrellas extends Component {
             {/* <Calendar /> */}
           </div>
         </div>
-        {this.state.modal ? (
-          <Modal
+        {/* {this.state.modal ? (
+          <SubscriptionsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
             onSave={this.handleSubmit}
             modal_title={this.state.modal_title}
           />
-        ) : null}
+        ) : null} */}
       </main>
     );
   }
