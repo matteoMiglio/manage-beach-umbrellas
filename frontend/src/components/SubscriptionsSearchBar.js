@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Button, Label, Input, FormGroup } from 'reactstrap';
 
-class SearchBar extends React.Component {
+class SubscriptionsSearchBar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -42,4 +42,4 @@ class SearchBar extends React.Component {
   }
 }
 
-export default SearchBar;
+export default SubscriptionsSearchBar;

@@ -44,46 +44,52 @@ export default class SubscriptionsModal extends Component {
     this.state = {
       activeItem: this.props.activeItem,
       umbrellaList: umbrellaListConst,
-      periodicSubscriptions: false,
-      customSubscriptions: false,
     };
+  }
+
+  getDateString(date) {
+
+    if (typeof(date) === "object" && date) {
+      let month = date.getMonth() + 1
+      month = month > 9 ? month : "0" + month
+      let day = date.getDate()
+      day = day > 9 ? day : "0" + day
+      return date.getFullYear() + "-" + month + "-" + day
+    }
+    else
+      return null
   }
 
   handleChange = (e) => {
 
-    let { name, value } = e.target;
+    let name = e.target.name;
+    let value = e.target.value;
 
-    if (e.target.type === "checkbox") {
-      value = e.target.checked;
+    if (name === "customDays") {
+      let days = this.state.activeItem.customDays;
+      days.push(value);
+      value = days;
+    }
+
+    if (e.target.type === "select-multiple") {
+      value = Array.from(e.target.selectedOptions, option => option.value);
     }
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
+    console.log("Item updated:")
+    console.log(activeItem);
     this.setState({ activeItem });
   };
 
-  handlePeriodicRadioButtonChange = () => {
-    this.setState({ customSubscriptions: false });
-    this.setState({ periodicSubscriptions: !this.state.periodicSubscriptions });
-  }
+  handleChangeFreePeriod = (event, i) => {
 
-  handleCustomRadioButtonChange = () => {
-    this.setState({ periodicSubscriptions: false });
-    this.setState({ customSubscriptions: !this.state.customSubscriptions });
-  }
+    let freePeriodList = [...this.state.activeItem.freePeriodList];
+    freePeriodList[i][event.target.name] = event.target.value;
 
-  handleRadioButtonChange = (e) => {
-    //alert("ciao" + e.value)
-    this.setState({ customSubscriptions: false });
-    this.setState({ periodicSubscriptions: false });
-  }
-
-  handleFreePeriodChange = (el) => {
-    
-    const activeItem = { ...this.state.activeItem, freePeriodList: el };
-
+    const activeItem = { ...this.state.activeItem, freePeriodList: freePeriodList };
     this.setState({ activeItem });
-  };
+  }
 
   handlePeriodicInputChange(update) {
     console.log(update);
@@ -92,12 +98,28 @@ export default class SubscriptionsModal extends Component {
     this.setState({ activeItem });
   }
 
+  handleAddClickFreePeriod() {
+    let freePeriodList = [...this.state.activeItem.freePeriodList];
+    freePeriodList.push({startDate: null, endDate: null});
+
+    const activeItem = { ...this.state.activeItem, freePeriodList: freePeriodList};
+    this.setState({ activeItem });
+  }
+
+  handleRemoveClickFreePeriod(i) {
+    let freePeriodList = [...this.state.activeItem.freePeriodList];
+    freePeriodList.splice(i, 1);
+
+    const activeItem = { ...this.state.activeItem, freePeriodList: freePeriodList };
+    this.setState({ activeItem });
+  }
+
   renderUmbrellaSelection = () => {
 
     const list = this.state.umbrellaList
 
-    return list.map((item) => (
-      <option selected={item.position == this.state.activeItem.position}>
+    return list.map((item, index) => (
+      <option key={index} selected={item.position == this.state.activeItem.position}>
         {item.position}
       </option>
     ));
@@ -108,7 +130,7 @@ export default class SubscriptionsModal extends Component {
     const beachLoungersList = [1,2,3,4,5]
 
     return beachLoungersList.map((item) => (
-      <option selected={item == this.state.activeItem.beachLoungers}>
+      <option key={item} selected={item == this.state.activeItem.beachLoungers}>
         {item}
       </option>
     ));
@@ -117,7 +139,9 @@ export default class SubscriptionsModal extends Component {
   render() {
     const { toggle, onSave } = this.props;
     const title = this.props.modal_title;
-    const [startDate, endDate] = this.state.activeItem.dateRange;
+    // const [startDate, endDate] = this.state.activeItem.dateRange;
+    const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
+    const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -133,7 +157,7 @@ export default class SubscriptionsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
-                <Input type="select" name="position" id="position-id">
+                <Input type="select" name="position" id="position-id" onChange={this.handleChange}>
                   <option>-</option>
                   {this.renderUmbrellaSelection()}
                 </Input>
@@ -142,7 +166,7 @@ export default class SubscriptionsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Lettini</Label>
               <Col sm={6}>
-                <Input type="select" name="beach_loungers" id="beach_loungers-id">
+                <Input type="select" name="beachLoungers" id="beach_loungers-id" onChange={this.handleChange}>
                   {this.renderBeachLoungersSelection()}
                 </Input>
               </Col>
@@ -162,43 +186,65 @@ export default class SubscriptionsModal extends Component {
               <div>
                 { this.state.activeItem.id ? (
                   <CustomInput type="switch" id="switch-state" name="paid" label="Pagato"
-                      checked={this.state.activeItem.paid == "paid"} />
+                      defaultChecked={this.state.activeItem.paid} onChange={this.handleChange} />
                 ) : (
-                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" />
+                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" onChange={this.handleChange} />
                 ) }
               </div>
             </FormGroup>
             <FormGroup>
               <Label for="subcriptionType">Tipo abbonamento</Label>
               <div>
-                <CustomInput type="radio" id="type_seasonal" name="subcriptionType" label="Stagionale" onChange={(item) => this.handleRadioButtonChange(item)} />
-                <CustomInput type="radio" id="type_periodic" name="subcriptionType" label="Periodo" onChange={this.handlePeriodicRadioButtonChange} />
-                <CustomInput type="radio" id="type_custom" name="subcriptionType" label="Personalizzato" onChange={this.handleCustomRadioButtonChange}/>
+                <CustomInput type="radio" id="type_seasonal" name="subscriptionType" label="Stagionale" 
+                             value="seasonal" defaultChecked={this.state.activeItem.subscriptionType === "seasonal"} 
+                             onChange={this.handleChange} />
+                <CustomInput type="radio" id="type_periodic" name="subscriptionType" label="Periodo" 
+                             value="periodic" defaultChecked={this.state.activeItem.subscriptionType === "periodic"} 
+                             onChange={this.handleChange} />
+                <CustomInput type="radio" id="type_custom" name="subscriptionType" label="Personalizzato" 
+                             value="custom" defaultChecked={this.state.activeItem.subscriptionType === "custom"} 
+                             onChange={this.handleChange} />
               </div>
             </FormGroup>
-            {this.state.periodicSubscriptions ? (
-              <FormGroup row>
-                <Label for="exampleDate" sm={6}>Periodo dell'abbonamento</Label>
-                <Col sm={6}>
-                  <DatePicker
-                    selectsRange={true}
-                    startDate={startDate}
-                    endDate={endDate}
-                    locale="it"
-                    shouldCloseOnSelect={false}
-                    onChange={(update) => this.handlePeriodicInputChange(update)}
-                    // isClearable={true}
-                  />
-                </Col>
-              </FormGroup>
-            ) : null}
-            {this.state.customSubscriptions ? (
+            {this.state.activeItem.subscriptionType === "periodic" ? (
               <Row form>
-                <Col sm={12}>
+                <Col md={6}>
+                  <FormGroup>
+                    <Label for="startDatePeriodicSubcscription">Data Inizio</Label>
+                    <Input type="date" name="startDate" id="startDatePeriodicSubcscription"
+                           value={startDatePeriodicSubscriptions} onChange={this.handleChange} />
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup>
+                    <Label for="endDatePeriodicSubcscription">Data Fine</Label>
+                    <Input type="date" name="endDate" id="endDatePeriodicSubcscription"
+                           value={endDatePeriodicSubscriptions} onChange={this.handleChange} />
+                  </FormGroup>
+                </Col>
+              </Row>
+              // <FormGroup row>
+              //   <Label for="exampleDate" sm={6}>Periodo dell'abbonamento</Label>
+              //   <Col sm={6}>
+              //     {/* <DatePicker
+              //       selectsRange={true}
+              //       startDate={startDate}
+              //       endDate={endDate}
+              //       locale="it"
+              //       shouldCloseOnSelect={false}
+              //       onChange={(update) => this.handlePeriodicInputChange(update)}
+              //       // isClearable={true}
+              //     /> */}
+              //   </Col>
+              // </FormGroup>
+            ) : null}
+            {this.state.activeItem.subscriptionType === "custom" ? (
+              <Row form>
+                {/* <Col sm={12}>
                   <FormGroup row>
                     <Label for="exampleSelect" sm={4}>Ripeti ogni</Label>
                     <Col sm={2} className='px-2'>
-                      <Input type="select" name="select" id="exampleSelect">
+                      <Input type="select" name="select" id="exampleSelect" size="sm">
                         <option>1</option>
                         <option>2</option>
                         <option>3</option>
@@ -207,12 +253,12 @@ export default class SubscriptionsModal extends Component {
                       </Input>
                     </Col>
                     <Col sm={4}>
-                      <Input type="select" name="select" id="exampleSelect">
+                      <Input type="select" name="select" id="exampleSelect" size="sm">
                         <option>settimana</option>
                       </Input>
                     </Col>
                   </FormGroup>
-                </Col>
+                </Col> */}
                 <Col sm={12} className="mt-3">
                   <Row>
                     <Col sm={3}>
@@ -221,37 +267,37 @@ export default class SubscriptionsModal extends Component {
                     <Col sm={8}>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />L
+                          <Input type="checkbox" name="customDays" value={1} onChange={this.handleChange} />L
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />M
+                          <Input type="checkbox" name="customDays" value={2} onChange={this.handleChange} />M
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />M
+                          <Input type="checkbox" name="customDays" value={3} onChange={this.handleChange} />M
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />G
+                          <Input type="checkbox" name="customDays" value={4} onChange={this.handleChange} />G
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />V
+                          <Input type="checkbox" name="customDays" value={5} onChange={this.handleChange} />V
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />S
+                          <Input type="checkbox" name="customDays" value={6} onChange={this.handleChange} />S
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" />D
+                          <Input type="checkbox" name="customDays" value={0} onChange={this.handleChange} />D
                         </Label>
                       </FormGroup>
                     </Col>
@@ -262,14 +308,15 @@ export default class SubscriptionsModal extends Component {
                     <Label for="exampleSelectMulti">Nel periodo</Label>
                     <Input
                       type="select"
-                      name="selectMulti"
+                      name="customMonths"
                       id="exampleSelectMulti"
+                      onChange={this.handleChange}
                       multiple
                     >
-                      <option>Giugno</option>
-                      <option>Luglio</option>
-                      <option>Agosto</option>
-                      <option>Settembre</option>
+                      <option value={5}>Giugno</option>
+                      <option value={6}>Luglio</option>
+                      <option value={7}>Agosto</option>
+                      <option value={8}>Settembre</option>
                     </Input>
                   </FormGroup>
                 </Col>
@@ -278,9 +325,10 @@ export default class SubscriptionsModal extends Component {
           </Form>
 
           <FormFreePeriod 
-            action={(el) => this.handleFreePeriodChange(el)}
-            values={this.state.activeItem.freePeriodList} />
-
+            values={this.state.activeItem.freePeriodList}
+            onChangeInput={(event, i) => this.handleChangeFreePeriod(event, i)}
+            onAddClick={() => this.handleAddClickFreePeriod()}
+            onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} />
         </ModalBody>   
         <ModalFooter>
           <Button color="success" onClick={() => onSave(this.state.activeItem)}>

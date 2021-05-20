@@ -20,63 +20,51 @@ class FormFreePeriod extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      values: this.props.values
-    };
   }
 
   handleChange(i, event) {
-    let values = [...this.state.values];
-    values[i].value = event.target.value;
-    this.setState({
-      values
-    });
-
-    this.props.action(values);
+    this.props.onChangeInput(event, i);
   }
 
-  addClick() {
-    this.setState(prevState => ({
-      values: [...prevState.values, {
-        value: [null, null]
-      }]
-    }));
-  }
+  // handleDateRangeInputChange(i, update) {
+  //   console.log(update)
+  //   let values = [...this.state.values];
+  //   values[i].value = update;
+  //   this.setState({
+  //     values
+  //   });
 
-  removeClick(i) {
-    let values = [...this.state.values];
-    values.splice(i, 1);
-    this.setState({
-      values
-    });
-  }
+  //   //this.props.action(values);
+  // }
 
-  handleDateRangeInputChange(i, update) {
-    console.log(update)
-    let values = [...this.state.values];
-    values[i].value = update;
-    this.setState({
-      values
-    });
+  getDateString(date) {
 
-    //this.props.action(values);
+    if (typeof(date) === "object" && date) {
+      let month = date.getMonth() + 1
+      month = month > 9 ? month : "0" + month
+      let day = date.getDate()
+      day = day > 9 ? day : "0" + day
+      return date.getFullYear() + "-" + month + "-" + day
+    }
+    else
+      return null
   }
 
   render() {
+    const list = this.props.values;
 
     return (
       <FormGroup>
         <Row className="mb-3">
           <Col md={6}>
-            <Button color="primary" onClick={() => this.addClick()}>
+            <Button color="primary" onClick={() => this.props.onAddClick()}>
               Aggiungi periodo libero
             </Button> 
           </Col>
         </Row>
-        {this.state.values.map((el, i) => (
-          <Row key={i}>
-            <Col sm={8}>
-              <FormGroup row>
+        {list.map((el, i) => (
+          <Row key={i} form>
+              {/* <FormGroup row>
                 <Label sm={4} for="feife">Periodo {i + 1}</Label>
                 <Col sm={6}>
                   <DatePicker
@@ -89,19 +77,27 @@ class FormFreePeriod extends React.Component {
                     // isClearable={true}
                   />
                 </Col>
-                {/* <Input
-                    type="text"
-                    value={el.value || ""}
-                    name="periodFree"
-                    onChange={this.handleChange.bind(this, i)}
-                    //onChange={this.props.action(this, i)}
-                /> */}
-                </FormGroup>
+              </FormGroup> */}
+            <Col sm={4}>
+              <FormGroup>
+                <Label size="sm" for={"startDateFreePeriod" + (i+1) + "Subscription"}>Data Inizio</Label>
+                <Input size="sm" type="date" name="startDate" id={"startDateFreePeriod" + (i+1) + "Subcscription"} 
+                       value={this.getDateString(el.startDate)} onChange={this.handleChange.bind(this, i)} />
+              </FormGroup>
             </Col>
             <Col sm={4}>
-              <Button className="btn btn-danger" size="sm" onClick={() => this.removeClick(i)}>
-                Rimuovi
-              </Button>
+              <FormGroup>
+                <Label size="sm" for={"endDateFreePeriod" + (i+1) + "Subscription"}>Data Fine</Label>
+                <Input size="sm" type="date" name="endDate" id={"endDateFreePeriod" + (i+1) + "Subcscription"} 
+                       value={this.getDateString(el.endDate)} onChange={this.handleChange.bind(this, i)} />
+              </FormGroup>
+            </Col>
+            <Col sm={{size: 3, offset: 1}}>
+              <FormGroup style={{marginTop: "38px"}}>
+                <Button size="sm" className="btn btn-danger" onClick={() => this.props.onRemoveClick(i)}>
+                  Rimuovi
+                </Button>
+              </FormGroup>
             </Col>
           </Row>
         ))}

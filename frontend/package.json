@@ -17,6 +17,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^4.0.3",
     "react-tiny-fab": "^4.0.2",
+    "react-to-print": "^2.12.4",
     "styled-components": "^4.3.2",
     "web-vitals": "^1.1.1"
   },

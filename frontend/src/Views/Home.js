@@ -10,6 +10,8 @@ import { GrFormAdd } from "react-icons/gr";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import ReservationsModal from '../components/ReservationsModal';
+import { FaPrint } from "react-icons/fa";
+import ReactToPrint from 'react-to-print';
 
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
@@ -49,7 +51,7 @@ class Home extends Component {
       splitRow: 14,
       freeBeachLoungers: faker.finance.creditCardCVV(),
       filterDate: new Date(),
-      showBeachLounger: false,
+      showBeachLoungers: false,
       modal: false,
       activeItem: {
         id: 0,
@@ -127,7 +129,8 @@ class Home extends Component {
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane umbrellaList={this.state.umbrellaList}
                              splitRow={this.state.splitRow}
-                             showBeachLounger={this.state.showBeachLounger} />
+                             showBeachLoungers={this.state.showBeachLoungers}
+                             ref={el => (this.componentRef = el)} />
           </Col>
           {/* <Col md={2} sm={12}>
             <HomeRightPane totalUmbrella={this.state.umbrellaList.length}
@@ -152,10 +155,21 @@ class Home extends Component {
                   onClick={() => alert('Prenota un lettino')}>            
             <BeachLoungerLogo width={25} color="white" />
           </Action>
-          <Action text={this.state.showBeachLounger ? "Nascondi lettini" : "Mostra lettini"}
+          <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
                   style={actionButtonStyles}
-                  onClick={() => this.setState({showBeachLounger: !this.state.showBeachLounger})}>            
+                  onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>            
             <BeachLoungerLogo width={25} color="white" />
+          </Action>
+          <Action text="Stampa piantina"
+                  style={actionButtonStyles}>
+            <ReactToPrint
+              trigger={() => {
+                return <FaPrint />;
+              }}
+              documentTitle={"Planimetria_" + this.state.filterDate.toLocaleDateString()}
+              onBeforeGetContent={() => this.setState({showBeachLoungers: true})}
+              content={() => this.componentRef}
+            />
           </Action>
         </Fab>
         {this.state.modal ? (

@@ -59,7 +59,6 @@ class HomeSearchBar extends React.Component {
 
   render() {
     const filterDate = this.props.filterDate;
-    console.log(filterDate)
 
     const CustomInputDatePicker = React.forwardRef(
       ({ value, onClick }, ref) => (

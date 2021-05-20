@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import SubscriptionsModal from "../components/SubscriptionsModal";
-import SearchBar from "../components/SearchBar";
-import DataTable from "../components/DataTable";
+import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
+import SubscriptionsTable from "../components/SubscriptionsTable";
 import { Button, Container, Row, Col } from 'reactstrap';
 
 const items = [
@@ -9,9 +9,10 @@ const items = [
     id: 1001,
     position: "A1",
     customerName: "Luca",
-    beach_loungers: "1",
-    startDate: "29-04-2021",
-    endDate: "29-09-2021",
+    beachLoungers: "1",
+    subscriptionType: "seasonal",
+    startDate: new Date(2021, 4, 20),
+    endDate: new Date(2021, 8, 15),
     paid: true,
     freePeriodList: []
   },
@@ -19,19 +20,21 @@ const items = [
     id: 1002,
     position: "A2",
     customerName: "Matteo",
-    beach_loungers: "2",
-    startDate: "29-04-2021",
-    endDate: "29-09-2021",
+    beachLoungers: "2",
+    subscriptionType: "periodic",
+    startDate: new Date(2021, 4, 20),
+    endDate: new Date(2021, 9, 15),
     paid: true,
-    freePeriodList: []
+    freePeriodList: [{startDate: new Date(2021, 7, 10), endDate: new Date(2021, 7, 1)}]
   },
   {
     id: 1003,
     position: "B1",
     customerName: "Luigi",
-    beach_loungers: "3",
-    startDate: "29-04-2021",
-    endDate: "29-09-2021",
+    beachLoungers: "3",
+    subscriptionType: "periodic",
+    startDate: new Date(2021, 4, 20),
+    endDate: new Date(2021, 9, 15),
     paid: false,
     freePeriodList: []
   },
@@ -39,21 +42,23 @@ const items = [
     id: 1004,
     position: "B2",
     customerName: "Gianni",
-    beach_loungers: "3",
-    startDate: "29-04-2021",
-    endDate: "29-09-2021",
+    beachLoungers: "3",
+    subscriptionType: "periodic",
+    startDate: new Date(2021, 4, 20),
+    endDate: new Date(2021, 9, 15),
     paid: false,
-    freePeriodList: [{value: "ciao"}]
+    freePeriodList: []
   },
   {
     id: 1005,
     position: "-",
     customerName: "Gianni",
-    beach_loungers: "2",
-    startDate: "29-07-2021",
-    endDate: "29-09-2021",
+    beachLoungers: "2",
+    subscriptionType: "seasonal",
+    startDate: new Date(2021, 4, 20),
+    endDate: new Date(2021, 8, 15),
     paid: true,
-    freePeriodList: [{value: "ultimo"}]
+    freePeriodList: [{startDate: new Date(2021, 8, 10), endDate: new Date(2021, 8, 21)}]
   }
 ];
 
@@ -62,10 +67,14 @@ const createEmptyItem = () => {
     id: 0,
     position: "",
     customerName: "",
-    dateRange: [null, null],
-    // startDate: "",
-    // endDate: "",
-    freePeriodList: []
+    beachLoungers: 1,
+    startDate: "",
+    endDate: "",
+    subscriptionType: "",
+    paid: false,
+    freePeriodList: [],
+    customDays: [],
+    customMonths: []
   }
 
   return item;
@@ -138,19 +147,19 @@ class Subscriptions extends Component {
             <Button color="primary" onClick={this.createItem}>Crea nuovo</Button>
           </Col>
           <Col sm={9}>
-            <SearchBar onFilterTextChange={this.handleFilterTextChange}
-                       onPaidItemsChange={this.handleShowPaidChange} 
-                       itemsPaid={this.state.itemsPaid}
-                       searchText={this.state.searchText} />
+            <SubscriptionsSearchBar onFilterTextChange={this.handleFilterTextChange}
+                                    onPaidItemsChange={this.handleShowPaidChange} 
+                                    itemsPaid={this.state.itemsPaid}
+                                    searchText={this.state.searchText} />
           </Col>
         </Row>
         <Row>
           <Col md={10} sm={6} className="mx-auto p-0">
-            <DataTable items={this.state.itemList}
-                       itemsPaid={this.state.itemsPaid}
-                       searchText={this.state.searchText} 
-                       onEditButtonClick={this.handleEditButtonClick} 
-                       onDeleteButtonClick={this.handleDeleteButtonClick} />
+            <SubscriptionsTable items={this.state.itemList}
+                                itemsPaid={this.state.itemsPaid}
+                                searchText={this.state.searchText} 
+                                onEditButtonClick={this.handleEditButtonClick} 
+                                onDeleteButtonClick={this.handleDeleteButtonClick} />
           </Col>
         </Row>
         {this.state.modal ? (

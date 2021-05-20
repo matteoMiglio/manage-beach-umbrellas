@@ -28,7 +28,7 @@ class CardUmbrella extends React.Component {
 
   render() {
     const item = this.props.item;
-    const showBeachLounger = this.props.showBeachLounger;
+    const showBeachLoungers = this.props.showBeachLoungers;
 
     const beachLoungersImages = [];
 
@@ -42,34 +42,34 @@ class CardUmbrella extends React.Component {
     else if (item.beachLoungers == 2) {
       beachLoungersImages.push(
         <div style={{display: "block"}}>
-          <BeachLoungerLogo color="black" width={20} />
-          <BeachLoungerLogo color="black" width={20} />
+          <BeachLoungerLogo key={0} color="black" width={20} />
+          <BeachLoungerLogo key={1} color="black" width={20} />
         </div>
       );
     }
     else if (item.beachLoungers == 3) {
       beachLoungersImages.push(
         <div style={{display: "block"}}>
-          <BeachLoungerLogo color="black" width={20} />
-          <BeachLoungerLogo color="black" width={20} />
+          <BeachLoungerLogo key={0} color="black" width={20} />
+          <BeachLoungerLogo key={1} color="black" width={20} />
         </div>
       );
       beachLoungersImages.push(
         <div style={{display: "block"}}>
-          <BeachLoungerLogo color="black" width={20} />
+          <BeachLoungerLogo key={2} color="black" width={20} />
         </div>
       );
     } else {
       beachLoungersImages.push(
         <div style={{display: "block"}}>
-          <BeachLoungerLogo color="black" width={20} />
-          <BeachLoungerLogo color="black" width={20} />
+          <BeachLoungerLogo key={0} color="black" width={20} />
+          <BeachLoungerLogo key={1} color="black" width={20} />
         </div>
       );
       beachLoungersImages.push(
         <div style={{display: "block"}}>
-          <BeachLoungerLogo color="black" width={20} />
-          <BeachLoungerLogo color="black" width={20} />
+          <BeachLoungerLogo key={2} color="black" width={20} />
+          <BeachLoungerLogo key={3} color="black" width={20} />
         </div>
       );
     }
@@ -81,7 +81,7 @@ class CardUmbrella extends React.Component {
             <div>
               <UmbrellaLogo color={color} width={40} />
             </div>
-            {showBeachLounger ? (            
+            {showBeachLoungers ? (            
               <div>
                 {beachLoungersImages}
               </div>
@@ -112,7 +112,7 @@ class HomeCentralPane extends React.Component {
     return matrix;
   }
 
-  renderSingleRow = (items, showBeachLounger) => {
+  renderSingleRow = (items, showBeachLoungers) => {
     const row = [];
 
     items.slice(0, items.length).forEach((el, index) => {
@@ -123,7 +123,7 @@ class HomeCentralPane extends React.Component {
         );
       } 
 
-      row.push(<CardUmbrella item={el} key={el.id} showBeachLounger={showBeachLounger} className="mb-4 text-center border-0" />);
+      row.push(<CardUmbrella item={el} key={el.id} showBeachLoungers={showBeachLoungers} className="mb-4 text-center border-0" />);
     });
 
     return row;
@@ -132,20 +132,20 @@ class HomeCentralPane extends React.Component {
   render() {
     const splitRow = this.props.splitRow;
     const matrix = this.listToMatrix(this.props.umbrellaList, splitRow);
-    const showBeachLounger = this.props.showBeachLounger;
+    const showBeachLoungers = this.props.showBeachLoungers;
     const umbrellaTable = [];
 
     matrix.slice(0, matrix.length).map((item, index) => {
       // if (index == 0) {
       //   umbrellaTable.push(
       //     <tr key={index}>
-      //         {this.renderFirstRow(item, showBeachLounger)}
+      //         {this.renderFirstRow(item, showBeachLoungers)}
       //     </tr>
       //   );        
       // } else {
         umbrellaTable.push(
           <tr key={index}>
-              {this.renderSingleRow(item, showBeachLounger)}
+              {this.renderSingleRow(item, showBeachLoungers)}
           </tr>
         );
       // }
