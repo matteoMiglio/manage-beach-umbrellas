@@ -13,39 +13,34 @@ import {
   Col,
   CustomInput
 } from "reactstrap";
+import faker from 'faker';
+import axios from "axios";
 import FormFreePeriod from "./FormFreePeriod";
 import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);
 
-const umbrellaListConst = [
-  {
-    id: 1,
-    position: "A1",
-  },
-  {
-    id: 2,
-    position: "A2",
-  },
-  {
-    id: 3,
-    position: "B1",
-  },
-  {
-    id: 4,
-    position: "B2",
-  },
-];
 
 export default class SubscriptionsModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: this.props.activeItem,
-      umbrellaList: umbrellaListConst,
+      umbrellaList: [],
     };
   }
+
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+    axios
+      .get("/api/umbrellas/")
+      .then((res) => this.setState({ umbrellaList: res.data }))
+      .catch((err) => console.log(err));
+  };
 
   getDateString(date) {
 
@@ -58,6 +53,15 @@ export default class SubscriptionsModal extends Component {
     }
     else
       return null
+  }
+
+  createNewCode = () => {
+    var newCode = 1000 + faker.datatype.number(100)
+
+    const activeItem = { ...this.state.activeItem, code: newCode };
+    this.setState({ activeItem });
+
+    return newCode;
   }
 
   handleChange = (e) => {
@@ -77,8 +81,8 @@ export default class SubscriptionsModal extends Component {
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
-    console.log("Item updated:")
-    console.log(activeItem);
+    // console.log("Item updated:")
+    // console.log(activeItem);
     this.setState({ activeItem });
   };
 
@@ -119,8 +123,8 @@ export default class SubscriptionsModal extends Component {
     const list = this.state.umbrellaList
 
     return list.map((item, index) => (
-      <option key={index} selected={item.position == this.state.activeItem.position}>
-        {item.position}
+      <option key={index} selected={item.code == this.state.activeItem.umbrella}>
+        {item.code}
       </option>
     ));
   }
@@ -143,21 +147,21 @@ export default class SubscriptionsModal extends Component {
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
+    const subscriptionCode = this.state.activeItem.code ? this.state.activeItem.code : this.createNewCode()
+
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>{title}</ModalHeader>
         <ModalBody>
           <Form>
-            { this.state.activeItem.id ? (
-              <FormGroup row>
-                <Label sm={6}>Codice Abbonamento</Label>
-                <Label sm={6}>{this.state.activeItem.id}</Label>
-              </FormGroup> 
-            ) : null}
+            <FormGroup row>
+              <Label sm={6}>Codice Abbonamento</Label>
+              <Label sm={6}>{subscriptionCode}</Label>
+            </FormGroup> 
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
-                <Input type="select" name="position" id="position-id" onChange={this.handleChange}>
+                <Input type="select" name="umbrella" id="position-id" onChange={this.handleChange}>
                   <option>-</option>
                   {this.renderUmbrellaSelection()}
                 </Input>
@@ -176,8 +180,8 @@ export default class SubscriptionsModal extends Component {
               <Input
                 type="text"
                 id="customerName-id"
-                name="customerName"
-                value={this.state.activeItem.customerName}
+                name="customer"
+                value={this.state.activeItem.customer}
                 onChange={this.handleChange}
                 placeholder="Immetti nome cliente"
               />
@@ -196,13 +200,13 @@ export default class SubscriptionsModal extends Component {
               <Label for="subcriptionType">Tipo abbonamento</Label>
               <div>
                 <CustomInput type="radio" id="type_seasonal" name="subscriptionType" label="Stagionale" 
-                             value="seasonal" defaultChecked={this.state.activeItem.subscriptionType === "seasonal"} 
+                             value="S" defaultChecked={this.state.activeItem.subscriptionType === "S"} 
                              onChange={this.handleChange} />
                 <CustomInput type="radio" id="type_periodic" name="subscriptionType" label="Periodo" 
-                             value="periodic" defaultChecked={this.state.activeItem.subscriptionType === "periodic"} 
+                             value="P" defaultChecked={this.state.activeItem.subscriptionType === "P"} 
                              onChange={this.handleChange} />
                 <CustomInput type="radio" id="type_custom" name="subscriptionType" label="Personalizzato" 
-                             value="custom" defaultChecked={this.state.activeItem.subscriptionType === "custom"} 
+                             value="C" defaultChecked={this.state.activeItem.subscriptionType === "C"} 
                              onChange={this.handleChange} />
               </div>
             </FormGroup>
@@ -324,11 +328,11 @@ export default class SubscriptionsModal extends Component {
             ) : null}
           </Form>
 
-          <FormFreePeriod 
+          {/* <FormFreePeriod 
             values={this.state.activeItem.freePeriodList}
             onChangeInput={(event, i) => this.handleChangeFreePeriod(event, i)}
             onAddClick={() => this.handleAddClickFreePeriod()}
-            onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} />
+            onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} /> */}
         </ModalBody>   
         <ModalFooter>
           <Button color="success" onClick={() => onSave(this.state.activeItem)}>

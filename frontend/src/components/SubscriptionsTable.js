@@ -27,13 +27,13 @@ class DataRows extends React.Component {
     );
 
     switch (item.subscriptionType) {
-      case "seasonal": 
+      case "S": 
         subscriptionsType = "Stagionale";
         break;
-      case "periodic":
+      case "P":
         subscriptionsType = "Periodo";
         break;
-      case "custom":
+      case "C":
         subscriptionsType = "Personalizzato";
         break;
       default:
@@ -42,14 +42,15 @@ class DataRows extends React.Component {
 
     return (
       <tr>
-        <th scope="row">{item.id}</th>
-        <td>{item.position}</td>
-        <td>{item.customerName}</td>
+        <th scope="row">{item.code}</th>
+        <td>{item.umbrella}</td>
+        <td>{item.customer}</td>
         <td>{item.beachLoungers}</td>
         <td>{state}</td>
         <td>{subscriptionsType}</td>
-        <td>{this.getDateString(item.startDate)} {"->"} {this.getDateString(item.endDate)}</td>
-        <td align="center">{item.freePeriodList.length > 0 ? <FaCheckCircle /> : <FaMinusCircle />}</td>
+        {/* <td>{this.getDateString(item.startDate)} {"->"} {this.getDateString(item.endDate)}</td> */}
+        <td>{item.startDate} {"->"} {item.endDate}</td>
+        {/* <td align="center">{item.freePeriodList.length > 0 ? <FaCheckCircle /> : <FaMinusCircle />}</td> */}
         <td>
           <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
             Modifica
@@ -131,7 +132,7 @@ class SubscriptionsTable extends React.Component {
             <th>Stato</th>
             <th>Tipo</th>
             <th>Validità</th>
-            <th>Periodi liberi</th>
+            {/* <th>Periodi liberi</th> */}
             <th>Action</th>
           </tr>
         </thead>

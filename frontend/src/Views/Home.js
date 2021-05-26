@@ -98,10 +98,49 @@ class Home extends Component {
       filterDate: date,
       umbrellaList: umbrellaList
     });
-  }
+  };
 
   editItem = (item) => {
     this.setState({ activeItem: item, modal: !this.state.modal });
+  };
+
+  renderFloatingActionButton = () => {
+    return (
+      <Fab
+        mainButtonStyles={mainButtonStyles}
+        // actionButtonStyles={actionButtonStyles}
+        icon={<GrFormAdd />}
+        event="click"
+        alwaysShowTitle={true}
+      >
+        <Action text="Prenota un ombrellone" 
+                style={actionButtonStyles}
+                onClick={() => this.createItem()}>            
+          <UmbrellaLogo width={25} color="white" />
+        </Action>
+        <Action text="Prenota un lettino" 
+                style={actionButtonStyles}
+                onClick={() => alert('Prenota un lettino')}>            
+          <BeachLoungerLogo width={25} color="white" />
+        </Action>
+        <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
+                style={actionButtonStyles}
+                onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>            
+          <BeachLoungerLogo width={25} color="white" />
+        </Action>
+        <Action text="Stampa piantina"
+                style={actionButtonStyles}>
+          <ReactToPrint
+            trigger={() => {
+              return <FaPrint />;
+            }}
+            documentTitle={"Planimetria_" + this.state.filterDate.toLocaleDateString()}
+            onBeforeGetContent={() => this.setState({showBeachLoungers: true})}
+            content={() => this.componentRef}
+          />
+        </Action>
+      </Fab>
+    );
   };
 
   render() {
@@ -138,40 +177,7 @@ class Home extends Component {
                            freeBeachLoungers={this.state.freeBeachLoungers} />
           </Col> */}
         </Row>
-        <Fab
-          mainButtonStyles={mainButtonStyles}
-          // actionButtonStyles={actionButtonStyles}
-          icon={<GrFormAdd />}
-          event="click"
-          alwaysShowTitle={true}
-        >
-          <Action text="Prenota un ombrellone" 
-                  style={actionButtonStyles}
-                  onClick={() => this.createItem()}>            
-            <UmbrellaLogo width={25} color="white" />
-          </Action>
-          <Action text="Prenota un lettino" 
-                  style={actionButtonStyles}
-                  onClick={() => alert('Prenota un lettino')}>            
-            <BeachLoungerLogo width={25} color="white" />
-          </Action>
-          <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
-                  style={actionButtonStyles}
-                  onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>            
-            <BeachLoungerLogo width={25} color="white" />
-          </Action>
-          <Action text="Stampa piantina"
-                  style={actionButtonStyles}>
-            <ReactToPrint
-              trigger={() => {
-                return <FaPrint />;
-              }}
-              documentTitle={"Planimetria_" + this.state.filterDate.toLocaleDateString()}
-              onBeforeGetContent={() => this.setState({showBeachLoungers: true})}
-              content={() => this.componentRef}
-            />
-          </Action>
-        </Fab>
+        {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <ReservationsModal
             activeItem={this.state.activeItem}

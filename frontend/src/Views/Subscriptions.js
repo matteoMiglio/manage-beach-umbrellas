@@ -3,78 +3,21 @@ import SubscriptionsModal from "../components/SubscriptionsModal";
 import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
 import { Button, Container, Row, Col } from 'reactstrap';
-
-const items = [
-  {
-    id: 1001,
-    position: "A1",
-    customerName: "Luca",
-    beachLoungers: "1",
-    subscriptionType: "seasonal",
-    startDate: new Date(2021, 4, 20),
-    endDate: new Date(2021, 8, 15),
-    paid: true,
-    freePeriodList: []
-  },
-  {
-    id: 1002,
-    position: "A2",
-    customerName: "Matteo",
-    beachLoungers: "2",
-    subscriptionType: "periodic",
-    startDate: new Date(2021, 4, 20),
-    endDate: new Date(2021, 9, 15),
-    paid: true,
-    freePeriodList: [{startDate: new Date(2021, 7, 10), endDate: new Date(2021, 7, 1)}]
-  },
-  {
-    id: 1003,
-    position: "B1",
-    customerName: "Luigi",
-    beachLoungers: "3",
-    subscriptionType: "periodic",
-    startDate: new Date(2021, 4, 20),
-    endDate: new Date(2021, 9, 15),
-    paid: false,
-    freePeriodList: []
-  },
-  {
-    id: 1004,
-    position: "B2",
-    customerName: "Gianni",
-    beachLoungers: "3",
-    subscriptionType: "periodic",
-    startDate: new Date(2021, 4, 20),
-    endDate: new Date(2021, 9, 15),
-    paid: false,
-    freePeriodList: []
-  },
-  {
-    id: 1005,
-    position: "-",
-    customerName: "Gianni",
-    beachLoungers: "2",
-    subscriptionType: "seasonal",
-    startDate: new Date(2021, 4, 20),
-    endDate: new Date(2021, 8, 15),
-    paid: true,
-    freePeriodList: [{startDate: new Date(2021, 8, 10), endDate: new Date(2021, 8, 21)}]
-  }
-];
+import axios from "axios";
 
 const createEmptyItem = () => {
   const item = {
-    id: 0,
-    position: "",
-    customerName: "",
+    code: null,
+    umbrella: "",
+    customer: "",
     beachLoungers: 1,
     startDate: "",
     endDate: "",
     subscriptionType: "",
     paid: false,
-    freePeriodList: [],
-    customDays: [],
-    customMonths: []
+    // freePeriodList: [],
+    // customDays: [],
+    // customMonths: []
   }
 
   return item;
@@ -84,7 +27,7 @@ class Subscriptions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemList: items,
+      itemList: [],
       searchText: '',
       itemsPaid: false,
       modal: false,
@@ -92,16 +35,44 @@ class Subscriptions extends Component {
     };
   }
 
-  toggle = () => {
-    this.setState({ 
-      modal: !this.state.modal 
-    });
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+    axios
+      .get("/api/subscriptions/")
+      .then((res) => this.setState({ itemList: res.data }))
+      .catch((err) => console.log(err));
   };
 
   handleSubmit = (item) => {
     this.toggle();
 
-    alert("save" + JSON.stringify(item));
+    if (item.subscriptionType === "S") {
+      item.startDate = "2021-05-15";
+      item.endDate = "2021-09-15";
+    }
+
+    if (item.paid === "on")
+      item.paid = true;
+
+    if (item.id) {
+      axios
+        .put(`/api/subscriptions/${item.id}/`, item)
+        .then((res) => this.refreshList());
+      return;
+    }
+
+    axios
+      .post("/api/subscriptions/", item)
+      .then((res) => this.refreshList());
+  };
+
+  handleDeleteButtonClick = (item) => {
+    axios
+      .delete(`/api/subscriptions/${item.id}/`)
+      .then((res) => this.refreshList());
   };
 
   createItem = () => {
@@ -114,7 +85,7 @@ class Subscriptions extends Component {
     });
   };
 
-  handleEditButtonClick = (item) => {
+  editItem = (item) => {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
@@ -122,8 +93,10 @@ class Subscriptions extends Component {
     });
   };
 
-  handleDeleteButtonClick = (item) => {
-    alert("delete" + JSON.stringify(item));
+  toggle = () => {
+    this.setState({ 
+      modal: !this.state.modal 
+    });
   };
 
   handleFilterTextChange = (text) => {
@@ -158,7 +131,7 @@ class Subscriptions extends Component {
             <SubscriptionsTable items={this.state.itemList}
                                 itemsPaid={this.state.itemsPaid}
                                 searchText={this.state.searchText} 
-                                onEditButtonClick={this.handleEditButtonClick} 
+                                onEditButtonClick={this.editItem} 
                                 onDeleteButtonClick={this.handleDeleteButtonClick} />
           </Col>
         </Row>

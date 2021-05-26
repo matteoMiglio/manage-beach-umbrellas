@@ -20,6 +20,8 @@ from myapp import views
 
 router = routers.DefaultRouter()
 router.register(r'umbrellas', views.UmbrellaView, 'umbrella')
+router.register(r'subscriptions', views.SubscriptionView, 'subscription')
+router.register(r'reservations', views.ReservationView, 'reservation')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
