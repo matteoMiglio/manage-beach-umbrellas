@@ -3,6 +3,7 @@ import { Row, Col, Button, Container } from 'reactstrap';
 import ReservationsTable from '../components/ReservationsTable';
 import ReservationsModal from '../components/ReservationsModal';
 import ReservationsSearchBar from '../components/ReservationsSearchBar';
+import axios from "axios";
 
 const items = [
   {
@@ -51,12 +52,43 @@ class Reservations extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemList: items,
+      itemList: [],
       modal: false,
       filterDate: new Date(),
-      showAll: false
+      showAll: false,
+      itemsUnpaid: false
     };
   }
+
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+
+    let tmp = this.state.filterDate.toISOString();
+    const filterDate = tmp.substring(0, tmp.indexOf('T'));
+
+    axios
+      .get("/api/reservations?date=" + filterDate)
+      .then((res) => this.setState({ itemList: res.data }))
+      .catch((err) => console.log(err));
+  };
+
+  handleSubmit = (item) => {
+    this.toggle();
+
+    if (item.id) {
+      axios
+        .put(`/api/reservations/${item.id}/`, item)
+        .then((res) => this.refreshList());
+      return;
+    }
+
+    axios
+      .post("/api/reservations/", item)
+      .then((res) => this.refreshList());
+  };
 
   toggle = () => {
     this.setState({ 
@@ -65,11 +97,12 @@ class Reservations extends Component {
   };
 
   createItem = () => {
-    const item = { id: "", 
-                  position: "", 
-                  customerName: "",
-                  beach_loungers: 1,
-                  date: "", 
+    let tmp = this.state.filterDate.toISOString();
+    const newDate = tmp.substring(0, tmp.indexOf('T'));
+    const item = { umbrella: "", 
+                  customer: "",
+                  beachLoungers: 1,
+                  date: newDate, 
                   paid: false };
 
     this.setState({ 
@@ -79,10 +112,33 @@ class Reservations extends Component {
     });
   };
 
+  editItem = (item) => {
+    this.setState({ 
+      activeItem: item, 
+      modal: !this.state.modal, 
+      modal_title: "Modifica prenotazione" 
+    });
+  };
+
+  deleteItem = (item) => {
+    axios
+      .delete(`/api/reservations/${item.id}/`)
+      .then((res) => this.refreshList());
+  }
+
   handleFilterDateChange = (e) => {
-    const date = new Date(e)
+    const date = new Date(e);
     this.setState({
       filterDate: date,
+    });
+
+    setTimeout(() => { this.refreshList() }, 50);
+  }
+
+  handleShowUnpaidChange = (paid) => {
+
+    this.setState({
+      itemsUnpaid: paid,
     });
   }
 
@@ -104,7 +160,9 @@ class Reservations extends Component {
           <Col sm={8}>
             <ReservationsSearchBar onFilterDateChange={this.handleFilterDateChange}
                                    onShowAllChange={this.handleShowAllChange}
+                                   onUnpaidItemsChange={this.handleShowUnpaidChange} 
                                    filterDate={this.state.filterDate}
+                                   itemsUnpaid={this.state.itemsUnpaid}
                                    showAll={this.state.showAll} />
           </Col>
         </Row>
@@ -112,9 +170,10 @@ class Reservations extends Component {
           <Col md={10} sm={6} className="mx-auto p-0">
             <ReservationsTable items={this.state.itemList}
                                showAll={this.state.showAll}
+                               itemsUnpaid={this.state.itemsUnpaid}
                                filterDate={this.state.filterDate} 
-                               onEditButtonClick={this.handleEditButtonClick} 
-                               onDeleteButtonClick={this.handleDeleteButtonClick} />
+                               onEditButtonClick={this.editItem} 
+                               onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
         {this.state.modal ? (

@@ -14,16 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework import routers
 from myapp import views
 
 router = routers.DefaultRouter()
 router.register(r'umbrellas', views.UmbrellaView, 'umbrella')
-router.register(r'subscriptions', views.SubscriptionView, 'subscription')
-router.register(r'reservations', views.ReservationView, 'reservation')
+# router.register(r'subscriptions', views.SubscriptionView, 'subscription')
+router.register(r'constants', views.ConstantView, 'constant')
+# router.register(r'reservations', views.ReservationView, 'reservation')
+# router.register(r'^reservations/$', views.ReservationList.as_view(), 'reservation-list')
+# router.register(r'^reservations/(?P<pk>[0-9]+)$', views.ReservationDetail.as_view(), 'reservation-detail')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    # re_path('^reservation/(?P<date>.+)/$', views.ReservationFilterDateView.as_view()),
+    re_path(r'api/reservations/$', views.ReservationList.as_view(), name='reservation-list'),
+    re_path(r'api/reservations/(?P<pk>[0-9]+)/$', views.ReservationDetail.as_view(), name='reservation-detail'),
+    re_path(r'api/subscriptions/$', views.SubscriptionList.as_view(), name='subscription-list'),
+    re_path(r'api/subscriptions/(?P<pk>[0-9]+)/$', views.SubscriptionDetail.as_view(), name='subscription-detail'),
+    # re_path(r'api/umbrella-list/$', views.CustomUmbrellaList, name='umbrella-list'),
 ]

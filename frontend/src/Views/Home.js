@@ -12,6 +12,7 @@ import UmbrellaLogo from "../images/UmbrellaLogo";
 import ReservationsModal from '../components/ReservationsModal';
 import { FaPrint } from "react-icons/fa";
 import ReactToPrint from 'react-to-print';
+import axios from "axios";
 
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
@@ -47,20 +48,29 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      umbrellaList: fakerUmbrellas(),
+      umbrellaList: [],
       splitRow: 14,
       freeBeachLoungers: faker.finance.creditCardCVV(),
       filterDate: new Date(),
       showBeachLoungers: false,
       modal: false,
-      activeItem: {
-        id: 0,
-        position: "",
-        beach_loungers: "",
-        paid: null
-      },
     };
   }
+
+  componentDidMount() {
+    this.refreshList();
+  }
+
+  refreshList = () => {
+
+    let tmp = this.state.filterDate.toISOString();
+    const filterDate = tmp.substring(0, tmp.indexOf('T'));
+
+    axios
+      .get("/api/reservations?date=" + filterDate)
+      .then((res) => this.setState({ umbrellaList: res.data }))
+      .catch((err) => console.log(err));
+  };
 
   toggle = () => {
     this.setState({ modal: !this.state.modal });
@@ -75,11 +85,12 @@ class Home extends Component {
   };
 
   createItem = () => {
-    const item = { id: "", 
-                   position: "", 
-                   customerName: "",
-                   beach_loungers: 1,
-                   date: new Date(this.state.filterDate), 
+    let tmp = this.state.filterDate.toISOString();
+    const newDate = tmp.substring(0, tmp.indexOf('T'));
+    const item = { umbrella: "", 
+                   customer: "",
+                   beachLoungers: 1,
+                   date: newDate, 
                    paid: false };
 
     this.setState({ 
@@ -89,20 +100,21 @@ class Home extends Component {
     });
   };
 
-  handleFilterDateChange = (e) => {
-
-    const date = new Date(e);
-    const umbrellaList = fakerUmbrellas();
-
-    this.setState({
-      filterDate: date,
-      umbrellaList: umbrellaList
-    });
-  };
-
   editItem = (item) => {
     this.setState({ activeItem: item, modal: !this.state.modal });
   };
+
+  handleFilterDateChange = (e) => {
+
+    const date = new Date(e);
+
+    this.setState({
+      filterDate: date,
+    });
+
+    setTimeout(() => { this.refreshList() }, 50);
+  };
+
 
   renderFloatingActionButton = () => {
     return (
@@ -162,7 +174,6 @@ class Home extends Component {
                            reservedUmbrella={reservedUmbrella}
                            freeBeachLoungers={this.state.freeBeachLoungers} />
           </Col>
-            {/* <h1 className="text-black text-left my-4">30 Aprile 2021</h1> */}
         </Row>
         <Row>
           <Col md={12} sm={12} className="px-0">

@@ -11,20 +11,19 @@ class DataRows extends React.Component {
             <span style={{color: 'red'}}>Da pagare</span>
         );
     
-        const date = item.date.getDate() + "-" + (item.date.getMonth() + 1) + "-" + item.date.getFullYear()
+        const date = item.date;
 
         return (
             <tr>
-                <th scope="row">{item.id}</th>
-                <td>{item.position}</td>
-                <td>{item.customerName}</td>
-                <td>{item.beach_loungers}</td>
+                <th scope="row">{item.umbrella}</th>
+                <td>{item.customer ? item.customer : "-"}</td>
+                <td>{item.beachLoungers}</td>
                 <td>{state}</td>
                 <td>{date}</td>
                 <td>
-                    {/* <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
+                    <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
                         Modifica
-                    </Button> */}
+                    </Button>
                     <Button className="btn btn-danger" size="sm" onClick={() => this.props.deleteItem(item)}>
                         Rimuovi
                     </Button>
@@ -59,17 +58,22 @@ class ReservationsTable extends React.Component {
 
     const filterDate = this.props.filterDate;
     const showAll = this.props.showAll;
+    const itemsUnpaid = this.props.itemsUnpaid;
 
     const rows = [];
 
     this.props.items.forEach(item => {
 
       /* filtro solo per la data selezionata */
-      if (!showAll) {
+      // if (!showAll) {
 
-        if (filterDate && (filterDate.toDateString() != item.date.toDateString())) {
-          return;
-        }
+      //   if (filterDate && (filterDate.toDateString() != item.date.toDateString())) {
+      //     return;
+      //   }
+      // }
+
+      if ((item.paid == null) || (itemsUnpaid && item.paid)) {
+        return;
       }
 
       rows.push(
@@ -84,9 +88,8 @@ class ReservationsTable extends React.Component {
 
     return (
       <Table responsive>
-        <thead>
+        <thead align="center">
           <tr>
-            <th>#</th>
             <th>Ombrellone</th>
             <th>Instestatario</th>
             <th>Lettini</th>
@@ -95,7 +98,7 @@ class ReservationsTable extends React.Component {
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody align="center">
           {rows}
         </tbody>
       </Table>

@@ -69,12 +69,6 @@ class Subscriptions extends Component {
       .then((res) => this.refreshList());
   };
 
-  handleDeleteButtonClick = (item) => {
-    axios
-      .delete(`/api/subscriptions/${item.id}/`)
-      .then((res) => this.refreshList());
-  };
-
   createItem = () => {
     const item = createEmptyItem();
 
@@ -91,6 +85,12 @@ class Subscriptions extends Component {
       modal: !this.state.modal, 
       modal_title: "Modifica abbonamento" 
     });
+  };
+
+  deleteItem = (item) => {
+    axios
+      .delete(`/api/subscriptions/${item.id}/`)
+      .then((res) => this.refreshList());
   };
 
   toggle = () => {
@@ -132,7 +132,7 @@ class Subscriptions extends Component {
                                 itemsPaid={this.state.itemsPaid}
                                 searchText={this.state.searchText} 
                                 onEditButtonClick={this.editItem} 
-                                onDeleteButtonClick={this.handleDeleteButtonClick} />
+                                onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
         {this.state.modal ? (

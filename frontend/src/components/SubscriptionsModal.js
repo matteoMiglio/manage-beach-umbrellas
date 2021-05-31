@@ -79,10 +79,14 @@ export default class SubscriptionsModal extends Component {
       value = Array.from(e.target.selectedOptions, option => option.value);
     }
 
+    if (e.target.type === "checkbox") {
+      value = e.target.checked;
+    }
+
     const activeItem = { ...this.state.activeItem, [name]: value };
 
-    // console.log("Item updated:")
-    // console.log(activeItem);
+    console.log("Item updated:")
+    console.log(activeItem);
     this.setState({ activeItem });
   };
 
@@ -210,7 +214,7 @@ export default class SubscriptionsModal extends Component {
                              onChange={this.handleChange} />
               </div>
             </FormGroup>
-            {this.state.activeItem.subscriptionType === "periodic" ? (
+            {this.state.activeItem.subscriptionType === "P" ? (
               <Row form>
                 <Col md={6}>
                   <FormGroup>
@@ -242,7 +246,7 @@ export default class SubscriptionsModal extends Component {
               //   </Col>
               // </FormGroup>
             ) : null}
-            {this.state.activeItem.subscriptionType === "custom" ? (
+            {this.state.activeItem.subscriptionType === "C" ? (
               <Row form>
                 {/* <Col sm={12}>
                   <FormGroup row>

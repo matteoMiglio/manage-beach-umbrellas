@@ -77,7 +77,7 @@ class CardUmbrella extends React.Component {
     return (
       <td className="p-0">
           <Card className={this.props.className}>
-            <CardTitle tag="h5" className="mb-2">{item.id}</CardTitle>
+            <CardTitle tag="h5" className="mb-2">{item.umbrella}</CardTitle>
             <div>
               <UmbrellaLogo color={color} width={40} />
             </div>

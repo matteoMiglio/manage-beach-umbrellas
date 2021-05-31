@@ -1,7 +1,9 @@
 import React, { Component, ForwardedRef } from "react";
 import { Form, Button, Label, Input, FormGroup } from 'reactstrap';
-import DatePicker from "react-datepicker";
+import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import it from 'date-fns/locale/it';
+registerLocale('it', it);
 
 class ReservationsSearchBar extends React.Component {
 
@@ -10,17 +12,20 @@ class ReservationsSearchBar extends React.Component {
     this.handleFilterDateChange = this.handleFilterDateChange.bind(
         this
     );
+    this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
+      this
+    );
     this.handleShowAllChange = this.handleShowAllChange.bind(
       this
     );
   }
 
-  // handleFilterDateChange(e) {
-  //   this.props.onFilterDateChange(e.target.value);
-  // }
-
   handleFilterDateChange(date) {
     this.props.onFilterDateChange(date);
+  }
+
+  handleShowUnpaidChange(e) {
+    this.props.onUnpaidItemsChange(e.target.checked);
   }
 
   handleShowAllChange(e) {
@@ -41,20 +46,6 @@ class ReservationsSearchBar extends React.Component {
   }
 
   render() {
-    const months = [
-      "Gennaio",
-      "Febbraio",
-      "Marzo",
-      "Aprile",
-      "Maggio",
-      "Giugno",
-      "Luglio",
-      "Agosto",
-      "Settembre",
-      "Ottobre",
-      "Novembre",
-      "Dicembre"
-    ];
     const CustomInputDatePicker = React.forwardRef(
       ({ value, onClick }, ref) => (
         <Button color="info" onClick={onClick} ref={ref}>
@@ -66,26 +57,27 @@ class ReservationsSearchBar extends React.Component {
     //const filterDate = this.getDateString(this.props.filterDate);
     const filterDate = this.props.filterDate;
     const showAll = this.props.showAll;
+    const itemsUnpaid = this.props.itemsUnpaid;
 
     return (
       <Form inline>
-        {/* <FormGroup className="mb-2 mx-sm-2 mb-sm-0">
-          <Label className="mr-sm-2">Ricerca Data</Label>
-          <Input type="date" name="date"
-                 value={filterDate} onChange={this.handleFilterDateChange} />
-        </FormGroup> */}
         <DatePicker
           todayButton="Oggi"
-          locale="it-IT"
+          locale="it"
           selected={filterDate}
           onChange={(date) => this.handleFilterDateChange(date)}
           customInput={<CustomInputDatePicker />}
         />
-        <FormGroup className="mb-2 mx-sm-2 mb-sm-0" check>
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0" check>
+          <Label for="exampleCheck" check>Mostra prenotazioni da pagare</Label>
+          <Input type="checkbox" name="check" id="exampleCheck" 
+                 checked={itemsUnpaid} onChange={this.handleShowUnpaidChange} />
+        </FormGroup>
+        {/* <FormGroup className="mb-2 mx-sm-2 mb-sm-0" check>
           <Input type="checkbox" name="check" id="exampleCheck" 
                  checked={showAll} onChange={this.handleShowAllChange} />
           <Label for="exampleCheck" check>Mostra tutte</Label>
-        </FormGroup>
+        </FormGroup> */}
       </Form>
     );
   }
