@@ -66,7 +66,8 @@ class Subscriptions extends Component {
 
     axios
       .post("/api/subscriptions/", item)
-      .then((res) => this.refreshList());
+      .then((res) => this.refreshList())
+      .catch((err) => console.log(err));
   };
 
   createItem = () => {
@@ -88,6 +89,7 @@ class Subscriptions extends Component {
   };
 
   deleteItem = (item) => {
+
     axios
       .delete(`/api/subscriptions/${item.id}/`)
       .then((res) => this.refreshList());

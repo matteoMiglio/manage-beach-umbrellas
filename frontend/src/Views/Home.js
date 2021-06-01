@@ -79,9 +79,16 @@ class Home extends Component {
   handleSubmit = (item) => {
     this.toggle();
 
-    const updateItem = item;
+    if (item.id) {
+      axios
+        .put(`/api/reservations/${item.id}/`, item)
+        .then((res) => this.refreshList());
+      return;
+    }
 
-    alert("save: " + JSON.stringify(item));
+    axios
+      .post("/api/reservations/", item)
+      .then((res) => this.refreshList());
   };
 
   createItem = () => {
@@ -114,7 +121,6 @@ class Home extends Component {
 
     setTimeout(() => { this.refreshList() }, 50);
   };
-
 
   renderFloatingActionButton = () => {
     return (
