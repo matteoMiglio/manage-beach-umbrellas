@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='subscription',
-            name='subscriptionType',
+            name='type',
             field=models.CharField(choices=[('S', 'seasonal'), ('P', 'periodic'), ('C', 'custom')], default='S', max_length=1),
         ),
         migrations.AlterField(

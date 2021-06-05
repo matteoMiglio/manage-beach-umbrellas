@@ -9,15 +9,19 @@ class ReservationsSearchBar extends React.Component {
 
   constructor(props) {
     super(props);
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(
+      this
+    );
     this.handleFilterDateChange = this.handleFilterDateChange.bind(
         this
     );
     this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
       this
     );
-    this.handleShowAllChange = this.handleShowAllChange.bind(
-      this
-    );
+  }
+
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
   }
 
   handleFilterDateChange(date) {
@@ -26,10 +30,6 @@ class ReservationsSearchBar extends React.Component {
 
   handleShowUnpaidChange(e) {
     this.props.onUnpaidItemsChange(e.target.checked);
-  }
-
-  handleShowAllChange(e) {
-    this.props.onShowAllChange(e.target.checked);
   }
 
   getDateString(date) {
@@ -56,7 +56,7 @@ class ReservationsSearchBar extends React.Component {
 
     //const filterDate = this.getDateString(this.props.filterDate);
     const filterDate = this.props.filterDate;
-    const showAll = this.props.showAll;
+    const searchText = this.props.searchText;
     const itemsUnpaid = this.props.itemsUnpaid;
 
     return (
@@ -68,6 +68,10 @@ class ReservationsSearchBar extends React.Component {
           onChange={(date) => this.handleFilterDateChange(date)}
           customInput={<CustomInputDatePicker />}
         />
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          <Input type="text" name="searchText" id="searchText" placeholder="Ricerca cliente"
+                 value={searchText} onChange={this.handleFilterTextChange} />
+        </FormGroup>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0" check>
           <Label for="exampleCheck" check>Mostra prenotazioni da pagare</Label>
           <Input type="checkbox" name="check" id="exampleCheck" 

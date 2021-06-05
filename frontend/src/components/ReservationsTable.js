@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
+import BeachLoungerLogo from "../images/BeachLoungerLogo";
+import UmbrellaLogo from "../images/UmbrellaLogo";
 
 class DataRows extends React.Component {
 
@@ -15,11 +17,12 @@ class DataRows extends React.Component {
 
         return (
             <tr>
-                <th scope="row">{item.umbrella}</th>
-                <td>{item.customer ? item.customer : "-"}</td>
+                <th scope="row">{item.umbrella ? "#" + item.umbrella : "-"}</th>
                 <td>{item.beachLoungers}</td>
+                <td>{item.customer ? item.customer : "-"}</td>
                 <td>{state}</td>
                 <td>{date}</td>
+                <td>{item.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />}</td>
                 <td>
                     <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
                         Modifica
@@ -57,20 +60,21 @@ class ReservationsTable extends React.Component {
   render() {
 
     const filterDate = this.props.filterDate;
-    const showAll = this.props.showAll;
+    const searchText = this.props.searchText;
     const itemsUnpaid = this.props.itemsUnpaid;
 
     const rows = [];
 
     this.props.items.forEach(item => {
 
-      /* filtro solo per la data selezionata */
-      // if (!showAll) {
+      let founded = false
 
-      //   if (filterDate && (filterDate.toDateString() != item.date.toDateString())) {
-      //     return;
-      //   }
-      // }
+      if (item.customer.toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
+        founded = true
+      }
+
+      if (!founded)
+        return;
 
       if ((item.paid == null) || (itemsUnpaid && item.paid)) {
         return;
@@ -91,10 +95,11 @@ class ReservationsTable extends React.Component {
         <thead align="center">
           <tr>
             <th>Ombrellone</th>
-            <th>Instestatario</th>
             <th>Lettini</th>
+            <th>Instestatario</th>
             <th>Stato</th>
             <th>Data</th>
+            <th>Tipo</th>
             <th>Action</th>
           </tr>
         </thead>

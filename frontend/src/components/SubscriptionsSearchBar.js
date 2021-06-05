@@ -28,8 +28,8 @@ class SubscriptionsSearchBar extends React.Component {
     return (
       <Form inline>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-          <Label for="exampleEmail" className="mr-sm-2">Ricerca</Label>
-          <Input type="text" name="email" id="exampleEmail" 
+          <Label for="searchText" className="mr-sm-2">Ricerca</Label>
+          <Input type="text" name="searchText" id="searchText" 
                  value={searchText} onChange={this.handleFilterTextChange} />
         </FormGroup>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0" check>

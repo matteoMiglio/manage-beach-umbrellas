@@ -50,7 +50,7 @@ class Home extends Component {
     this.state = {
       umbrellaList: [],
       splitRow: 14,
-      freeBeachLoungers: faker.finance.creditCardCVV(),
+      freeBeachLoungers: null,
       filterDate: new Date(),
       showBeachLoungers: false,
       modal: false,
@@ -70,26 +70,51 @@ class Home extends Component {
       .get("/api/reservations?date=" + filterDate)
       .then((res) => this.setState({ umbrellaList: res.data }))
       .catch((err) => console.log(err));
+
+    axios
+      .get("api/beach-loungers-count/?date=" + filterDate)
+      .then((res) => this.setState({ freeBeachLoungers: res.data }))
+      .catch((err) => console.log(err));
   };
 
   toggle = () => {
     this.setState({ modal: !this.state.modal });
   };
 
-  handleSubmit = (item) => {
+  handleSubmit = (item, method) => {
     this.toggle();
 
-    if (item.id) {
+    if (method.includes("save")) {
+
+      if (item.umbrella === "" || item.umbrella === "-") {
+        item.umbrella = null;
+      }
+  
+      if (item.id) {
+        axios
+          .put(`/api/reservations/${item.id}/`, item)
+          .then((res) => this.refreshList());
+        return;
+      }
+
       axios
-        .put(`/api/reservations/${item.id}/`, item)
+        .post("/api/reservations/", item)
         .then((res) => this.refreshList());
-      return;
     }
 
-    axios
-      .post("/api/reservations/", item)
-      .then((res) => this.refreshList());
+    if (method.includes("print")) {
+      const obj = {
+        type: "reservation",
+        beachLoungers: item.beachLoungers,
+        umbrella: item.umbrella
+      }
+  
+      axios
+        .post("/api/print-ticket/", obj)
+        .then((res) => console.log(res.data));
+    }
   };
+
 
   createItem = () => {
     let tmp = this.state.filterDate.toISOString();
@@ -138,7 +163,7 @@ class Home extends Component {
         </Action>
         <Action text="Prenota un lettino" 
                 style={actionButtonStyles}
-                onClick={() => alert('Prenota un lettino')}>            
+                onClick={() => this.createItem()}>            
           <BeachLoungerLogo width={25} color="white" />
         </Action>
         <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
@@ -162,11 +187,15 @@ class Home extends Component {
   };
 
   render() {
+
     let i = 0;
-    this.state.umbrellaList.forEach((item) => 
-      item.paid != null ? i++ : null
-    );
+    let j = 0;
+    this.state.umbrellaList.forEach((item) => {
+      item.umbrella != null ? j++ : j=j+0;
+      (item.umbrella != null && item.paid != null) ? i++ : i=i+0;
+    });
     const reservedUmbrella = i;
+    const totalUmbrella = j;
 
     return (
       <Container fluid className="pt-5">
@@ -176,7 +205,7 @@ class Home extends Component {
                            onFilterDateChange={this.handleFilterDateChange} />
           </Col>
           <Col sm={12} md={8}>
-            <HomeRightPane totalUmbrella={this.state.umbrellaList.length}
+            <HomeRightPane totalUmbrella={totalUmbrella}
                            reservedUmbrella={reservedUmbrella}
                            freeBeachLoungers={this.state.freeBeachLoungers} />
           </Col>
@@ -199,7 +228,7 @@ class Home extends Component {
           <ReservationsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
-            onSave={this.handleSubmit}
+            onSave={(item, method) => this.handleSubmit(item, method)}
             modal_title={this.state.modal_title}
           />
         ) : null}

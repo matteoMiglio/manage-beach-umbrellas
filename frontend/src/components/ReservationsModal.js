@@ -96,12 +96,11 @@ export default class ReservationsModal extends Component {
   }
 
   render() {
-    const { toggle, onSave } = this.props;
     const title = this.props.modal_title;
 
     return (
-      <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}>{title}</ModalHeader>
+      <Modal isOpen={true} toggle={this.props.toggle}>
+        <ModalHeader toggle={this.props.toggle}>{title}</ModalHeader>
         <ModalBody>
           <Form>
             { this.state.activeItem.id ? (
@@ -155,7 +154,16 @@ export default class ReservationsModal extends Component {
           </Form>
         </ModalBody>   
         <ModalFooter>
-          <Button color="success" onClick={() => onSave(this.state.activeItem)}>
+          { this.state.activeItem.id ? (
+            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "print")}>
+              {"Stampa ticket"}
+            </Button>
+          ) : (
+            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "save-print")}>
+              { "Crea e stampa ticket" }
+            </Button>)
+          }
+          <Button color="success" onClick={() => this.props.onSave(this.state.activeItem, "save")}>
             { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
         </ModalFooter>

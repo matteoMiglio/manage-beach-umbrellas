@@ -4,6 +4,18 @@ import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
 import { Button, Container, Row, Col } from 'reactstrap';
 import axios from "axios";
+import { Fab, Action } from 'react-tiny-fab';
+import 'react-tiny-fab/dist/styles.css';
+import { GrFormAdd } from "react-icons/gr";
+
+const mainButtonStyles = {
+  backgroundColor: '#ab50e4',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+}
+
+const actionButtonStyles = {
+  backgroundColor: '#ab50e4'
+}
 
 const createEmptyItem = () => {
   const item = {
@@ -13,7 +25,7 @@ const createEmptyItem = () => {
     beachLoungers: 1,
     startDate: "",
     endDate: "",
-    subscriptionType: "",
+    type: "",
     paid: false,
     // freePeriodList: [],
     // customDays: [],
@@ -46,28 +58,102 @@ class Subscriptions extends Component {
       .catch((err) => console.log(err));
   };
 
-  handleSubmit = (item) => {
+  handleSubmit = (item, method) => {
     this.toggle();
 
-    if (item.subscriptionType === "S") {
-      item.startDate = "2021-05-15";
-      item.endDate = "2021-09-15";
-    }
+    if (method.includes("save")) {
+      if (item.umbrella === "" || item.umbrella === "-") {
+        item.umbrella = null;
+      }
 
-    if (item.paid === "on")
-      item.paid = true;
+      if (item.type === "S") {
+        item.startDate = "2021-05-15";
+        item.endDate = "2021-09-30";
+      }
 
-    if (item.id) {
+      if (item.paid === "on")
+        item.paid = true;
+
+      if (item.id) {
+        axios
+          .put(`/api/subscriptions/${item.id}/`, item)
+          .then((res) => {
+            this.refreshList();
+
+            if (method.includes("print")) {
+              const obj = {
+                type: "subscription",
+                beachLoungers: item.beachLoungers,
+                umbrella: item.umbrella,
+                code: item.code,
+                startDate: item.startDate,
+                endDate: item.endDate
+              }
+          
+              axios
+                .post("/api/print-ticket/", obj)
+                .then((res) => console.log(res.data));
+            }
+          });
+        return;
+      }
+
       axios
-        .put(`/api/subscriptions/${item.id}/`, item)
-        .then((res) => this.refreshList());
-      return;
+        .post("/api/subscriptions/", item)
+        .then((res) => {
+          this.refreshList();
+          
+          if (method.includes("print")) {
+            const obj = {
+              type: "subscription",
+              beachLoungers: item.beachLoungers,
+              umbrella: item.umbrella,
+              code: res.data.code,
+              startDate: item.startDate,
+              endDate: item.endDate
+            }
+        
+            axios
+              .post("/api/print-ticket/", obj)
+              .then((res) => console.log(res.data));
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      if (method.includes("print")) {
+        const obj = {
+          type: "subscription",
+          beachLoungers: item.beachLoungers,
+          umbrella: item.umbrella,
+          code: item.code,
+          startDate: item.startDate,
+          endDate: item.endDate
+        }
+    
+        axios
+          .post("/api/print-ticket/", obj)
+          .then((res) => console.log(res.data));
+      }
     }
 
-    axios
-      .post("/api/subscriptions/", item)
-      .then((res) => this.refreshList())
-      .catch((err) => console.log(err));
+    // console.log("item\n" + item.code)
+    // console.log("tmp \n" + code)
+    // return
+
+    // if (method.includes("print")) {
+    //   const obj = {
+    //     type: "subscription",
+    //     beachLoungers: item.beachLoungers,
+    //     umbrella: item.umbrella,
+    //     // code: item.code,
+    //     startDate: item.startDate,
+    //     endDate: item.endDate
+    //   }
+  
+    //   axios
+    //     .post("/api/print-ticket/", obj)
+    //     .then((res) => console.log(res.data));
+    // }
   };
 
   createItem = () => {
@@ -113,15 +199,25 @@ class Subscriptions extends Component {
     });
   }
 
+  renderFloatingActionButton = () => {
+    return (
+      <Fab
+        mainButtonStyles={mainButtonStyles}
+        // actionButtonStyles={actionButtonStyles}
+        icon={<GrFormAdd />}
+        event="click"
+        onClick={() => this.createItem()}
+        alwaysShowTitle={false}
+      />
+    );
+  };
+
   render() {
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Abbonamenti</h1>
         <Row>
-          <Col sm={{ size: 2, offset: 1 }} className='mb-3'>
-            <Button color="primary" onClick={this.createItem}>Crea nuovo</Button>
-          </Col>
-          <Col sm={9}>
+          <Col sm={{ size: 11, offset: 1}} className='mb-3'>
             <SubscriptionsSearchBar onFilterTextChange={this.handleFilterTextChange}
                                     onPaidItemsChange={this.handleShowPaidChange} 
                                     itemsPaid={this.state.itemsPaid}
@@ -137,11 +233,12 @@ class Subscriptions extends Component {
                                 onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
+        {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <SubscriptionsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
-            onSave={this.handleSubmit}
+            onSave={(item, method) => this.handleSubmit(item, method)}
             modal_title={this.state.modal_title}
           />
         ) : null}

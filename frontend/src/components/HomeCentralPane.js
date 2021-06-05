@@ -117,6 +117,9 @@ class HomeCentralPane extends React.Component {
 
     items.slice(0, items.length).forEach((el, index) => {
 
+      if (el.umbrella == null)
+        return;
+        
       if (index == 7) {
         row.push( 
           <td key={index+el.id} width="25px"></td>

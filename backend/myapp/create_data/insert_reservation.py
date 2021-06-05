@@ -19,7 +19,7 @@ def main():
                     'umbrella': i, 
                     'paid': "null", 
                     'subscription': None, 
-                    'beachLoungers': '1'
+                    'beachLoungers': 1
             }
 
             x = requests.post(url, data = myobj)

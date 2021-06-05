@@ -4,49 +4,18 @@ import ReservationsTable from '../components/ReservationsTable';
 import ReservationsModal from '../components/ReservationsModal';
 import ReservationsSearchBar from '../components/ReservationsSearchBar';
 import axios from "axios";
+import { Fab, Action } from 'react-tiny-fab';
+import 'react-tiny-fab/dist/styles.css';
+import { GrFormAdd } from "react-icons/gr";
 
-const items = [
-  {
-    id: 1001,
-    position: "A1",
-    customerName: "Luca",
-    beach_loungers: "1",
-    date: new Date(2021, 4, 1),
-    paid: true,
-  },
-  {
-    id: 1002,
-    position: "A2",
-    customerName: "-",
-    beach_loungers: "2",
-    date: new Date(2021, 4, 4),
-    paid: true,
-  },
-  {
-    id: 1003,
-    position: "B1",
-    customerName: "Luigi",
-    beach_loungers: "3",
-    date: new Date(2021, 4, 3),
-    paid: false,
-  },
-  {
-    id: 1004,
-    position: "B2",
-    customerName: "Gianni",
-    beach_loungers: "3",
-    date: new Date(2021, 4, 2),
-    paid: false
-  },
-  {
-    id: 1005,
-    position: "-",
-    customerName: "Gianni",
-    beach_loungers: "2",
-    date: new Date(2021, 4, 2),
-    paid: true,
-  }
-];
+const mainButtonStyles = {
+  backgroundColor: '#ab50e4',
+  boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
+}
+
+const actionButtonStyles = {
+  backgroundColor: '#ab50e4'
+}
 
 class Reservations extends Component {
   constructor(props) {
@@ -55,7 +24,7 @@ class Reservations extends Component {
       itemList: [],
       modal: false,
       filterDate: new Date(),
-      showAll: false,
+      searchText: '',
       itemsUnpaid: false
     };
   }
@@ -75,19 +44,38 @@ class Reservations extends Component {
       .catch((err) => console.log(err));
   };
 
-  handleSubmit = (item) => {
+  handleSubmit = (item, method) => {
     this.toggle();
 
-    if (item.id) {
+    if (method.includes("save")) {
+
+      if (item.umbrella === "" || item.umbrella === "-") {
+        item.umbrella = null;
+      }
+  
+      if (item.id) {
+        axios
+          .put(`/api/reservations/${item.id}/`, item)
+          .then((res) => this.refreshList());
+        return;
+      }
+
       axios
-        .put(`/api/reservations/${item.id}/`, item)
+        .post("/api/reservations/", item)
         .then((res) => this.refreshList());
-      return;
     }
 
-    axios
-      .post("/api/reservations/", item)
-      .then((res) => this.refreshList());
+    if (method.includes("print")) {
+      const obj = {
+        type: "reservation",
+        beachLoungers: item.beachLoungers,
+        umbrella: item.umbrella
+      }
+  
+      axios
+        .post("/api/print-ticket/", obj)
+        .then((res) => console.log(res.data));
+    }
   };
 
   toggle = () => {
@@ -135,6 +123,12 @@ class Reservations extends Component {
     setTimeout(() => { this.refreshList() }, 50);
   }
 
+  handleFilterTextChange = (text) => {
+    this.setState({
+      searchText: text,
+    });
+  }
+
   handleShowUnpaidChange = (paid) => {
 
     this.setState({
@@ -142,24 +136,27 @@ class Reservations extends Component {
     });
   }
 
-  handleShowAllChange = (e) => {
-
-    this.setState({
-      showAll: e,
-    });
-  }
+  renderFloatingActionButton = () => {
+    return (
+      <Fab
+        mainButtonStyles={mainButtonStyles}
+        // actionButtonStyles={actionButtonStyles}
+        icon={<GrFormAdd />}
+        event="click"
+        onClick={() => this.createItem()}
+        alwaysShowTitle={false}
+      />
+    );
+  };
 
   render() {
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Prenotazioni</h1>
         <Row>
-          <Col sm={{ size: 3, offset: 1 }} className='mb-3'>
-            <Button color="primary" onClick={() => this.createItem()}>Nuova prenotazione</Button>
-          </Col>
-          <Col sm={8}>
+          <Col sm={{ size: 11, offset: 1}} className='mb-3'>
             <ReservationsSearchBar onFilterDateChange={this.handleFilterDateChange}
-                                   onShowAllChange={this.handleShowAllChange}
+                                   onFilterTextChange={this.handleFilterTextChange}
                                    onUnpaidItemsChange={this.handleShowUnpaidChange} 
                                    filterDate={this.state.filterDate}
                                    itemsUnpaid={this.state.itemsUnpaid}
@@ -169,18 +166,19 @@ class Reservations extends Component {
         <Row>
           <Col md={10} sm={6} className="mx-auto p-0">
             <ReservationsTable items={this.state.itemList}
-                               showAll={this.state.showAll}
+                               searchText={this.state.searchText} 
                                itemsUnpaid={this.state.itemsUnpaid}
                                filterDate={this.state.filterDate} 
                                onEditButtonClick={this.editItem} 
                                onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
+        {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <ReservationsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
-            onSave={this.handleSubmit}
+            onSave={(item, method) => this.handleSubmit(item, method)}
             modal_title={this.state.modal_title}
           />
         ) : null}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
-import { FaCheckCircle, FaMinusCircle } from "react-icons/fa";
+import BeachLoungerLogo from "../images/BeachLoungerLogo";
+import UmbrellaLogo from "../images/UmbrellaLogo";
 
 class DataRows extends React.Component {
 
@@ -18,38 +19,38 @@ class DataRows extends React.Component {
   }
 
   render() {
+    var type = null;
     const item = this.props.item;
-    var subscriptionsType = null;
     const state = item.paid ? (
         "Pagato"
     ) : (
         <span style={{color: 'red'}}>Da pagare</span>
     );
 
-    switch (item.subscriptionType) {
+    switch (item.type) {
       case "S": 
-        subscriptionsType = "Stagionale";
+        type = "Stagionale";
         break;
       case "P":
-        subscriptionsType = "Periodo";
+        type = "Periodo";
         break;
       case "C":
-        subscriptionsType = "Personalizzato";
+        type = "Personalizzato";
         break;
       default:
-        subscriptionsType = "-";
+        type = "-";
     }
 
     return (
       <tr>
         <th scope="row">{item.code}</th>
-        <td>{item.umbrella}</td>
+        <td>{item.umbrella ? "#" + item.umbrella : "-"}</td>
         <td>{item.customer}</td>
         <td>{item.beachLoungers}</td>
         <td>{state}</td>
-        <td>{subscriptionsType}</td>
-        {/* <td>{this.getDateString(item.startDate)} {"->"} {this.getDateString(item.endDate)}</td> */}
+        <td>{type}</td>
         <td>{item.startDate} {"->"} {item.endDate}</td>
+        <td>{item.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />}</td>
         {/* <td align="center">{item.freePeriodList.length > 0 ? <FaCheckCircle /> : <FaMinusCircle />}</td> */}
         <td>
           <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
@@ -132,6 +133,7 @@ class SubscriptionsTable extends React.Component {
             <th>Stato</th>
             <th>Tipo</th>
             <th>Validità</th>
+            <th>Oggetto</th>
             {/* <th>Periodi liberi</th> */}
             <th>Action</th>
           </tr>

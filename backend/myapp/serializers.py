@@ -16,7 +16,7 @@ class UmbrellaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Umbrella
-        fields = ('id', 'code', 'description', 'row')
+        fields = ('id', 'description', 'row')
 
 class ReservationSerializer(serializers.ModelSerializer):
     # umbrella = UmbrellaSerializer(many=False)
@@ -30,4 +30,4 @@ class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = ('id', 'code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'subscriptionType')
+        fields = ('id', 'code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type')

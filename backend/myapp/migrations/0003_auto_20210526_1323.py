@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(max_length=5)),
                 ('customer', models.TextField()),
                 ('beachLoungers', models.SmallIntegerField()),
-                ('subscriptionType', models.CharField(choices=[('S', 'seasonal'), ('P', 'periodic'), ('C', 'custom')], max_length=1)),
+                ('type', models.CharField(choices=[('S', 'seasonal'), ('P', 'periodic'), ('C', 'custom')], max_length=1)),
                 ('startDate', models.DateField()),
                 ('endDate', models.DateField()),
                 ('paid', models.BooleanField()),

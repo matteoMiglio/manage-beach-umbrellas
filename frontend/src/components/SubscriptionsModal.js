@@ -13,7 +13,6 @@ import {
   Col,
   CustomInput
 } from "reactstrap";
-import faker from 'faker';
 import axios from "axios";
 import FormFreePeriod from "./FormFreePeriod";
 import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
@@ -53,15 +52,6 @@ export default class SubscriptionsModal extends Component {
     }
     else
       return null
-  }
-
-  createNewCode = () => {
-    var newCode = 1000 + faker.datatype.number(100)
-
-    const activeItem = { ...this.state.activeItem, code: newCode };
-    this.setState({ activeItem });
-
-    return newCode;
   }
 
   handleChange = (e) => {
@@ -127,8 +117,8 @@ export default class SubscriptionsModal extends Component {
     const list = this.state.umbrellaList
 
     return list.map((item, index) => (
-      <option key={index} selected={item.code == this.state.activeItem.umbrella}>
-        {item.code}
+      <option key={index} selected={item.id == this.state.activeItem.umbrella}>
+        {item.id}
       </option>
     ));
   }
@@ -151,17 +141,17 @@ export default class SubscriptionsModal extends Component {
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
-    const subscriptionCode = this.state.activeItem.code ? this.state.activeItem.code : this.createNewCode()
-
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>{title}</ModalHeader>
         <ModalBody>
           <Form>
-            <FormGroup row>
-              <Label sm={6}>Codice Abbonamento</Label>
-              <Label sm={6}>{subscriptionCode}</Label>
-            </FormGroup> 
+            {this.state.activeItem.code ? (
+              <FormGroup row>
+                <Label sm={6}>Codice Abbonamento</Label>
+                <Label sm={6}>{this.state.activeItem.code}</Label>
+              </FormGroup>
+            ) : null }
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
@@ -203,18 +193,18 @@ export default class SubscriptionsModal extends Component {
             <FormGroup>
               <Label for="subcriptionType">Tipo abbonamento</Label>
               <div>
-                <CustomInput type="radio" id="type_seasonal" name="subscriptionType" label="Stagionale" 
-                             value="S" defaultChecked={this.state.activeItem.subscriptionType === "S"} 
+                <CustomInput type="radio" id="type_seasonal" name="type" label="Stagionale" 
+                             value="S" defaultChecked={this.state.activeItem.type === "S"} 
                              onChange={this.handleChange} />
-                <CustomInput type="radio" id="type_periodic" name="subscriptionType" label="Periodo" 
-                             value="P" defaultChecked={this.state.activeItem.subscriptionType === "P"} 
+                <CustomInput type="radio" id="type_periodic" name="type" label="Periodo" 
+                             value="P" defaultChecked={this.state.activeItem.type === "P"} 
                              onChange={this.handleChange} />
-                <CustomInput type="radio" id="type_custom" name="subscriptionType" label="Personalizzato" 
-                             value="C" defaultChecked={this.state.activeItem.subscriptionType === "C"} 
+                <CustomInput type="radio" id="type_custom" name="type" label="Personalizzato" 
+                             value="C" defaultChecked={this.state.activeItem.type === "C"} 
                              onChange={this.handleChange} />
               </div>
             </FormGroup>
-            {this.state.activeItem.subscriptionType === "P" ? (
+            {this.state.activeItem.type === "P" ? (
               <Row form>
                 <Col md={6}>
                   <FormGroup>
@@ -246,7 +236,7 @@ export default class SubscriptionsModal extends Component {
               //   </Col>
               // </FormGroup>
             ) : null}
-            {this.state.activeItem.subscriptionType === "C" ? (
+            {this.state.activeItem.type === "C" ? (
               <Row form>
                 {/* <Col sm={12}>
                   <FormGroup row>
@@ -339,8 +329,17 @@ export default class SubscriptionsModal extends Component {
             onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} /> */}
         </ModalBody>   
         <ModalFooter>
-          <Button color="success" onClick={() => onSave(this.state.activeItem)}>
-          { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
+        { this.state.activeItem.id ? (
+            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "print")}>
+              {"Stampa ticket"}
+            </Button>
+          ) : (
+            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "save-print")}>
+              { "Crea e stampa ticket" }
+            </Button>)
+          }
+          <Button color="success" onClick={() => this.props.onSave(this.state.activeItem, "save")}>
+            { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
         </ModalFooter>
       </Modal>
