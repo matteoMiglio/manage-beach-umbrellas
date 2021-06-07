@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SubscriptionsModal from "../components/SubscriptionsModal";
 import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
+import Pagination from "../components/Pagination";
 import { Button, Container, Row, Col } from 'reactstrap';
 import axios from "axios";
 import { Fab, Action } from 'react-tiny-fab';
@@ -16,6 +17,7 @@ const mainButtonStyles = {
 const actionButtonStyles = {
   backgroundColor: '#ab50e4'
 }
+
 
 const createEmptyItem = () => {
   const item = {
@@ -40,9 +42,16 @@ class Subscriptions extends Component {
     super(props);
     this.state = {
       itemList: [],
+      currentItems: [],
       searchText: '',
-      itemsPaid: false,
-      modal: false,
+      itemsUnpaid: false,
+      showUmbrellas: false,
+      showBeachLoungers: false,
+      modal: false, 
+      currentPage: 1, 
+      totalPages: null,
+      pageLimit: 10,
+      isLoading: true,
       activeItem: createEmptyItem(),
     };
   }
@@ -51,11 +60,32 @@ class Subscriptions extends Component {
     this.refreshList();
   }
 
+  onPageChanged = data => {
+    const { currentPage, totalPages, pageLimit } = data;
+  
+    axios
+      .get(`/api/subscriptions?page=${currentPage}&limit=${pageLimit}`)
+      .then(response => {
+        const currentItems = response.data;
+        this.setState({ currentPage, currentItems, totalPages });
+      });
+  }
+
   refreshList = () => {
+    
     axios
       .get("/api/subscriptions/")
-      .then((res) => this.setState({ itemList: res.data }))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        this.setState({ itemList: res.data })
+        axios
+          .get(`/api/subscriptions?page=${this.state.currentPage}&limit=${this.state.pageLimit}`)
+          .then(response => {
+            const currentItems = response.data;
+            this.setState({ currentItems });
+          });
+      })
+      .catch((err) => console.log(err))
+      .finally(() => (this.setState({ isLoading: false })))
   };
 
   handleSubmit = (item, method) => {
@@ -67,7 +97,7 @@ class Subscriptions extends Component {
       }
 
       if (item.type === "S") {
-        item.startDate = "2021-05-15";
+        item.startDate = "2021-05-1";
         item.endDate = "2021-09-30";
       }
 
@@ -193,9 +223,23 @@ class Subscriptions extends Component {
     });
   }
 
-  handleShowPaidChange = (paid) => {
+  handleShowUnpaidChange = (paid) => {
     this.setState({
-      itemsPaid: paid,
+      itemsUnpaid: paid,
+    });
+  }
+
+  handleShowUmbrellaChange = (el) => {
+
+    this.setState({
+      showUmbrellas: el,
+    });
+  }
+
+  handleShowBeachLoungersChange = (el) => {
+
+    this.setState({
+      showBeachLoungers: el,
     });
   }
 
@@ -213,26 +257,39 @@ class Subscriptions extends Component {
   };
 
   render() {
+
+    if (this.state.isLoading) return null;
+
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Abbonamenti</h1>
         <Row>
           <Col sm={{ size: 11, offset: 1}} className='mb-3'>
             <SubscriptionsSearchBar onFilterTextChange={this.handleFilterTextChange}
-                                    onPaidItemsChange={this.handleShowPaidChange} 
+                                    onUnpaidItemsChange={this.handleShowUnpaidChange} 
+                                    onShowUmbrellasChange={this.handleShowUmbrellaChange} 
+                                    onShowBeachLoungersChange={this.handleShowBeachLoungersChange} 
                                     itemsPaid={this.state.itemsPaid}
-                                    searchText={this.state.searchText} />
+                                    searchText={this.state.searchText}
+                                    showBeachLoungers={this.state.showBeachLoungers}
+                                    showUmbrellas={this.state.showUmbrellas} />
           </Col>
         </Row>
         <Row>
           <Col md={10} sm={6} className="mx-auto p-0">
-            <SubscriptionsTable items={this.state.itemList}
-                                itemsPaid={this.state.itemsPaid}
+            <SubscriptionsTable items={this.state.currentItems}
+                                itemsUnpaid={this.state.itemsUnpaid}
                                 searchText={this.state.searchText} 
+                                showBeachLoungers={this.state.showBeachLoungers}
+                                showUmbrellas={this.state.showUmbrellas} 
                                 onEditButtonClick={this.editItem} 
                                 onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
+        <div className="d-flex align-items-center justify-content-center">
+          <Pagination totalRecords={this.state.itemList.length} pageLimit={this.state.pageLimit} pageNeighbours={1} 
+                      onPageChanged={this.onPageChanged} />
+        </div>
         {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <SubscriptionsModal

@@ -59,9 +59,10 @@ class ReservationsTable extends React.Component {
 
   render() {
 
-    const filterDate = this.props.filterDate;
     const searchText = this.props.searchText;
     const itemsUnpaid = this.props.itemsUnpaid;
+    const showBeachLoungers = this.props.showBeachLoungers;
+    const showUmbrellas = this.props.showUmbrellas;
 
     const rows = [];
 
@@ -77,6 +78,16 @@ class ReservationsTable extends React.Component {
         return;
 
       if ((item.paid == null) || (itemsUnpaid && item.paid)) {
+        return;
+      }
+
+      if (showUmbrellas) {
+        if (item.umbrella == null)
+        return;
+      }
+
+      if (showBeachLoungers) {
+        if (item.umbrella != null)
         return;
       }
 

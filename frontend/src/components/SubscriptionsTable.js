@@ -89,7 +89,9 @@ class SubscriptionsTable extends React.Component {
   render() {
 
     const searchText = this.props.searchText;
-    const itemsPaid = this.props.itemsPaid;
+    const itemsUnpaid = this.props.itemsUnpaid;
+    const showBeachLoungers = this.props.showBeachLoungers;
+    const showUmbrellas = this.props.showUmbrellas;
 
     const rows = [];
 
@@ -107,8 +109,17 @@ class SubscriptionsTable extends React.Component {
       if (!founded)
         return;
 
-      /* filtro solo per quelli pagati */
-      if (itemsPaid && !item.paid) {
+      if ((item.paid == null) || (itemsUnpaid && item.paid)) {
+        return;
+      }
+
+      if (showUmbrellas) {
+        if (item.umbrella == null)
+        return;
+      }
+
+      if (showBeachLoungers) {
+        if (item.umbrella != null)
         return;
       }
 

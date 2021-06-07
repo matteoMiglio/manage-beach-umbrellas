@@ -8,8 +8,11 @@ from datetime import datetime, date, timedelta
 from django.db.models import Avg, Count, Min, Sum
 from .printer import Printer
 from django.utils.crypto import get_random_string
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
+
+ELEMENT_PER_PAGE = 10
 
 class ConstantView(viewsets.ModelViewSet):
     serializer_class = ConstantSerializer
@@ -20,14 +23,19 @@ class BeachLoungersFreeView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
 
         date = self.request.query_params.get('date')
+        
         # total_beach_loungers = Constant.objects.all()
-
         total_beach_loungers = 1000
 
         umbrella_beach_loungers = Reservation.objects.filter(umbrella__isnull=False, date__exact=date).aggregate(Sum('beachLoungers'))
         beach_loungers = Reservation.objects.filter(umbrella__isnull=True, date__exact=date).aggregate(Sum('beachLoungers'))
 
-        return HttpResponse(total_beach_loungers - umbrella_beach_loungers['beachLoungers__sum'] - beach_loungers['beachLoungers__sum'])
+        if beach_loungers['beachLoungers__sum'] == None:
+            beach_loungers_int = 0
+        else:
+            beach_loungers_int = beach_loungers['beachLoungers__sum']
+
+        return HttpResponse(total_beach_loungers - umbrella_beach_loungers['beachLoungers__sum'] - beach_loungers_int)
 
 
 class PrintTicketView(generics.CreateAPIView):
@@ -72,15 +80,27 @@ class SubscriptionList(generics.ListCreateAPIView):
         subscription_type = self.request.query_params.get('type')
         umbrella_id = self.request.query_params.get('umbrella')
         paid = self.request.query_params.get('paid')
+        page = self.request.query_params.get('page')
 
-        if subscription_type is not None:
-            queryset = queryset.filter(type__exact=subscription_type)
-        if umbrella_id is not None:
-            queryset = queryset.filter(umbrella__exact=umbrella_id)
-        if paid is not None:
-            queryset = queryset.filter(paid__exact=paid)
+        try:
+            if subscription_type is not None:
+                queryset = queryset.filter(type__exact=subscription_type)
+            if umbrella_id is not None:
+                queryset = queryset.filter(umbrella__exact=umbrella_id)
+            if paid is not None:
+                queryset = queryset.filter(paid__exact=paid)
+
+            paginator = Paginator(queryset, ELEMENT_PER_PAGE)
+            if page is not None:
+                queryset = paginator.page(page)
+
+        except PageNotAnInteger:
+            queryset = paginator.page(1)
+        except EmptyPage:
+            queryset = paginator.page(paginator.num_pages)
 
         return queryset
+
 
     def create(self, request, *args, **kwargs): 
         subscription_data = request.data
@@ -216,17 +236,31 @@ class ReservationList(generics.ListCreateAPIView):
         paid = self.request.query_params.get('paid')
         subscription = self.request.query_params.get('subscription')
         customer = self.request.query_params.get('customer')
+        page = self.request.query_params.get('page')
+        single = self.request.query_params.get('single')
 
-        if date is not None:
-            queryset = queryset.filter(date__exact=date)
-        if umbrella_id is not None:
-            queryset = queryset.filter(umbrella__exact=umbrella_id)
-        if paid is not None:
-            queryset = queryset.filter(paid__exact=paid)
-        if subscription is not None:
-            queryset = queryset.filter(subscription__exact=subscription)
-        if customer is not None:
-            queryset = queryset.filter(customer__contains=customer)
+        try:
+            if date is not None:
+                queryset = queryset.filter(date__exact=date)
+            if single is not None:
+                queryset = queryset.exclude(paid__isnull=True)
+            if umbrella_id is not None:
+                queryset = queryset.filter(umbrella__exact=umbrella_id)
+            if paid is not None:
+                queryset = queryset.filter(paid__exact=paid)
+            if subscription is not None:
+                queryset = queryset.filter(subscription__exact=subscription)
+            if customer is not None:
+                queryset = queryset.filter(customer__contains=customer)
+
+            paginator = Paginator(queryset, ELEMENT_PER_PAGE)
+            if page is not None:
+                queryset = paginator.page(page)
+
+        except PageNotAnInteger:
+            queryset = paginator.page(1)
+        except EmptyPage:
+            queryset = paginator.page(paginator.num_pages)
 
         return queryset
 

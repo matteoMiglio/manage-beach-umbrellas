@@ -1,5 +1,5 @@
 import React, { Component, ForwardedRef } from "react";
-import { Form, Button, Label, Input, FormGroup } from 'reactstrap';
+import { Form, Button, Label, Input, FormGroup, CustomInput } from 'reactstrap';
 import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
@@ -18,6 +18,15 @@ class ReservationsSearchBar extends React.Component {
     this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
       this
     );
+    this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
+      this
+    );
+    this.handleShowUmbrellasChange = this.handleShowUmbrellasChange.bind(
+      this
+    );
+    this.handleShowBeachLoungersChange = this.handleShowBeachLoungersChange.bind(
+      this
+    );
   }
 
   handleFilterTextChange(e) {
@@ -30,6 +39,14 @@ class ReservationsSearchBar extends React.Component {
 
   handleShowUnpaidChange(e) {
     this.props.onUnpaidItemsChange(e.target.checked);
+  }
+
+  handleShowUmbrellasChange(e) {
+    this.props.onShowUmbrellasChange(e.target.checked);
+  }
+
+  handleShowBeachLoungersChange(e) {
+    this.props.onShowBeachLoungersChange(e.target.checked);
   }
 
   getDateString(date) {
@@ -58,6 +75,8 @@ class ReservationsSearchBar extends React.Component {
     const filterDate = this.props.filterDate;
     const searchText = this.props.searchText;
     const itemsUnpaid = this.props.itemsUnpaid;
+    const showBeachLoungers = this.props.showBeachLoungers;
+    const showUmbrellas = this.props.showUmbrellas;
 
     return (
       <Form inline>
@@ -72,16 +91,18 @@ class ReservationsSearchBar extends React.Component {
           <Input type="text" name="searchText" id="searchText" placeholder="Ricerca cliente"
                  value={searchText} onChange={this.handleFilterTextChange} />
         </FormGroup>
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0" check>
-          <Label for="exampleCheck" check>Mostra prenotazioni da pagare</Label>
-          <Input type="checkbox" name="check" id="exampleCheck" 
-                 checked={itemsUnpaid} onChange={this.handleShowUnpaidChange} />
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          <CustomInput type="switch" id="showUnpaidReservation" name="showUnpaidReservation" checked={itemsUnpaid}
+                       onChange={this.handleShowUnpaidChange} label="Mostra prenotazioni da pagare" />
         </FormGroup>
-        {/* <FormGroup className="mb-2 mx-sm-2 mb-sm-0" check>
-          <Input type="checkbox" name="check" id="exampleCheck" 
-                 checked={showAll} onChange={this.handleShowAllChange} />
-          <Label for="exampleCheck" check>Mostra tutte</Label>
-        </FormGroup> */}
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          <CustomInput type="switch" id="showUmbrella" name="showUmbrella" checked={showUmbrellas}
+                       onChange={this.handleShowUmbrellasChange} label="Mostra solo ombrelloni" />
+        </FormGroup>
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          <CustomInput type="switch" id="showBeachLoungers" name="showBeachLoungers" checked={showBeachLoungers}
+                       onChange={this.handleShowBeachLoungersChange} label="Mostra solo lettini" />
+        </FormGroup>
       </Form>
     );
   }

@@ -3,10 +3,11 @@ import { Row, Col, Button, Container } from 'reactstrap';
 import ReservationsTable from '../components/ReservationsTable';
 import ReservationsModal from '../components/ReservationsModal';
 import ReservationsSearchBar from '../components/ReservationsSearchBar';
+import Pagination from "../components/Pagination";
 import axios from "axios";
 import { Fab, Action } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
-import { GrFormAdd } from "react-icons/gr";
+import { GrElevator, GrFormAdd } from "react-icons/gr";
 
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
@@ -22,10 +23,17 @@ class Reservations extends Component {
     super(props);
     this.state = {
       itemList: [],
+      currentItems: [],
       modal: false,
       filterDate: new Date(),
       searchText: '',
-      itemsUnpaid: false
+      itemsUnpaid: false,
+      showUmbrellas: false,
+      showBeachLoungers: false,
+      currentPage: 1, 
+      totalPages: null,
+      pageLimit: 10,
+      isLoading: true
     };
   }
 
@@ -33,15 +41,44 @@ class Reservations extends Component {
     this.refreshList();
   }
 
+  onPageChanged = data => {
+
+    let tmp = this.state.filterDate.toISOString();
+    const filterDate = tmp.substring(0, tmp.indexOf('T'));
+
+    const { currentPage, totalPages, pageLimit } = data;
+  
+    axios
+      .get(`/api/reservations?date=${filterDate}&page=${currentPage}&limit=${pageLimit}&single=y`)
+      .then(response => {
+        const currentItems = response.data;
+        this.setState({ currentPage, currentItems, totalPages });
+      });
+  }
+
   refreshList = () => {
 
     let tmp = this.state.filterDate.toISOString();
     const filterDate = tmp.substring(0, tmp.indexOf('T'));
 
+    // axios
+    //   .get("/api/reservations?date=" + filterDate)
+    //   .then((res) => this.setState({ itemList: res.data }))
+    //   .catch((err) => console.log(err));
+
     axios
       .get("/api/reservations?date=" + filterDate)
-      .then((res) => this.setState({ itemList: res.data }))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        this.setState({ itemList: res.data });
+        axios
+          .get(`/api/reservations?date=${filterDate}&page=${this.state.currentPage}&limit=${this.state.pageLimit}&single=y`)
+          .then(response => {
+            const currentItems = response.data;
+            this.setState({ currentItems });
+          });
+      })
+      .catch((err) => console.log(err))
+      .finally(() => (this.setState({ isLoading: false })))
   };
 
   handleSubmit = (item, method) => {
@@ -136,6 +173,20 @@ class Reservations extends Component {
     });
   }
 
+  handleShowUmbrellaChange = (el) => {
+
+    this.setState({
+      showUmbrellas: el,
+    });
+  }
+
+  handleShowBeachLoungersChange = (el) => {
+
+    this.setState({
+      showBeachLoungers: el,
+    });
+  }
+
   renderFloatingActionButton = () => {
     return (
       <Fab
@@ -150,6 +201,9 @@ class Reservations extends Component {
   };
 
   render() {
+
+    if (this.state.isLoading) return null;
+
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Prenotazioni</h1>
@@ -158,21 +212,30 @@ class Reservations extends Component {
             <ReservationsSearchBar onFilterDateChange={this.handleFilterDateChange}
                                    onFilterTextChange={this.handleFilterTextChange}
                                    onUnpaidItemsChange={this.handleShowUnpaidChange} 
+                                   onShowUmbrellasChange={this.handleShowUmbrellaChange} 
+                                   onShowBeachLoungersChange={this.handleShowBeachLoungersChange} 
                                    filterDate={this.state.filterDate}
                                    itemsUnpaid={this.state.itemsUnpaid}
-                                   showAll={this.state.showAll} />
+                                   searchText={this.state.searchText}
+                                   showBeachLoungers={this.state.showBeachLoungers}
+                                   showUmbrellas={this.state.showUmbrellas} />
           </Col>
         </Row>
         <Row>
           <Col md={10} sm={6} className="mx-auto p-0">
-            <ReservationsTable items={this.state.itemList}
+            <ReservationsTable items={this.state.currentItems}
                                searchText={this.state.searchText} 
                                itemsUnpaid={this.state.itemsUnpaid}
-                               filterDate={this.state.filterDate} 
+                               showBeachLoungers={this.state.showBeachLoungers}
+                               showUmbrellas={this.state.showUmbrellas} 
                                onEditButtonClick={this.editItem} 
                                onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
+        <div className="d-flex align-items-center justify-content-center">
+          <Pagination totalRecords={this.state.itemList.filter(item => item.paid != null ? item : null).length} pageLimit={this.state.pageLimit} pageNeighbours={1} 
+                      onPageChanged={this.onPageChanged} />
+        </div>
         {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <ReservationsModal
