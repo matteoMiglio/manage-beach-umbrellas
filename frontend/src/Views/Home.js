@@ -67,12 +67,20 @@ class Home extends Component {
     const filterDate = tmp.substring(0, tmp.indexOf('T'));
 
     axios
-      .get("/api/reservations?date=" + filterDate)
+      .get("/api/reservations/" + "?date=" + filterDate, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
       .then((res) => this.setState({ umbrellaList: res.data }))
       .catch((err) => console.log(err));
 
     axios
-      .get("api/beach-loungers-count/?date=" + filterDate)
+      .get("/api/beach-loungers-count/" + "?date=" + filterDate, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
       .then((res) => this.setState({ freeBeachLoungers: res.data }))
       .catch((err) => console.log(err));
   };
@@ -190,6 +198,7 @@ class Home extends Component {
 
     let i = 0;
     let j = 0;
+
     this.state.umbrellaList.forEach((item) => {
       item.umbrella != null ? j++ : j=j+0;
       (item.umbrella != null && item.paid != null) ? i++ : i=i+0;

@@ -25,7 +25,7 @@ class BeachLoungersFreeView(generics.RetrieveAPIView):
         date = self.request.query_params.get('date')
         
         # total_beach_loungers = Constant.objects.all()
-        total_beach_loungers = 1000
+        total_beach_loungers = 400
 
         umbrella_beach_loungers = Reservation.objects.filter(umbrella__isnull=False, date__exact=date).aggregate(Sum('beachLoungers'))
         beach_loungers = Reservation.objects.filter(umbrella__isnull=True, date__exact=date).aggregate(Sum('beachLoungers'))

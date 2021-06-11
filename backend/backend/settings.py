@@ -25,8 +25,13 @@ SECRET_KEY = 'django-insecure-@oz0482na!qqckzn88zc6%)yty+@hk!3u*iw)y!7tokedeat%*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1"
+]
 
+STATIC_ROOT = '/var/www/static-django'
+MEDIA_ROOT = '/var/www/media-django'
 
 # Application definition
 

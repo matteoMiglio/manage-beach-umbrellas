@@ -49,7 +49,7 @@ class Reservations extends Component {
     const { currentPage, totalPages, pageLimit } = data;
   
     axios
-      .get(`/api/reservations?date=${filterDate}&page=${currentPage}&limit=${pageLimit}&single=y`)
+      .get(`/api/reservations/?date=${filterDate}&page=${currentPage}&limit=${pageLimit}&single=y`)
       .then(response => {
         const currentItems = response.data;
         this.setState({ currentPage, currentItems, totalPages });
@@ -67,11 +67,11 @@ class Reservations extends Component {
     //   .catch((err) => console.log(err));
 
     axios
-      .get("/api/reservations?date=" + filterDate)
+      .get("/api/reservations/?date=" + filterDate)
       .then((res) => {
         this.setState({ itemList: res.data });
         axios
-          .get(`/api/reservations?date=${filterDate}&page=${this.state.currentPage}&limit=${this.state.pageLimit}&single=y`)
+          .get(`/api/reservations/?date=${filterDate}&page=${this.state.currentPage}&limit=${this.state.pageLimit}&single=y`)
           .then(response => {
             const currentItems = response.data;
             this.setState({ currentItems });
