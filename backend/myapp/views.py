@@ -9,8 +9,8 @@ from django.db.models import Avg, Count, Min, Sum
 from .printer import Printer
 from django.utils.crypto import get_random_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-# Create your views here.
+from django.core import serializers
+import calendar
 
 ELEMENT_PER_PAGE = 10
 
@@ -101,26 +101,68 @@ class SubscriptionList(generics.ListCreateAPIView):
 
         return queryset
 
-
     def create(self, request, *args, **kwargs): 
         subscription_data = request.data
 
         umbrella_id = subscription_data.get('umbrella', None)
 
         if umbrella_id:
-
             umbrella = Umbrella.objects.get(id=subscription_data['umbrella'])
         else:
             umbrella = None
 
         code = get_random_string(length=4, allowed_chars='1234567890')
 
-        new_subscription = Subscription.objects.create(umbrella=umbrella, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=subscription_data['endDate'], startDate=subscription_data['startDate'], paid=subscription_data['paid'])
+        if subscription_data['startDate'] == "":
+            start_date = None
+        else:
+            start_date = subscription_data['startDate']
+
+        if subscription_data['endDate'] == "":
+            end_date = None
+        else: 
+            end_date = subscription_data['endDate'] 
+
+        new_subscription = Subscription.objects.create(umbrella=umbrella, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'])
 
         new_subscription.save()
 
         if subscription_data['type'] == "C":
-            pass
+            tmp = new_subscription.custom_period.split("-")
+            custom_days = tmp[0].split(",")
+            custom_months = tmp[1].split(",")
+
+            current_year = datetime.now().year
+
+            for month in custom_months:
+                tuple = calendar.monthrange(current_year, int(month))
+
+                start_date = datetime(current_year, int(month), tuple[0])
+                end_date = datetime(current_year, int(month), tuple[1])
+                delta = timedelta(days=1)
+                
+                while start_date <= end_date:
+
+                    if str(start_date.weekday()) in custom_days:
+                        if new_subscription.umbrella and new_subscription.umbrella != "null" and new_subscription.umbrella != None:
+                            reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__exact=start_date)
+
+                            if len(reservation_list) > 0:
+                                for reservation in reservation_list:
+
+                                    reservation.subscription = new_subscription
+                                    reservation.customer = new_subscription.customer
+                                    reservation.beachLoungers = new_subscription.beachLoungers
+                                    reservation.paid = new_subscription.paid
+
+                                    reservation.save()
+                        else:
+                            reservation = Reservation.objects.create(umbrella=None, date=start_date, customer=new_subscription.customer, beachLoungers=new_subscription.beachLoungers, paid=new_subscription.paid, subscription=new_subscription)
+
+                            reservation.save()
+
+                    start_date += delta
+
         else:
             if new_subscription.umbrella and new_subscription.umbrella != "null" and new_subscription.umbrella != None:
                 reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[new_subscription.startDate, new_subscription.endDate])
@@ -157,24 +199,31 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
-        umbrella = Umbrella.objects.get(id=subscription_data['umbrella'])
+        if subscription_data['umbrella'] and subscription_data['umbrella'] != "null" and subscription_data['umbrella'] != None:
+            umbrella = Umbrella.objects.get(id=subscription_data['umbrella'])
+        else:
+            umbrella = None
 
         subscription = Subscription.objects.get(id=subscription_data['id'])
 
         subscription.umbrella = umbrella
-        subscription.type = subscription_data['type'] if subscription_data['type'] else True
-        subscription.paid = subscription_data['paid'] if subscription_data['paid'] else True
-        subscription.startDate = subscription_data['startDate'] if subscription_data['startDate'] else True
-        subscription.endDate = subscription_data['endDate'] if subscription_data['endDate'] else True
-        subscription.beachLoungers = subscription_data['beachLoungers'] if subscription_data['beachLoungers'] else True
-        subscription.customer = subscription_data['customer'] if subscription_data['customer'] else True
+        subscription.type = subscription_data['type']
+        subscription.paid = subscription_data['paid']
+        subscription.startDate = subscription_data['startDate']
+        subscription.endDate = subscription_data['endDate']
+        subscription.beachLoungers = subscription_data['beachLoungers']
+        subscription.customer = subscription_data['customer']
+        subscription.deposit = subscription_data['deposit']
 
         subscription.save()        
 
         if subscription_data['type'] == "C":
             pass
         else:
-            reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.startDate, subscription.endDate])
+            if umbrella:
+                reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.startDate, subscription.endDate])
+            else:
+                reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.startDate, subscription.endDate])
 
             if len(reservation_list) > 0:
                 for reservation in reservation_list:
@@ -196,7 +245,16 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
             subscription = self.get_object()
 
             if subscription.type == "C":
-                pass
+                reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
+                if len(reservation_list) > 0:
+                    for reservation in reservation_list:
+
+                        reservation.subscription = None
+                        reservation.customer = ""
+                        reservation.beachLoungers = 1
+                        reservation.paid = None
+
+                        reservation.save()
             else:
                 if subscription.umbrella and subscription.umbrella != "null" and subscription.umbrella != None:
                     reservation_list = Reservation.objects.filter(umbrella__exact=subscription.umbrella.id, date__range=[subscription.startDate, subscription.endDate])
@@ -343,3 +401,35 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Reservation.objects.raw('select * from myapp_umbrella LEFT OUTER JOIN myapp_reservation ON myapp_umbrella.id = myapp_reservation.umbrella_id AND myapp_reservation.date IS "2021-05-29"')
 #     data = serialize("json", queryset, fields=('row', 'myapp_umbrella.id', 'beachLoungers', 'paid', 'date'))
 #     return JsonResponse(data, safe=False)
+
+
+# query papabili
+
+class TMPHomeView(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        matrix = []
+
+        for i in range(0, 10):
+            u_list = Umbrella.objects.filter(row__exact=i)
+
+            row_list = []
+            for u in u_list:
+                el = {}
+                el['tmp_umbrella'] = u
+
+                r = u.reservation_set.filter(date__exact="2021-06-04", paid__isnull=False).first()
+
+                if r == None:
+                    el['tmp_res'] = None
+                else:
+                    el['tmp_res'] = r
+
+                row_list.append(el)
+            
+            matrix.append(row_list)
+
+        response = {}
+        response['list'] = serializers.serialize("json", matrix)
+        return HttpResponse(response, content_type="application/json")

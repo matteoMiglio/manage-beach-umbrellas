@@ -11,7 +11,7 @@ class UmbrellaAdmin(admin.ModelAdmin):
     list_display = ('description', 'row')
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type')
+    list_display = ('code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type', 'deposit')
 
 class ReservationAdmin(admin.ModelAdmin):
     list_display = ('umbrella', 'customer', 'date', 'beachLoungers', 'paid', 'subscription')
