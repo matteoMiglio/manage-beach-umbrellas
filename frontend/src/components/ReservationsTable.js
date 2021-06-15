@@ -8,9 +8,9 @@ class DataRows extends React.Component {
     render() {
         const item = this.props.item;
         const state = item.paid ? (
-            "Pagato"
+          <span style={{color: 'blue'}}>Pagato</span>
         ) : (
-            <span style={{color: 'red'}}>Da pagare</span>
+          <span style={{color: 'red'}}>Da pagare</span>
         );
     
         const date = item.date;

@@ -18,7 +18,6 @@ const actionButtonStyles = {
   backgroundColor: '#ab50e4'
 }
 
-
 const createEmptyItem = () => {
   const item = {
     code: null,
@@ -29,9 +28,10 @@ const createEmptyItem = () => {
     endDate: "",
     type: "",
     paid: false,
-    // freePeriodList: [],
-    // customDays: [],
-    // customMonths: []
+    deposit: null,
+    customDays: [],
+    customMonths: [],
+    // freePeriodList: []
   }
 
   return item;
@@ -90,6 +90,8 @@ class Subscriptions extends Component {
 
   handleSubmit = (item, method) => {
     this.toggle();
+
+    item['customPeriod'] = item.customDays.join(",") + "-" + item.customMonths.join(",");
 
     if (method.includes("save")) {
       if (item.umbrella === "" || item.umbrella === "-") {
@@ -197,6 +199,13 @@ class Subscriptions extends Component {
   };
 
   editItem = (item) => {
+
+    const customDays = item.custom_period ? item.custom_period.split("-")[0].split(",") : null;
+    const customMonths = item.custom_period ? item.custom_period.split("-")[1].split(",") : null;
+
+    item['customDays'] = customDays;
+    item['customMonths'] = customMonths;
+
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 

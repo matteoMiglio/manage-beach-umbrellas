@@ -3,6 +3,9 @@ import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 
+const dayNames = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
+const monthNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+
 class DataRows extends React.Component {
 
   getDateString(date) {
@@ -20,22 +23,52 @@ class DataRows extends React.Component {
 
   render() {
     var type = null;
+    var validity = "";
     const item = this.props.item;
     const state = item.paid ? (
-        "Pagato"
+      <span style={{color: 'blue'}}>Pagato</span>
     ) : (
-        <span style={{color: 'red'}}>Da pagare</span>
+      <span style={{color: 'red'}}>Da pagare</span>
+    );
+
+    const deposit = item.paid ? (
+      <span style={{color: '#ccc'}}>{item.deposit ? item.deposit : "0"}€</span>
+    ) : (
+      item.deposit ? item.deposit+"€" : "0€"
     );
 
     switch (item.type) {
       case "S": 
         type = "Stagionale";
+        validity = item.startDate + "->" + item.endDate
         break;
       case "P":
         type = "Periodo";
+        validity = item.startDate + "->" + item.endDate
         break;
       case "C":
         type = "Personalizzato";
+
+        var days = item.custom_period.split("-")[0].split(",")
+        var months = item.custom_period.split("-")[1].split(",")
+
+        for (var i=0; i<days.length; i++) {
+          validity += dayNames[days[i]]
+          if (i != (days.length - 1)) 
+            validity += ", "
+        }
+
+        if (months.length > 1)
+          validity += " nei mesi di "
+        else
+          validity += " nel mese di "
+
+        for(var i=0; i<months.length; i++) {
+          validity += monthNames[months[i]]
+          if (i != (months.length - 1)) 
+            validity += ", "
+        }
+
         break;
       default:
         type = "-";
@@ -45,11 +78,12 @@ class DataRows extends React.Component {
       <tr>
         <th scope="row">{item.code}</th>
         <td>{item.umbrella ? "#" + item.umbrella : "-"}</td>
-        <td>{item.customer}</td>
+        <td>{item.customer ? item.customer : "-"}</td>
         <td>{item.beachLoungers}</td>
         <td>{state}</td>
+        <td>{deposit}</td>
         <td>{type}</td>
-        <td>{item.startDate} {"->"} {item.endDate}</td>
+        <td>{validity}</td>
         <td>{item.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />}</td>
         {/* <td align="center">{item.freePeriodList.length > 0 ? <FaCheckCircle /> : <FaMinusCircle />}</td> */}
         <td>
@@ -142,6 +176,7 @@ class SubscriptionsTable extends React.Component {
             <th>Instestatario</th>
             <th>Lettini</th>
             <th>Stato</th>
+            <th>Acconto</th>
             <th>Tipo</th>
             <th>Validità</th>
             <th>Oggetto</th>

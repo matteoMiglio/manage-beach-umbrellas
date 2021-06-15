@@ -69,14 +69,13 @@ export default class SubscriptionsModal extends Component {
       value = Array.from(e.target.selectedOptions, option => option.value);
     }
 
-    if (e.target.type === "checkbox") {
+    if (e.target.type === "checkbox" && name != "customDays") {
       value = e.target.checked;
     }
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
-    console.log("Item updated:")
-    console.log(activeItem);
+    console.log("Item updated: " + JSON.stringify(activeItem))
     this.setState({ activeItem });
   };
 
@@ -141,6 +140,9 @@ export default class SubscriptionsModal extends Component {
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
+    const customDays = this.state.activeItem.customDays;
+    const customMonths = this.state.activeItem.customMonths;
+
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>{title}</ModalHeader>
@@ -180,16 +182,32 @@ export default class SubscriptionsModal extends Component {
                 placeholder="Immetti nome cliente"
               />
             </FormGroup>
-            <FormGroup>
-              <div>
-                { this.state.activeItem.id ? (
-                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato"
-                      defaultChecked={this.state.activeItem.paid} onChange={this.handleChange} />
-                ) : (
-                  <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" onChange={this.handleChange} />
-                ) }
-              </div>
-            </FormGroup>
+            <Row form className="mt-4">
+              <Col sm={6}>
+                <FormGroup>
+                  <div>
+                    { this.state.activeItem.id ? (
+                      <CustomInput type="switch" id="switch-state" name="paid" label="Pagato"
+                          defaultChecked={this.state.activeItem.paid} onChange={this.handleChange} />
+                    ) : (
+                      <CustomInput type="switch" id="switch-state" name="paid" label="Pagato" onChange={this.handleChange} />
+                    ) }
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col sm={{size: 4, offset: 2}}>
+                <FormGroup>
+                  <Input
+                    type="text"
+                    id="deposit-id"
+                    name="deposit"
+                    value={this.state.activeItem.deposit}
+                    onChange={this.handleChange}
+                    placeholder="Acconto €"
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
             <FormGroup>
               <Label for="subcriptionType">Tipo abbonamento</Label>
               <div>
@@ -265,37 +283,44 @@ export default class SubscriptionsModal extends Component {
                     <Col sm={8}>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={1} onChange={this.handleChange} />L
+                          <Input type="checkbox" name="customDays" value={0} 
+                                 defaultChecked={customDays.includes("0")} onChange={this.handleChange} />L
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={2} onChange={this.handleChange} />M
+                          <Input type="checkbox" name="customDays" value={1} 
+                                 defaultChecked={customDays.includes("1")} onChange={this.handleChange} />M
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={3} onChange={this.handleChange} />M
+                          <Input type="checkbox" name="customDays" value={2} 
+                                 defaultChecked={customDays.includes("2")} onChange={this.handleChange} />M
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={4} onChange={this.handleChange} />G
+                          <Input type="checkbox" name="customDays" value={3} 
+                                 defaultChecked={customDays.includes("3")} onChange={this.handleChange} />G
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={5} onChange={this.handleChange} />V
+                          <Input type="checkbox" name="customDays" value={4} 
+                                 defaultChecked={customDays.includes("4")} onChange={this.handleChange} />V
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={6} onChange={this.handleChange} />S
+                          <Input type="checkbox" name="customDays" value={5} 
+                                 defaultChecked={customDays.includes("5")} onChange={this.handleChange} />S
                         </Label>
                       </FormGroup>
                       <FormGroup check inline>
                         <Label check>
-                          <Input type="checkbox" name="customDays" value={0} onChange={this.handleChange} />D
+                          <Input type="checkbox" name="customDays" value={6}
+                                 defaultChecked={customDays.includes("6")} onChange={this.handleChange} />D
                         </Label>
                       </FormGroup>
                     </Col>
@@ -303,18 +328,18 @@ export default class SubscriptionsModal extends Component {
                 </Col>
                 <Col sm={12} className="mt-3">
                   <FormGroup>
-                    <Label for="exampleSelectMulti">Nel periodo</Label>
+                    <Label for="customMonths">Nel periodo</Label>
                     <Input
                       type="select"
                       name="customMonths"
-                      id="exampleSelectMulti"
+                      id="customMonths-id"
                       onChange={this.handleChange}
                       multiple
                     >
-                      <option value={5}>Giugno</option>
-                      <option value={6}>Luglio</option>
-                      <option value={7}>Agosto</option>
-                      <option value={8}>Settembre</option>
+                      <option value={6} selected={customMonths.includes("6")}>Giugno</option>
+                      <option value={7} selected={customMonths.includes("7")}>Luglio</option>
+                      <option value={8} selected={customMonths.includes("8")}>Agosto</option>
+                      <option value={9} selected={customMonths.includes("9")}>Settembre</option>
                     </Input>
                   </FormGroup>
                 </Col>

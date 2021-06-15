@@ -215,10 +215,27 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         subscription.customer = subscription_data['customer']
         subscription.deposit = subscription_data['deposit']
 
+        if subscription.custom_period == subscription_data['customPeriod']:
+            update_period = False
+        else:
+            subscription.custom_period = subscription_data['customPeriod']
+            update_period = True
+
         subscription.save()        
 
         if subscription_data['type'] == "C":
-            pass
+            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
+
+            if len(reservation_list) > 0:
+                for reservation in reservation_list:
+
+                    reservation.subscription = subscription
+                    reservation.customer = subscription.customer
+                    reservation.beachLoungers = subscription.beachLoungers
+                    reservation.paid = subscription.paid
+
+                    reservation.save()
+
         else:
             if umbrella:
                 reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.startDate, subscription.endDate])
