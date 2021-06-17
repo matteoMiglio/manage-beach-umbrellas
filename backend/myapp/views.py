@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from rest_framework import viewsets, generics
 from .serializers import *
 from .models import *
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta
 from django.db.models import Avg, Count, Min, Sum
 from .printer import Printer
 from django.utils.crypto import get_random_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core import serializers
 import json
 import calendar
+from django.db import transaction
 
 ELEMENT_PER_PAGE = 10
 
@@ -26,17 +26,23 @@ class BeachLoungersFreeView(generics.RetrieveAPIView):
         date = self.request.query_params.get('date')
         
         # total_beach_loungers = Constant.objects.all()
-        total_beach_loungers = 400
+        total_beach_loungers = 200
 
-        umbrella_beach_loungers = Reservation.objects.filter(umbrella__isnull=False, date__exact=date).aggregate(Sum('beachLoungers'))
+        # umbrella_beach_loungers = Reservation.objects.filter(umbrella__isnull=False, date__exact=date).aggregate(Sum('beachLoungers'))
         beach_loungers = Reservation.objects.filter(umbrella__isnull=True, date__exact=date).aggregate(Sum('beachLoungers'))
+
+        # if umbrella_beach_loungers['beachLoungers__sum'] == None:
+        #     umbrella_beach_loungers_int = 0
+        # else:
+        #     umbrella_beach_loungers_int = beach_loungers['beachLoungers__sum']
+        umbrella_beach_loungers_int = 0
 
         if beach_loungers['beachLoungers__sum'] == None:
             beach_loungers_int = 0
         else:
             beach_loungers_int = beach_loungers['beachLoungers__sum']
 
-        return HttpResponse(total_beach_loungers - umbrella_beach_loungers['beachLoungers__sum'] - beach_loungers_int)
+        return HttpResponse(total_beach_loungers - umbrella_beach_loungers_int - beach_loungers_int)
 
 class PrintTicketView(generics.CreateAPIView):
 
@@ -121,6 +127,7 @@ class SubscriptionList(generics.ListCreateAPIView):
         else: 
             end_date = subscription_data['endDate'] 
 
+        # with transaction.atomic():
         new_subscription = Subscription.objects.create(umbrella=umbrella_id, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'])
 
         new_subscription.save()
@@ -244,7 +251,6 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
             pass
 
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class ReservationList(generics.ListCreateAPIView):
     serializer_class = ReservationSerializer
