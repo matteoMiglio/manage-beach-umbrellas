@@ -31,6 +31,8 @@ class DataRows extends React.Component {
       <span style={{color: 'red'}}>Da pagare</span>
     );
 
+    console.log(item)
+
     const deposit = item.paid ? (
       <span style={{color: '#ccc'}}>{item.deposit ? item.deposit : "0"}€</span>
     ) : (
@@ -77,7 +79,7 @@ class DataRows extends React.Component {
     return (
       <tr>
         <th scope="row">{item.code}</th>
-        <td>{item.umbrella ? "#" + item.umbrella : "-"}</td>
+        <td>{item.umbrella ? "#" + item.umbrella.code : "-"}</td>
         <td>{item.customer ? item.customer : "-"}</td>
         <td>{item.beachLoungers}</td>
         <td>{state}</td>

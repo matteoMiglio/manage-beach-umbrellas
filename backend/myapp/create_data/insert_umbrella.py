@@ -18,6 +18,76 @@ def main():
     #     x = requests.post(url, data = myobj)
     #     print(x.text)
 
+
+    # prima fila custom
+    j = 0
+    for col in range(0, 13):
+        if col == 0:
+            myobj = {
+                'code': "1B", 
+                'description': "", 
+                'beachLoungers': 2,
+                'row': j, 
+                'col': col
+            }
+            x = requests.post(url, data = myobj)
+            print(x.text)
+            # print(myobj)
+            continue
+        else:
+            if col == 1:
+                myobj = {
+                    'code': "2B", 
+                    'description': "", 
+                    'beachLoungers': 2,
+                    'row': j, 
+                    'col': col
+                }
+                x = requests.post(url, data = myobj)
+                print(x.text)
+                # print(myobj)
+                continue                
+            else:
+                if col == 11:
+                    myobj = {
+                        'code': "12B", 
+                        'description': "", 
+                        'beachLoungers': 2,
+                        'row': j, 
+                        'col': col
+                    }
+                    x = requests.post(url, data = myobj)
+                    print(x.text)
+                    # print(myobj)
+                    continue                    
+                else:
+                    if col == 12:
+                        myobj = {
+                            'code': "13B", 
+                            'description': "", 
+                            'beachLoungers': 2,
+                            'row': j, 
+                            'col': col
+                        }
+                        x = requests.post(url, data = myobj)
+                        print(x.text)
+                        # print(myobj)
+                        continue
+                        
+        myobj = {
+            'code': "", 
+            'description': "",
+            'beachLoungers': 0, 
+            'row': j, 
+            'col': col
+        }
+
+        x = requests.post(url, data = myobj)
+        print(x.text)
+        
+        # print(myobj)
+
+
     i = 1
 
     for row in range(1, 12):
@@ -26,51 +96,64 @@ def main():
 
             if row in [9,10,11] and col == 0:
                 myobj = {
-                    'code': None, 
+                    'code': "", 
                     'description': "", 
+                    'beachLoungers': 0,
                     'row': row, 
                     'col': col
                 }
+                x = requests.post(url, data = myobj)
+                print(x.text)
                 continue
 
             if row in [8,9,10,11] and (col == 4 or col == 5):
                 myobj = {
-                    'code': None, 
+                    'code': "", 
                     'description': "", 
+                    'beachLoungers': 0,
                     'row': row, 
                     'col': col
                 }
+                x = requests.post(url, data = myobj)
+                print(x.text)
                 continue
 
             if row in [10,11] and col in [6,7,8]:
                 myobj = {
-                    'code': None, 
+                    'code': "", 
                     'description': "", 
+                    'beachLoungers': 0,
                     'row': row, 
                     'col': col
                 }
+                x = requests.post(url, data = myobj)
+                print(x.text)
                 continue
 
-            if row in [10,11] and col in [9,10]:
+            if row == 11 and col in [9,10]:
                 myobj = {
-                    'code': None, 
+                    'code': "", 
                     'description': "", 
+                    'beachLoungers': 0,
                     'row': row, 
                     'col': col
                 }
+                x = requests.post(url, data = myobj)
+                print(x.text)
                 continue
 
             myobj = {
                 'code': i, 
                 'description': "", 
+                'beachLoungers': 2,
                 'row': row, 
                 'col': col
             }
             
-            print(myobj)
+            # print(myobj)
 
-            # x = requests.post(url, data = myobj)
-            # print(x.text)
+            x = requests.post(url, data = myobj)
+            print(x.text)
 
             i += 1
             if i == 103:

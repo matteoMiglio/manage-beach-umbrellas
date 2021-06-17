@@ -23,33 +23,12 @@ const actionButtonStyles = {
   backgroundColor: '#ab50e4'
 }
 
-function fakerUmbrellas() {
-  var i = 0;
-
-  const createUmbrella = () => {
-    i++;
-    return {
-      id: i,
-      paid: faker.datatype.boolean() ? null : faker.datatype.boolean(),
-      beachLoungers: faker.datatype.number(3) + 1
-    }
-  }
-  
-  const createUmbrellas = (numUmbrella = 5) => {
-    return new Array(numUmbrella)
-      .fill(undefined)
-      .map(createUmbrella);
-  }
-  
-  return createUmbrellas(120);
-}
-
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       umbrellaList: [],
-      splitRow: 14,
+      testMatrix: [],
       freeBeachLoungers: null,
       filterDate: new Date(),
       showBeachLoungers: false,
@@ -67,13 +46,16 @@ class Home extends Component {
     const filterDate = tmp.substring(0, tmp.indexOf('T'));
 
     axios
-      .get("/api/reservations/" + "?date=" + filterDate, {
+      .get("/api/test-matrix/" + "?date=" + filterDate, {
         headers: {
             'Content-Type': 'application/json',
         }
       })
-      .then((res) => this.setState({ umbrellaList: res.data }))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ testMatrix: res.data })
+      })
+      .catch((err) => console.log(err));    
 
     axios
       .get("/api/beach-loungers-count/" + "?date=" + filterDate, {
@@ -122,7 +104,6 @@ class Home extends Component {
         .then((res) => console.log(res.data));
     }
   };
-
 
   createItem = () => {
     let tmp = this.state.filterDate.toISOString();
@@ -222,6 +203,7 @@ class Home extends Component {
         <Row>
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane umbrellaList={this.state.umbrellaList}
+                             testMatrix={this.state.testMatrix}
                              splitRow={this.state.splitRow}
                              showBeachLoungers={this.state.showBeachLoungers}
                              ref={el => (this.componentRef = el)} />

@@ -8,26 +8,24 @@ class ConstantSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Constant
-        fields = ('id', 'key', 'value')
+        fields = ('id', 'key', 'value', 'created_at', 'updated_at')
 
 class UmbrellaSerializer(serializers.ModelSerializer):
-    # reservation = serializers.StringRelatedField(many=False)
-    # reservation = ReservationSerializer(many=False, read_only=True)
 
     class Meta:
         model = Umbrella
-        fields = ('id', 'description', 'row')
+        fields = ('id', 'code', 'description', 'beachLoungers', 'row', 'col', 'created_at', 'updated_at')
 
 class ReservationSerializer(serializers.ModelSerializer):
-    # umbrella = UmbrellaSerializer(many=False)
+    umbrella = UmbrellaSerializer(many=False)
 
     class Meta:
         model = Reservation
-        fields = ('id', 'umbrella', 'customer', 'date', 'beachLoungers', 'paid', 'subscription')
+        fields = ('id', 'umbrella', 'customer', 'date', 'beachLoungers', 'paid', 'subscription', 'created_at', 'updated_at')
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    # umbrella = UmbrellaSerializer(many=False)
+    umbrella = UmbrellaSerializer(many=False)
 
     class Meta:
         model = Subscription
-        fields = ('id', 'code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type', 'deposit', 'custom_period')
+        fields = ('id', 'code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type', 'deposit', 'custom_period', 'created_at', 'updated_at')

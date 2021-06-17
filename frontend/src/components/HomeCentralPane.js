@@ -9,11 +9,11 @@ class CardUmbrella extends React.Component {
     super(props);
   }
 
-  getUmbrellaColor = (paid) => {
+  getUmbrellaColor = (reservation) => {
     let color = "";
 
-    if (paid != null) {
-      if (paid) {
+    if (reservation != null) {
+      if (reservation.paid) {
         color = "red";
       } else {
         color = "orange";
@@ -29,55 +29,62 @@ class CardUmbrella extends React.Component {
   render() {
     const item = this.props.item;
     const showBeachLoungers = this.props.showBeachLoungers;
-
+    const numBeachLoungers = item.tmp_res ? item.tmp_res.beachLoungers : item.tmp_umbrella.beachLoungers;
+    const umbrellaCode = item.tmp_umbrella.code;
     const beachLoungersImages = [];
 
-    const color = this.getUmbrellaColor(item.paid);
+    var color = "";
+    if (umbrellaCode === "")
+      color = "white"
+    else
+      color = this.getUmbrellaColor(item.tmp_res);
 
-    if (item.beachLoungers == 1) {
-      beachLoungersImages.push(
-        <BeachLoungerLogo color="black" width={20} />
-      );
-    }
-    else if (item.beachLoungers == 2) {
-      beachLoungersImages.push(
-        <div style={{display: "block"}}>
-          <BeachLoungerLogo key={0} color="black" width={20} />
-          <BeachLoungerLogo key={1} color="black" width={20} />
-        </div>
-      );
-    }
-    else if (item.beachLoungers == 3) {
-      beachLoungersImages.push(
-        <div style={{display: "block"}}>
-          <BeachLoungerLogo key={0} color="black" width={20} />
-          <BeachLoungerLogo key={1} color="black" width={20} />
-        </div>
-      );
-      beachLoungersImages.push(
-        <div style={{display: "block"}}>
-          <BeachLoungerLogo key={2} color="black" width={20} />
-        </div>
-      );
-    } else {
-      beachLoungersImages.push(
-        <div style={{display: "block"}}>
-          <BeachLoungerLogo key={0} color="black" width={20} />
-          <BeachLoungerLogo key={1} color="black" width={20} />
-        </div>
-      );
-      beachLoungersImages.push(
-        <div style={{display: "block"}}>
-          <BeachLoungerLogo key={2} color="black" width={20} />
-          <BeachLoungerLogo key={3} color="black" width={20} />
-        </div>
-      );
+    if (numBeachLoungers != 0) {
+      if (numBeachLoungers == 1) {
+        beachLoungersImages.push(
+          <BeachLoungerLogo color="black" width={20} />
+        );
+      }
+      else if (numBeachLoungers == 2) {
+        beachLoungersImages.push(
+          <div style={{display: "block"}}>
+            <BeachLoungerLogo key={0} color="black" width={20} />
+            <BeachLoungerLogo key={1} color="black" width={20} />
+          </div>
+        );
+      }
+      else if (numBeachLoungers == 3) {
+        beachLoungersImages.push(
+          <div style={{display: "block"}}>
+            <BeachLoungerLogo key={0} color="black" width={20} />
+            <BeachLoungerLogo key={1} color="black" width={20} />
+          </div>
+        );
+        beachLoungersImages.push(
+          <div style={{display: "block"}}>
+            <BeachLoungerLogo key={2} color="black" width={20} />
+          </div>
+        );
+      } else {
+        beachLoungersImages.push(
+          <div style={{display: "block"}}>
+            <BeachLoungerLogo key={0} color="black" width={20} />
+            <BeachLoungerLogo key={1} color="black" width={20} />
+          </div>
+        );
+        beachLoungersImages.push(
+          <div style={{display: "block"}}>
+            <BeachLoungerLogo key={2} color="black" width={20} />
+            <BeachLoungerLogo key={3} color="black" width={20} />
+          </div>
+        );
+      }
     }
 
     return (
       <td className="p-0">
           <Card className={this.props.className}>
-            <CardTitle tag="h5" className="mb-2">{item.umbrella}</CardTitle>
+            <CardTitle tag="h5" className="mb-2">{umbrellaCode}</CardTitle>
             <div>
               <UmbrellaLogo color={color} width={40} />
             </div>
@@ -98,60 +105,34 @@ class HomeCentralPane extends React.Component {
     super(props);
   }
 
-  listToMatrix(list, elementsPerSubArray) {
-    let matrix = [], i, k;
-
-    for (i = 0, k = -1; i < list.length; i++) {
-      if (i % elementsPerSubArray === 0) {
-        k++;
-        matrix[k] = [];
-      }
-      matrix[k].push(list[i]);
-    }
-
-    return matrix;
-  }
-
   renderSingleRow = (items, showBeachLoungers) => {
     const row = [];
 
-    items.slice(0, items.length).forEach((el, index) => {
-
-      if (el.umbrella == null)
-        return;
-        
-      if (index == 7) {
+    items.slice(0, items.length).forEach((item, index) => {
+       
+      if (index == 6) {
         row.push( 
-          <td key={index+el.id} width="25px"></td>
+          <td key={index+Math.floor(Math.random() * 100)+300} width="25px"></td>
         );
       } 
 
-      row.push(<CardUmbrella item={el} key={el.id} showBeachLoungers={showBeachLoungers} className="mb-4 text-center border-0" />);
+      row.push(<CardUmbrella item={item} key={item.tmp_umbrella.id} showBeachLoungers={showBeachLoungers} className="mb-4 text-center border-0" />);
     });
 
     return row;
   }
 
   render() {
-    const splitRow = this.props.splitRow;
-    const matrix = this.listToMatrix(this.props.umbrellaList, splitRow);
     const showBeachLoungers = this.props.showBeachLoungers;
+    const testMatrix = this.props.testMatrix;
     const umbrellaTable = [];
-
-    matrix.slice(0, matrix.length).map((item, index) => {
-      // if (index == 0) {
-      //   umbrellaTable.push(
-      //     <tr key={index}>
-      //         {this.renderFirstRow(item, showBeachLoungers)}
-      //     </tr>
-      //   );        
-      // } else {
+    
+    testMatrix.slice(0, testMatrix.length).map((item, index) => {
         umbrellaTable.push(
           <tr key={index}>
               {this.renderSingleRow(item, showBeachLoungers)}
           </tr>
         );
-      // }
     });
 
     return (

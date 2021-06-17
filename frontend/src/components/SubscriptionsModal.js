@@ -113,11 +113,11 @@ export default class SubscriptionsModal extends Component {
 
   renderUmbrellaSelection = () => {
 
-    const list = this.state.umbrellaList
+    const list = this.state.umbrellaList;
 
     return list.map((item, index) => (
-      <option key={index} selected={item.id == this.state.activeItem.umbrella}>
-        {item.id}
+      <option key={index} selected={item.code == this.state.activeItem.umbrella}>
+        {item.code}
       </option>
     ));
   }

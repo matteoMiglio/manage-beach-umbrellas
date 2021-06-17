@@ -7,17 +7,16 @@ class DataRows extends React.Component {
 
     render() {
         const item = this.props.item;
+        const date = item.date;
         const state = item.paid ? (
           <span style={{color: 'blue'}}>Pagato</span>
         ) : (
           <span style={{color: 'red'}}>Da pagare</span>
         );
-    
-        const date = item.date;
 
         return (
             <tr>
-                <th scope="row">{item.umbrella ? "#" + item.umbrella : "-"}</th>
+                <th scope="row">{item.umbrella ? "#" + item.umbrella.code : "-"}</th>
                 <td>{item.beachLoungers}</td>
                 <td>{item.customer ? item.customer : "-"}</td>
                 <td>{state}</td>

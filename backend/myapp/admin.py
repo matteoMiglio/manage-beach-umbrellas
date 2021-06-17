@@ -8,7 +8,7 @@ class ConstantAdmin(admin.ModelAdmin):
     list_display = ('key', 'value')
 
 class UmbrellaAdmin(admin.ModelAdmin):
-    list_display = ('description', 'row')
+    list_display = ('code', 'description', 'beachLoungers', 'row', 'col')
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('code', 'umbrella', 'customer', 'startDate', 'endDate', 'beachLoungers', 'paid', 'type', 'deposit', 'custom_period')
