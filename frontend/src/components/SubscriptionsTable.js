@@ -31,8 +31,6 @@ class DataRows extends React.Component {
       <span style={{color: 'red'}}>Da pagare</span>
     );
 
-    console.log(item)
-
     const deposit = item.paid ? (
       <span style={{color: '#ccc'}}>{item.deposit ? item.deposit : "0"}€</span>
     ) : (
@@ -136,10 +134,16 @@ class SubscriptionsTable extends React.Component {
       /* ricerco all'interno di tutte la chiavi dell'oggetto */
       let founded = false
 
-      for (let key in item) {
-        if (String(item[key]).indexOf(searchText) != -1) {
-          founded = true
-        }
+      if (item.customer.toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
+        founded = true
+      }
+
+      if (item.umbrella.code.indexOf(searchText.toLowerCase()) != -1) {
+        founded = true
+      }
+
+      if (item.code.indexOf(searchText.toLowerCase()) != -1) {
+        founded = true
       }
 
       if (!founded)

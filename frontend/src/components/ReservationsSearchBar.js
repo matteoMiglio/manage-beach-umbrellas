@@ -66,7 +66,7 @@ class ReservationsSearchBar extends React.Component {
     const CustomInputDatePicker = React.forwardRef(
       ({ value, onClick }, ref) => (
         <Button color="info" onClick={onClick} ref={ref}>
-          {value}
+          {value.split("/")[1] + "/" + value.split("/")[0] + "/" + value.split("/")[2]}
         </Button>
       )
     );
@@ -87,7 +87,7 @@ class ReservationsSearchBar extends React.Component {
           onChange={(date) => this.handleFilterDateChange(date)}
           customInput={<CustomInputDatePicker />}
         />
-        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+        <FormGroup className="mx-2 mr-sm-2 mb-sm-0">
           <Input type="text" name="searchText" id="searchText" placeholder="Ricerca cliente"
                  value={searchText} onChange={this.handleFilterTextChange} />
         </FormGroup>

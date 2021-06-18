@@ -30,6 +30,7 @@ class Home extends Component {
       umbrellaList: [],
       testMatrix: [],
       freeBeachLoungers: null,
+      reservedUmbrella: 0,
       filterDate: new Date(),
       showBeachLoungers: false,
       modal: false,
@@ -61,6 +62,15 @@ class Home extends Component {
         }
       })
       .then((res) => this.setState({ freeBeachLoungers: res.data }))
+      .catch((err) => console.log(err));
+
+    axios
+      .get("/api/reserved-umbrella-count/" + "?date=" + filterDate, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then((res) => this.setState({ reservedUmbrella: res.data }))
       .catch((err) => console.log(err));
   };
 
@@ -174,15 +184,8 @@ class Home extends Component {
 
   render() {
 
-    let i = 0;
-    let j = 0;
-
-    this.state.umbrellaList.forEach((item) => {
-      item.umbrella != null ? j++ : j=j+0;
-      (item.umbrella != null && item.paid != null) ? i++ : i=i+0;
-    });
-    const reservedUmbrella = i;
-    const totalUmbrella = j;
+    const reservedUmbrella = this.state.reservedUmbrella;
+    const totalUmbrella = 129;
 
     return (
       <Container fluid className="pt-5">
@@ -211,6 +214,8 @@ class Home extends Component {
                            freeBeachLoungers={this.state.freeBeachLoungers} />
           </Col> */}
         </Row>
+        <Row className="mt-5"></Row>
+        <Row className="mt-4"></Row>
         {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <ReservationsModal

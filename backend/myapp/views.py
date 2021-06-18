@@ -44,6 +44,17 @@ class BeachLoungersFreeView(generics.RetrieveAPIView):
 
         return HttpResponse(total_beach_loungers - umbrella_beach_loungers_int - beach_loungers_int)
 
+class ReservedUmbrellaView(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        date = self.request.query_params.get('date')
+        
+        reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False).exclude(umbrella__code__exact="")
+
+        return HttpResponse(len(reservations))
+
+
 class PrintTicketView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):

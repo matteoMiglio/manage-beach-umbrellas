@@ -31,6 +31,7 @@ urlpatterns = [
     re_path(r'api/subscriptions/(?P<pk>[0-9]+)/$', views.SubscriptionDetail.as_view(), name='subscription-detail'),
     # re_path(r'api/umbrella-list/$', views.CustomUmbrellaList, name='umbrella-list'),
     re_path(r'api/beach-loungers-count/$', views.BeachLoungersFreeView.as_view(), name='beach-loungers-count'),
+    re_path(r'api/reserved-umbrella-count/$', views.ReservedUmbrellaView.as_view(), name='reserved-umbrella-count'),
     re_path(r'api/print-ticket/$', views.PrintTicketView.as_view(), name='print-ticket'),
     re_path(r'api/test-matrix/$', views.TMPHomeView.as_view(), name='test_matrix'),
 ]
