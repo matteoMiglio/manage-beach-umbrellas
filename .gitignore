@@ -3,3 +3,4 @@
 
 # Database
 *.sqlite3
+./backend/db.sqlite3
