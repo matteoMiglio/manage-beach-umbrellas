@@ -49,9 +49,16 @@ export default class ReservationsModal extends Component {
   }
 
   refreshList = () => {
+  
+    const date = this.state.activeItem.date;
+
     axios
-      .get("/api/umbrellas/")
-      .then((res) => this.setState({ umbrellaList: res.data }))
+      .get("/api/free-umbrella-reservation/" + "?date=" + date, {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then((res) => (this.setState({ umbrellaList: res.data })))
       .catch((err) => console.log(err));
   };
 

@@ -3,16 +3,17 @@ import HomeRightPane from "../components/HomeRightPane";
 import HomeCentralPane from "../components/HomeCentralPane";
 import HomeSearchBar from "../components/HomeSearchBar";
 import { Container, Row, Col } from 'reactstrap';
-import faker from 'faker';
 import { Fab, Action } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
-import { GrFormAdd } from "react-icons/gr";
+import { GrFormAdd, GrView } from "react-icons/gr";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import ReservationsModal from '../components/ReservationsModal';
 import { FaPrint } from "react-icons/fa";
 import ReactToPrint from 'react-to-print';
 import axios from "axios";
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import Loader from 'react-loader-spinner';
 
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
@@ -23,11 +24,29 @@ const actionButtonStyles = {
   backgroundColor: '#ab50e4'
 }
 
+const LoadingIndicator = (props) => {
+  const { promiseInProgress } = usePromiseTracker();
+
+  return (
+    promiseInProgress && 
+      <div
+        style={{
+          width: "100%",
+          height: "100",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Loader type="TailSpin" color="#774876" height={80} width={80}/>
+      </div>
+  );  
+}
+
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      umbrellaList: [],
       testMatrix: [],
       freeBeachLoungers: null,
       reservedUmbrella: 0,
@@ -46,14 +65,16 @@ class Home extends Component {
     let tmp = this.state.filterDate.toISOString();
     const filterDate = tmp.substring(0, tmp.indexOf('T'));
 
-    axios
-      .get("/api/test-matrix/" + "?date=" + filterDate, {
-        headers: {
-            'Content-Type': 'application/json',
-        }
-      })
-      .then((res) => (this.setState({ testMatrix: res.data })))
-      .catch((err) => console.log(err));    
+    trackPromise(
+      axios
+        .get("/api/get-matrix/" + "?date=" + filterDate, {
+          headers: {
+              'Content-Type': 'application/json',
+          }
+        })
+        .then((res) => (this.setState({ testMatrix: res.data })))
+        .catch((err) => console.log(err))   
+    );
 
     axios
       .get("/api/beach-loungers-count/" + "?date=" + filterDate, {
@@ -164,8 +185,8 @@ class Home extends Component {
         </Action>
         <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
                 style={actionButtonStyles}
-                onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>            
-          <BeachLoungerLogo width={25} color="white" />
+                onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>  
+          <GrView />   
         </Action>
         <Action text="Stampa piantina"
                 style={actionButtonStyles}>
@@ -185,7 +206,7 @@ class Home extends Component {
   render() {
 
     const reservedUmbrella = this.state.reservedUmbrella;
-    const totalUmbrella = 129;
+    const totalUmbrella = 128;
 
     return (
       <Container fluid className="pt-5">
@@ -202,18 +223,13 @@ class Home extends Component {
         </Row>
         <Row>
           <Col md={12} sm={12} className="px-0">
-            <HomeCentralPane umbrellaList={this.state.umbrellaList}
-                             testMatrix={this.state.testMatrix}
+            <HomeCentralPane testMatrix={this.state.testMatrix}
                              splitRow={this.state.splitRow}
                              showBeachLoungers={this.state.showBeachLoungers}
                              ref={el => (this.componentRef = el)} />
           </Col>
-          {/* <Col md={2} sm={12}>
-            <HomeRightPane totalUmbrella={this.state.umbrellaList.length}
-                           reservedUmbrella={reservedUmbrella}
-                           freeBeachLoungers={this.state.freeBeachLoungers} />
-          </Col> */}
         </Row>
+        <Row><LoadingIndicator/></Row>
         <Row className="mt-5"></Row>
         <Row className="mt-4"></Row>
         {this.renderFloatingActionButton()}

@@ -355,16 +355,7 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-# class CustomUmbrellaList(generics.ListCreateAPIView):
-# def CustomUmbrellaList(request):
-#     queryset = Reservation.objects.raw('select * from myapp_umbrella LEFT OUTER JOIN myapp_reservation ON myapp_umbrella.id = myapp_reservation.umbrella_id AND myapp_reservation.date IS "2021-05-29"')
-#     data = serialize("json", queryset, fields=('row', 'myapp_umbrella.id', 'beachLoungers', 'paid', 'date'))
-#     return JsonResponse(data, safe=False)
-
-
-# query papabili
-
-class TMPHomeView(generics.RetrieveAPIView):
+class HomeView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
 
@@ -394,4 +385,25 @@ class TMPHomeView(generics.RetrieveAPIView):
             matrix.append(row_list)
 
         json_stuff = json.dumps(matrix)    
+        return HttpResponse(json_stuff, content_type ="application/json")
+
+class FreeUmbrellaReservationView(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        date = self.request.query_params.get('date')
+
+        umbrellas = list(Umbrella.objects.exclude(code__exact=""))
+
+        reservations = Reservation.objects.filter(date__exact=date)
+
+        reserved_umbrella = []
+        for reservation in reservations:
+            reserved_umbrella.append(reservation.umbrella)
+
+        free_umbrella = set(umbrellas).difference(set(reserved_umbrella))
+
+        serializer = UmbrellaSerializer(free_umbrella, many=True)
+
+        json_stuff = json.dumps(serializer.data)    
         return HttpResponse(json_stuff, content_type ="application/json")

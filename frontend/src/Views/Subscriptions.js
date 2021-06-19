@@ -121,7 +121,7 @@ class Subscriptions extends Component {
                 startDate: item.startDate,
                 endDate: item.endDate
               }
-          
+
               axios
                 .post("/api/print-ticket/", obj)
                 .then((res) => console.log(res.data));
@@ -161,7 +161,7 @@ class Subscriptions extends Component {
           startDate: item.startDate,
           endDate: item.endDate
         }
-    
+  
         axios
           .post("/api/print-ticket/", obj)
           .then((res) => console.log(res.data));
