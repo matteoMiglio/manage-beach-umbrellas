@@ -30,6 +30,7 @@ class Subscription(models.Model):
     type = models.CharField(max_length=1, choices=SUBSCRIPTIONS_TYPE, default='S')
     custom_period = models.CharField(max_length=30, blank=True, default="")
     deposit = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
+    total = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     startDate = models.DateField(blank=True, null=True)
     endDate = models.DateField(blank=True, null=True)
     paid = models.BooleanField()

@@ -29,6 +29,7 @@ const createEmptyItem = () => {
     type: "",
     paid: false,
     deposit: null,
+    total: null,
     customDays: [],
     customMonths: [],
     // freePeriodList: []

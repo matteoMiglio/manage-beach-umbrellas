@@ -27,8 +27,37 @@ export default class SubscriptionsModal extends Component {
     this.state = {
       activeItem: this.props.activeItem,
       umbrellaList: [],
+      startDate: null,
+      endDate: null,
     };
   }
+
+  onChangeDateRange = (dates) => {
+    const [start, end] = dates;
+    const startDate = start;
+    const endDate = end;
+    this.setState({ startDate, endDate });
+
+    const activeItem = { ...this.state.activeItem };
+
+    if (startDate) {
+      let tmp = startDate.toLocaleDateString();
+      activeItem.startDate = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
+    }
+    else {
+      activeItem.startDate = null;
+    }
+
+    if (endDate) {
+      let tmp = endDate.toLocaleDateString();
+      activeItem.endDate = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
+    }
+    else{
+      activeItem.endDate = null;
+    }
+
+    this.setState({ activeItem });
+  };
 
   componentDidMount() {
     this.refreshList();
@@ -56,6 +85,17 @@ export default class SubscriptionsModal extends Component {
 
   handleChange = (e) => {
 
+    // if (e.isArray()) {
+    //   const [start, end] = e;
+    //   const startDate = start;
+    //   const endDate = end;
+    //   const activeItem = { ...this.state.activeItem, startDate, endDate };
+
+    //   console.log("Item updated: " + JSON.stringify(activeItem))
+    //   this.setState({ activeItem });
+    // }
+    // else {
+
     let name = e.target.name;
     let value = e.target.value;
 
@@ -77,6 +117,7 @@ export default class SubscriptionsModal extends Component {
 
     console.log("Item updated: " + JSON.stringify(activeItem))
     this.setState({ activeItem });
+    // }
   };
 
   handleChangeFreePeriod = (event, i) => {
@@ -134,6 +175,14 @@ export default class SubscriptionsModal extends Component {
   }
 
   render() {
+    const CustomInputDatePicker = React.forwardRef(
+      ({ value, onClick }, ref) => (
+        <Button style={{backgroundColor: "#037bfe"}} onClick={onClick} ref={ref}>
+          {value ? value : "clicca per inserire"}
+        </Button>
+      )
+    );
+
     const { toggle, onSave } = this.props;
     const title = this.props.modal_title;
     // const [startDate, endDate] = this.state.activeItem.dateRange;
@@ -183,7 +232,7 @@ export default class SubscriptionsModal extends Component {
               />
             </FormGroup>
             <Row form className="mt-4">
-              <Col sm={6}>
+              <Col sm={4}>
                 <FormGroup>
                   <div>
                     { this.state.activeItem.id ? (
@@ -195,7 +244,19 @@ export default class SubscriptionsModal extends Component {
                   </div>
                 </FormGroup>
               </Col>
-              <Col sm={{size: 4, offset: 2}}>
+              <Col sm={{size: 4}}>
+                <FormGroup>
+                  <Input
+                    type="text"
+                    id="total-id"
+                    name="total"
+                    value={this.state.activeItem.total}
+                    onChange={this.handleChange}
+                    placeholder="Totale €"
+                  />
+                </FormGroup>
+              </Col>
+              <Col sm={{size: 4}}>
                 <FormGroup>
                   <Input
                     type="text"
@@ -223,36 +284,38 @@ export default class SubscriptionsModal extends Component {
               </div>
             </FormGroup>
             {this.state.activeItem.type === "P" ? (
-              <Row form>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="startDatePeriodicSubcscription">Data Inizio</Label>
-                    <Input type="date" name="startDate" id="startDatePeriodicSubcscription"
-                           value={startDatePeriodicSubscriptions} onChange={this.handleChange} />
-                  </FormGroup>
-                </Col>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label for="endDatePeriodicSubcscription">Data Fine</Label>
-                    <Input type="date" name="endDate" id="endDatePeriodicSubcscription"
-                           value={endDatePeriodicSubscriptions} onChange={this.handleChange} />
-                  </FormGroup>
-                </Col>
-              </Row>
-              // <FormGroup row>
-              //   <Label for="exampleDate" sm={6}>Periodo dell'abbonamento</Label>
-              //   <Col sm={6}>
-              //     {/* <DatePicker
-              //       selectsRange={true}
-              //       startDate={startDate}
-              //       endDate={endDate}
-              //       locale="it"
-              //       shouldCloseOnSelect={false}
-              //       onChange={(update) => this.handlePeriodicInputChange(update)}
-              //       // isClearable={true}
-              //     /> */}
+              // <Row form>
+              //   <Col md={6}>
+              //     <FormGroup>
+              //       <Label for="startDatePeriodicSubcscription">Data Inizio</Label>
+              //       <Input type="date" name="startDate" id="startDatePeriodicSubcscription"
+              //              value={startDatePeriodicSubscriptions} onChange={this.handleChange} />
+              //     </FormGroup>
               //   </Col>
-              // </FormGroup>
+              //   <Col md={6}>
+              //     <FormGroup>
+              //       <Label for="endDatePeriodicSubcscription">Data Fine</Label>
+              //       <Input type="date" name="endDate" id="endDatePeriodicSubcscription"
+              //              value={endDatePeriodicSubscriptions} onChange={this.handleChange} />
+              //     </FormGroup>
+              //   </Col>
+              // </Row>
+              <FormGroup row>
+                <Label for="exampleDate" sm={5}>Seleziona periodo</Label>
+                <Col sm={{size: 7}}>
+                  <DatePicker
+                    dateFormat="dd/MM/yyyy"
+                    selectsRange={true}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    locale="it"
+                    customInput={<CustomInputDatePicker />}
+                    // shouldCloseOnSelect={false}
+                    // isClearable={true}
+                    onChange={this.onChangeDateRange}
+                  />
+                </Col>
+              </FormGroup>
             ) : null}
             {this.state.activeItem.type === "C" ? (
               <Row form>

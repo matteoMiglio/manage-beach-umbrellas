@@ -139,7 +139,7 @@ class SubscriptionList(generics.ListCreateAPIView):
             end_date = subscription_data['endDate'] 
 
         # with transaction.atomic():
-        new_subscription = Subscription.objects.create(umbrella=umbrella_id, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'])
+        new_subscription = Subscription.objects.create(umbrella=umbrella_id, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'], total=subscription_data['total'])
 
         new_subscription.save()
 
@@ -204,6 +204,7 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         subscription.beachLoungers = subscription_data['beachLoungers']
         subscription.customer = subscription_data['customer']
         subscription.deposit = subscription_data['deposit']
+        subscription.total = subscription_data['total']
 
         if subscription.custom_period == subscription_data['customPeriod']:
             update_period = False

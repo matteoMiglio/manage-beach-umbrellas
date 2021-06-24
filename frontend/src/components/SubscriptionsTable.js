@@ -31,6 +31,8 @@ class DataRows extends React.Component {
       <span style={{color: 'red'}}>Da pagare</span>
     );
 
+    const total = item.total ? item.total+"€" : "0€"
+
     const deposit = item.paid ? (
       <span style={{color: '#ccc'}}>{item.deposit ? item.deposit : "0"}€</span>
     ) : (
@@ -81,6 +83,7 @@ class DataRows extends React.Component {
         <td>{item.customer ? item.customer : "-"}</td>
         <td>{item.beachLoungers}</td>
         <td>{state}</td>
+        <td>{total}</td>
         <td>{deposit}</td>
         <td>{type}</td>
         <td>{validity}</td>
@@ -182,6 +185,7 @@ class SubscriptionsTable extends React.Component {
             <th>Instestatario</th>
             <th>Lettini</th>
             <th>Stato</th>
+            <th>Totale</th>
             <th>Acconto</th>
             <th>Tipo</th>
             <th>Validità</th>
