@@ -71,12 +71,7 @@ class ReservationsSearchBar extends React.Component {
       )
     );
 
-    //const filterDate = this.getDateString(this.props.filterDate);
-    const filterDate = this.props.filterDate;
-    const searchText = this.props.searchText;
-    const itemsUnpaid = this.props.itemsUnpaid;
-    const showBeachLoungers = this.props.showBeachLoungers;
-    const showUmbrellas = this.props.showUmbrellas;
+    const { filterDate, searchText, itemsUnpaid, showBeachLoungers, showUmbrellas } = this.props;
 
     return (
       <Form inline>

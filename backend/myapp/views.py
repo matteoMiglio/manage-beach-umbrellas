@@ -189,8 +189,9 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
-        if subscription_data['umbrella'] and subscription_data['umbrella'] != "null" and subscription_data['umbrella'] != None:
-            umbrella = Umbrella.objects.get(id=subscription_data['umbrella'])
+        umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
+        if umbrella_id:
+            umbrella = Umbrella.objects.get(id=umbrella_id)
         else:
             umbrella = None
 
@@ -309,8 +310,9 @@ class ReservationList(generics.ListCreateAPIView):
         reservation_data = request.data
 
         # se contiene umbrella vuol dire che è una prenotazione per un ombrellone
-        if reservation_data['umbrella'] and reservation_data['umbrella'] != "null" and reservation_data['umbrella'] != None:
-            umbrella_id = Umbrella.objects.filter(code__exact=reservation_data['umbrella']).first()
+        umbrella_selected = reservation_data.get('umbrella', None)
+        if umbrella_selected:
+            umbrella_id = Umbrella.objects.filter(code__exact=umbrella_selected).first()
         else:
             umbrella_id = None
 
@@ -334,6 +336,10 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
         reservation = Reservation.objects.get(id=reservation_data['id'])
 
+        print(str(reservation_data['umbrella']))
+
+        # if reservation.subscription:
+        #     reservation.umbrella = reservation_data['umbrella']
         reservation.customer = reservation_data['customer']
         reservation.beachLoungers = reservation_data['beachLoungers']
         reservation.paid = reservation_data['paid']

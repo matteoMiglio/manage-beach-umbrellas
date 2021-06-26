@@ -27,8 +27,8 @@ export default class SubscriptionsModal extends Component {
     this.state = {
       activeItem: this.props.activeItem,
       umbrellaList: [],
-      startDate: null,
-      endDate: null,
+      startDate: this.props.activeItem.startDate ? new Date(this.props.activeItem.startDate) : null,
+      endDate: this.props.activeItem.endDate ? new Date(this.props.activeItem.endDate) : null,
     };
   }
 
@@ -85,17 +85,6 @@ export default class SubscriptionsModal extends Component {
 
   handleChange = (e) => {
 
-    // if (e.isArray()) {
-    //   const [start, end] = e;
-    //   const startDate = start;
-    //   const endDate = end;
-    //   const activeItem = { ...this.state.activeItem, startDate, endDate };
-
-    //   console.log("Item updated: " + JSON.stringify(activeItem))
-    //   this.setState({ activeItem });
-    // }
-    // else {
-
     let name = e.target.name;
     let value = e.target.value;
 
@@ -117,7 +106,6 @@ export default class SubscriptionsModal extends Component {
 
     console.log("Item updated: " + JSON.stringify(activeItem))
     this.setState({ activeItem });
-    // }
   };
 
   handleChangeFreePeriod = (event, i) => {
@@ -157,7 +145,7 @@ export default class SubscriptionsModal extends Component {
     const list = this.state.umbrellaList;
 
     return list.map((item, index) => (
-      <option key={index} selected={item.code == this.state.activeItem.umbrella}>
+      <option key={index} selected={item.code == this.state.activeItem.umbrella.code}>
         {item.code}
       </option>
     ));

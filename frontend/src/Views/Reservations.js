@@ -3,6 +3,7 @@ import { Row, Col, Button, Container } from 'reactstrap';
 import ReservationsTable from '../components/ReservationsTable';
 import ReservationsModal from '../components/ReservationsModal';
 import ReservationsSearchBar from '../components/ReservationsSearchBar';
+import Notification from "../components/Notification";
 import Pagination from "../components/Pagination";
 import axios from "axios";
 import { Fab, Action } from 'react-tiny-fab';
@@ -25,6 +26,7 @@ class Reservations extends Component {
       itemList: [],
       currentItems: [],
       modal: false,
+      myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
       filterDate: new Date(),
       searchText: '',
       itemsUnpaid: false,
@@ -61,11 +63,6 @@ class Reservations extends Component {
     let tmp = this.state.filterDate.toISOString();
     const filterDate = tmp.substring(0, tmp.indexOf('T'));
 
-    // axios
-    //   .get("/api/reservations?date=" + filterDate)
-    //   .then((res) => this.setState({ itemList: res.data }))
-    //   .catch((err) => console.log(err));
-
     axios
       .get("/api/reservations/?date=" + filterDate)
       .then((res) => {
@@ -93,13 +90,33 @@ class Reservations extends Component {
       if (item.id) {
         axios
           .put(`/api/reservations/${item.id}/`, item)
-          .then((res) => this.refreshList());
+          .then((res) => {
+            this.refreshList();
+            
+            this.updateAlert("Modifica avvenuta con successo", "lightgreen")
+            this.toggleAlert();
+          })
+          .catch((err) => {
+            console.log(err)
+            this.updateAlert("Modifica fallita", "lightcoral");
+            this.toggleAlert();
+          });
         return;
       }
 
       axios
         .post("/api/reservations/", item)
-        .then((res) => this.refreshList());
+        .then((res) => {
+          this.refreshList();
+
+          this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
+          this.toggleAlert();
+        })
+        .catch((err) => {
+          console.log(err)
+          this.updateAlert("Inserimento fallito", "lightcoral");
+          this.toggleAlert();
+        });
     }
 
     if (method.includes("print")) {
@@ -118,6 +135,27 @@ class Reservations extends Component {
   toggle = () => {
     this.setState({ 
       modal: !this.state.modal 
+    });
+  };
+
+  updateAlert = (text, color) => {
+    var myAlert = {...this.state.myAlert};
+    myAlert.text = text;
+    myAlert.backgroundColor = color;
+    
+    this.setState({ myAlert })
+  }
+
+  toggleAlert = () => {
+    let myAlert = {...this.state.myAlert};
+    myAlert.show = !myAlert.show;
+
+    this.setState({ myAlert }, () => {
+      window.setTimeout(() => {
+        let myAlert = {...this.state.myAlert};
+        myAlert.show = !myAlert.show;
+        this.setState({ myAlert })
+      }, 4000)
     });
   };
 
@@ -148,7 +186,17 @@ class Reservations extends Component {
   deleteItem = (item) => {
     axios
       .delete(`/api/reservations/${item.id}/`)
-      .then((res) => this.refreshList());
+      .then((res) => {
+        this.updateAlert("Eliminazione avvenuta con successo", "lightgreen")
+        this.toggleAlert();
+
+        this.refreshList();
+      })
+      .catch((err) => {
+        console.log(err);
+        this.updateAlert("Eliminazione fallita", "lightcoral")
+        this.toggleAlert();
+      });
   }
 
   handleFilterDateChange = (e) => {
@@ -207,6 +255,13 @@ class Reservations extends Component {
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Prenotazioni</h1>
+        <Notification 
+          // onToggle={this.toggleAlert}
+          show={this.state.myAlert.show}
+          title={this.state.myAlert.title}
+          text={this.state.myAlert.text}
+          backgroundColor={this.state.myAlert.backgroundColor}
+        />
         <Row>
           <Col sm={{ size: 11, offset: 1}} className='mb-3'>
             <ReservationsSearchBar onFilterDateChange={this.handleFilterDateChange}

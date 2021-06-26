@@ -3,9 +3,10 @@ import SubscriptionsModal from "../components/SubscriptionsModal";
 import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
 import Pagination from "../components/Pagination";
+import Notification from "../components/Notification";
 import { Button, Container, Row, Col } from 'reactstrap';
 import axios from "axios";
-import { Fab, Action } from 'react-tiny-fab';
+import { Fab } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
 import { GrFormAdd } from "react-icons/gr";
 
@@ -24,8 +25,8 @@ const createEmptyItem = () => {
     umbrella: "",
     customer: "",
     beachLoungers: 1,
-    startDate: "",
-    endDate: "",
+    startDate: null,
+    endDate: null,
     type: "",
     paid: false,
     deposit: null,
@@ -49,6 +50,7 @@ class Subscriptions extends Component {
       showUmbrellas: false,
       showBeachLoungers: false,
       modal: false, 
+      myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
       currentPage: 1, 
       totalPages: null,
       pageLimit: 10,
@@ -113,6 +115,9 @@ class Subscriptions extends Component {
           .then((res) => {
             this.refreshList();
 
+            this.updateAlert("Modifica avvenuta con successo", "lightgreen")
+            this.toggleAlert();
+
             if (method.includes("print")) {
               const obj = {
                 type: "subscription",
@@ -127,6 +132,11 @@ class Subscriptions extends Component {
                 .post("/api/print-ticket/", obj)
                 .then((res) => console.log(res.data));
             }
+          })
+          .catch((err) => {
+            console.log(err)
+            this.updateAlert("Modifica fallita", "lightcoral");
+            this.toggleAlert();
           });
         return;
       }
@@ -136,6 +146,9 @@ class Subscriptions extends Component {
         .then((res) => {
           this.refreshList();
           
+          this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
+          this.toggleAlert();
+
           if (method.includes("print")) {
             const obj = {
               type: "subscription",
@@ -151,7 +164,12 @@ class Subscriptions extends Component {
               .then((res) => console.log(res.data));
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err)
+          this.updateAlert("Inserimento fallito", "lightcoral");
+          this.toggleAlert();
+        });
+
     } else {
       if (method.includes("print")) {
         const obj = {
@@ -218,12 +236,43 @@ class Subscriptions extends Component {
 
     axios
       .delete(`/api/subscriptions/${item.id}/`)
-      .then((res) => this.refreshList());
+      .then((res) => {
+        this.updateAlert("Eliminazione avvenuta con successo", "lightgreen")
+        this.toggleAlert();
+
+        this.refreshList();
+      })
+      .catch((err) => {
+        console.log(err);
+        this.updateAlert("Eliminazione fallita", "lightcoral")
+        this.toggleAlert();
+      });
   };
 
   toggle = () => {
     this.setState({ 
       modal: !this.state.modal 
+    });
+  };
+
+  updateAlert = (text, color) => {
+    var myAlert = {...this.state.myAlert};
+    myAlert.text = text;
+    myAlert.backgroundColor = color;
+    
+    this.setState({ myAlert })
+  }
+
+  toggleAlert = () => {
+    let myAlert = {...this.state.myAlert};
+    myAlert.show = !myAlert.show;
+
+    this.setState({ myAlert }, () => {
+      window.setTimeout(() => {
+        let myAlert = {...this.state.myAlert};
+        myAlert.show = !myAlert.show;
+        this.setState({ myAlert })
+      }, 4000)
     });
   };
 
@@ -273,6 +322,13 @@ class Subscriptions extends Component {
     return (
       <Container fluid className="pt-5">
         <h1 className="text-black text-uppercase text-center my-4">Abbonamenti</h1>
+        <Notification 
+          // onToggle={this.toggleAlert}
+          show={this.state.myAlert.show}
+          title={this.state.myAlert.title}
+          text={this.state.myAlert.text}
+          backgroundColor={this.state.myAlert.backgroundColor}
+        />
         <Row>
           <Col sm={{ size: 11, offset: 1}} className='mb-3'>
             <SubscriptionsSearchBar onFilterTextChange={this.handleFilterTextChange}

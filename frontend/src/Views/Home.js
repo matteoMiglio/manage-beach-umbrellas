@@ -9,6 +9,7 @@ import { GrFormAdd, GrView } from "react-icons/gr";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import ReservationsModal from '../components/ReservationsModal';
+import Notification from "../components/Notification";
 import { FaPrint } from "react-icons/fa";
 import ReactToPrint from 'react-to-print';
 import axios from "axios";
@@ -53,6 +54,7 @@ class Home extends Component {
       filterDate: new Date(),
       showBeachLoungers: false,
       modal: false,
+      myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""}
     };
   }
 
@@ -99,6 +101,27 @@ class Home extends Component {
     this.setState({ modal: !this.state.modal });
   };
 
+  updateAlert = (text, color) => {
+    var myAlert = {...this.state.myAlert};
+    myAlert.text = text;
+    myAlert.backgroundColor = color;
+    
+    this.setState({ myAlert })
+  }
+
+  toggleAlert = () => {
+    let myAlert = {...this.state.myAlert};
+    myAlert.show = !myAlert.show;
+
+    this.setState({ myAlert }, () => {
+      window.setTimeout(() => {
+        let myAlert = {...this.state.myAlert};
+        myAlert.show = !myAlert.show;
+        this.setState({ myAlert })
+      }, 4000)
+    });
+  };
+
   handleSubmit = (item, method) => {
     this.toggle();
 
@@ -111,13 +134,33 @@ class Home extends Component {
       if (item.id) {
         axios
           .put(`/api/reservations/${item.id}/`, item)
-          .then((res) => this.refreshList());
+          .then((res) => {
+            this.refreshList();
+
+            this.updateAlert("Modifica avvenuta con successo", "lightgreen")
+            this.toggleAlert();
+          })
+          .catch((err) => {
+            console.log(err)
+            this.updateAlert("Modifica fallita", "lightcoral");
+            this.toggleAlert();
+          });
         return;
       }
 
       axios
         .post("/api/reservations/", item)
-        .then((res) => this.refreshList());
+        .then((res) => {
+          this.refreshList();
+
+          this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
+          this.toggleAlert();
+        })
+        .catch((err) => {
+          console.log(err)
+          this.updateAlert("Inserimento fallito", "lightcoral");
+          this.toggleAlert();
+        });
     }
 
     if (method.includes("print")) {
@@ -210,6 +253,13 @@ class Home extends Component {
 
     return (
       <Container fluid className="pt-5">
+        <Notification 
+          // onToggle={this.toggleAlert}
+          show={this.state.myAlert.show}
+          title={this.state.myAlert.title}
+          text={this.state.myAlert.text}
+          backgroundColor={this.state.myAlert.backgroundColor}
+        />
         <Row>
           <Col sm={12} md={4}>
             <HomeSearchBar filterDate={this.state.filterDate}
