@@ -336,10 +336,15 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
         reservation = Reservation.objects.get(id=reservation_data['id'])
 
-        print(str(reservation_data['umbrella']))
+        umbrella_id = reservation_data.get('umbrella', {}).get('id', None)
+        if umbrella_id:
+            umbrella = Umbrella.objects.get(id=umbrella_id)
+        else:
+            umbrella = None
 
-        # if reservation.subscription:
-        #     reservation.umbrella = reservation_data['umbrella']
+        if reservation.subscription:
+            reservation.umbrella = umbrella
+            
         reservation.customer = reservation_data['customer']
         reservation.beachLoungers = reservation_data['beachLoungers']
         reservation.paid = reservation_data['paid']

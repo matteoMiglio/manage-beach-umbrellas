@@ -84,11 +84,11 @@ export default class ReservationsModal extends Component {
 
     const list = this.state.umbrellaList;
 
-    return this.state.umbrellaList.map((item) => {
-      <option key={item.id} selected={item.code == this.state.activeItem.umbrella.code}>
+    return list.map((item, index) => (
+      <option key={index} selected={item.code == this.state.activeItem.umbrella.code}>
         {item.code}
       </option>
-    });
+    ));
   }
 
   renderBeachLoungersSelection = () => {
@@ -122,6 +122,7 @@ export default class ReservationsModal extends Component {
                 <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange}>
                   <option>-</option>
                   {this.renderUmbrellaSelection()}
+                  { this.state.activeItem.id ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
                 </Input>
               </Col>
             </FormGroup>
