@@ -74,7 +74,10 @@ class Home extends Component {
               'Content-Type': 'application/json',
           }
         })
-        .then((res) => (this.setState({ testMatrix: res.data })))
+        .then((res) => {
+          this.setState({ testMatrix: res.data })
+          console.log(res.data)
+        })
         .catch((err) => console.log(err))   
     );
 

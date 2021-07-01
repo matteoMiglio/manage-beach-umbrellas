@@ -79,6 +79,7 @@ class ReservationsSearchBar extends React.Component {
           todayButton="Oggi"
           dateFormat="dd/MM/yyyy"
           locale="it"
+          calendarStartDay={1}
           selected={filterDate}
           onChange={(date) => this.handleFilterDateChange(date)}
           customInput={<CustomInputDatePicker />}

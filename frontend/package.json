@@ -21,6 +21,7 @@
     "react-promise-tracker": "^2.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "^4.0.3",
+    "react-table": "^7.7.0",
     "react-tiny-fab": "^4.0.2",
     "react-to-print": "^2.12.4",
     "styled-components": "^4.3.2",

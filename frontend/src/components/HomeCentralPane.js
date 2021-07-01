@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, ButtonDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Card, CardBody, CardText, CardTitle, CardImg } from 'reactstrap';
+import { Table, UncontrolledTooltip, Card, CardBody, CardText, CardTitle } from 'reactstrap';
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 
@@ -84,7 +84,12 @@ class CardUmbrella extends React.Component {
     return (
       <td className="p-0">
           <Card className={this.props.className}>
-            <CardTitle tag="h5" className="mb-2">{umbrellaCode}</CardTitle>
+            <CardTitle tag="h5" className="mb-2" id={"umbrella_" + item.tmp_umbrella.id}>{umbrellaCode}</CardTitle>
+            {item.tmp_res ? (
+                <UncontrolledTooltip placement="right" target={"umbrella_" + item.tmp_umbrella.id}>
+                  {item.tmp_res.customer}
+                </UncontrolledTooltip>
+              ) : null}
             <div>
               <UmbrellaLogo color={color} width={40} />
             </div>

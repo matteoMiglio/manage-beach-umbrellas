@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Card, CardTitle, CardText } from 'reactstrap';
 
-
 class HomeRightPane extends React.Component {
 
   constructor(props) {
