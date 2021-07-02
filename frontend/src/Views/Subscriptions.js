@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import SubscriptionsModal from "../components/SubscriptionsModal";
 import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
-import Pagination from "../components/Pagination";
 import Notification from "../components/Notification";
 import { Button, Container, Row, Col } from 'reactstrap';
 import axios from "axios";
@@ -234,6 +233,8 @@ class Subscriptions extends Component {
 
   deleteItem = (item) => {
 
+    this.toggle();
+
     axios
       .delete(`/api/subscriptions/${item.id}/`)
       .then((res) => {
@@ -317,6 +318,54 @@ class Subscriptions extends Component {
 
   render() {
 
+    const columns = [
+      {
+        Header: '#',
+        accessor: 'code',
+      },
+      {
+        Header: 'Ombrellone',
+        accessor: 'umbrella.code',
+      },
+      {
+        Header: 'Intestatario',
+        accessor: 'customer',
+      },
+      {
+        Header: 'Lettini',
+        accessor: 'beachLoungers',
+      },
+      {
+        Header: 'Stato',
+        accessor: 'paid',
+      },
+      {
+        Header: 'Totale',
+        accessor: 'total',
+      },
+      {
+        Header: 'Acconto',
+        accessor: 'deposit',
+      },
+      {
+        Header: 'Tipo',
+        accessor: 'type',
+      },
+      {
+        Header: 'Validità',
+        accessor: 'startDate',
+      },
+      // {
+      //   Header: 'Oggetto',
+      //   accessor: 'col2',
+      // },
+      // {
+      //   Header: 'Action',
+      //   accessor: 'col2',
+      // },
+    ]
+
+
     if (this.state.isLoading) return null;
 
     return (
@@ -342,8 +391,9 @@ class Subscriptions extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={10} sm={6} className="mx-auto p-0">
+          <Col md={12} sm={6} className="mx-auto px-4">
             <SubscriptionsTable items={this.state.currentItems}
+                                totalItems={this.state.itemList}
                                 itemsUnpaid={this.state.itemsUnpaid}
                                 searchText={this.state.searchText} 
                                 showBeachLoungers={this.state.showBeachLoungers}
@@ -352,15 +402,12 @@ class Subscriptions extends Component {
                                 onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
-        <div className="d-flex align-items-center justify-content-center">
-          <Pagination totalRecords={this.state.itemList.length} pageLimit={this.state.pageLimit} pageNeighbours={1} 
-                      onPageChanged={this.onPageChanged} />
-        </div>
         {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <SubscriptionsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
+            onDelete={this.deleteItem}
             onSave={(item, method) => this.handleSubmit(item, method)}
             modal_title={this.state.modal_title}
           />

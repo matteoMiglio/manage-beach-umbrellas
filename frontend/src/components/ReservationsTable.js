@@ -58,14 +58,11 @@ class ReservationsTable extends React.Component {
 
   render() {
 
-    const searchText = this.props.searchText;
-    const itemsUnpaid = this.props.itemsUnpaid;
-    const showBeachLoungers = this.props.showBeachLoungers;
-    const showUmbrellas = this.props.showUmbrellas;
+    const { searchText, itemsUnpaid, showBeachLoungers, showUmbrellas } = this.props;
 
     const rows = [];
 
-    this.props.items.forEach(item => {
+    this.props.items.forEach((item) => {
 
       let founded = false
 

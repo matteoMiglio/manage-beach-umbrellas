@@ -171,7 +171,7 @@ export default class SubscriptionsModal extends Component {
       )
     );
 
-    const { toggle, onSave } = this.props;
+    const { toggle, onSave, onDelete } = this.props;
     const title = this.props.modal_title;
     // const [startDate, endDate] = this.state.activeItem.dateRange;
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
@@ -406,17 +406,22 @@ export default class SubscriptionsModal extends Component {
         </ModalBody>   
         <ModalFooter>
         { this.state.activeItem.id ? (
-            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "print")}>
               {"Stampa ticket"}
             </Button>
           ) : (
-            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "save-print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "save-print")}>
               { "Crea e stampa ticket" }
             </Button>)
           }
-          <Button color="success" onClick={() => this.props.onSave(this.state.activeItem, "save")}>
+          <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
             { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
+          { this.state.activeItem.id ? (
+            <Button className="btn btn-danger" onClick={() => onDelete(this.state.activeItem)}>
+              Rimuovi
+            </Button>         
+          ) : null }  
         </ModalFooter>
       </Modal>
     );
