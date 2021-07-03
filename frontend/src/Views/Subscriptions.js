@@ -100,6 +100,14 @@ class Subscriptions extends Component {
         item.umbrella = null;
       }
 
+      if (item.total === "") {
+        item.total = null
+      }
+
+      if (item.deposit === "") {
+        item.deposit = null
+      }
+
       if (item.type === "S") {
         item.startDate = "2021-05-1";
         item.endDate = "2021-09-30";
@@ -267,6 +275,8 @@ class Subscriptions extends Component {
   toggleAlert = () => {
     let myAlert = {...this.state.myAlert};
     myAlert.show = !myAlert.show;
+
+    // this.setState({ myAlert });
 
     this.setState({ myAlert }, () => {
       window.setTimeout(() => {

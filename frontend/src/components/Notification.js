@@ -18,7 +18,7 @@ class Notification extends Component {
     const {show, backgroundColor, title, text } = this.props;
 
     return (
-      <Toast style={{position: "absolute", top: 70, right: 0, marginRight: 10, backgroundColor: backgroundColor, zIndex: 10000}} 
+      <Toast style={{position: "fixed", top: 70, right: 0, marginRight: 10, backgroundColor: backgroundColor, zIndex: 10000}} 
               isOpen={show}>
         {/* <ToastHeader toggle={this.handleToggle}> */}
         <ToastHeader>

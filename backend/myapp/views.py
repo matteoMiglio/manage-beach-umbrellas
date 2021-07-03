@@ -138,45 +138,45 @@ class SubscriptionList(generics.ListCreateAPIView):
         else: 
             end_date = subscription_data['endDate'] 
 
-        # with transaction.atomic():
-        new_subscription = Subscription.objects.create(umbrella=umbrella_id, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'], total=subscription_data['total'])
+        with transaction.atomic():
+            new_subscription = Subscription.objects.create(umbrella=umbrella_id, code=code, customer=subscription_data['customer'], beachLoungers=subscription_data['beachLoungers'], type=subscription_data['type'], endDate=end_date, startDate=start_date, paid=subscription_data['paid'], deposit=subscription_data['deposit'], custom_period=subscription_data['customPeriod'], total=subscription_data['total'])
 
-        new_subscription.save()
+            new_subscription.save()
 
-        if subscription_data['type'] == "C":
-            tmp = new_subscription.custom_period.split("-")
-            custom_days = tmp[0].split(",")
-            custom_months = tmp[1].split(",")
+            if subscription_data['type'] == "C":
+                tmp = new_subscription.custom_period.split("-")
+                custom_days = tmp[0].split(",")
+                custom_months = tmp[1].split(",")
 
-            current_year = datetime.now().year
+                current_year = datetime.now().year
 
-            for month in custom_months:
-                tuple = calendar.monthrange(current_year, int(month))
+                for month in custom_months:
+                    tuple = calendar.monthrange(current_year, int(month))
 
-                start_date = datetime(current_year, int(month), tuple[0])
-                end_date = datetime(current_year, int(month), tuple[1])
+                    start_date = datetime(current_year, int(month), tuple[0])
+                    end_date = datetime(current_year, int(month), tuple[1])
+                    delta = timedelta(days=1)
+                    
+                    while start_date <= end_date:
+
+                        if str(start_date.weekday()) in custom_days:
+                            reservation = Reservation.objects.create(umbrella=new_subscription.umbrella, date=start_date, customer=new_subscription.customer, beachLoungers=new_subscription.beachLoungers, paid=new_subscription.paid, subscription=new_subscription)
+
+                            reservation.save()
+
+                        start_date += delta
+
+            else:
+                start_date = datetime.strptime(new_subscription.startDate, '%Y-%m-%d')
+                end_date = datetime.strptime(new_subscription.endDate, '%Y-%m-%d')
                 delta = timedelta(days=1)
-                
                 while start_date <= end_date:
 
-                    if str(start_date.weekday()) in custom_days:
-                        reservation = Reservation.objects.create(umbrella=new_subscription.umbrella, date=start_date, customer=new_subscription.customer, beachLoungers=new_subscription.beachLoungers, paid=new_subscription.paid, subscription=new_subscription)
+                    reservation = Reservation.objects.create(umbrella=new_subscription.umbrella, date=start_date, customer=new_subscription.customer, beachLoungers=new_subscription.beachLoungers, paid=new_subscription.paid, subscription=new_subscription)
 
-                        reservation.save()
+                    reservation.save()
 
                     start_date += delta
-
-        else:
-            start_date = datetime.strptime(new_subscription.startDate, '%Y-%m-%d')
-            end_date = datetime.strptime(new_subscription.endDate, '%Y-%m-%d')
-            delta = timedelta(days=1)
-            while start_date <= end_date:
-
-                reservation = Reservation.objects.create(umbrella=new_subscription.umbrella, date=start_date, customer=new_subscription.customer, beachLoungers=new_subscription.beachLoungers, paid=new_subscription.paid, subscription=new_subscription)
-
-                reservation.save()
-
-                start_date += delta
 
         serializer = SubscriptionSerializer(new_subscription)
 
@@ -195,54 +195,55 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             umbrella = None
 
-        subscription = Subscription.objects.get(id=subscription_data['id'])
+        with transaction.atomic():
+            subscription = Subscription.objects.get(id=subscription_data['id'])
 
-        subscription.umbrella = umbrella
-        subscription.type = subscription_data['type']
-        subscription.paid = subscription_data['paid']
-        subscription.startDate = subscription_data['startDate']
-        subscription.endDate = subscription_data['endDate']
-        subscription.beachLoungers = subscription_data['beachLoungers']
-        subscription.customer = subscription_data['customer']
-        subscription.deposit = subscription_data['deposit']
-        subscription.total = subscription_data['total']
+            subscription.umbrella = umbrella
+            subscription.type = subscription_data['type']
+            subscription.paid = subscription_data['paid']
+            subscription.startDate = subscription_data['startDate']
+            subscription.endDate = subscription_data['endDate']
+            subscription.beachLoungers = subscription_data['beachLoungers']
+            subscription.customer = subscription_data['customer']
+            subscription.deposit = subscription_data['deposit']
+            subscription.total = subscription_data['total']
 
-        if subscription.custom_period == subscription_data['customPeriod']:
-            update_period = False
-        else:
-            subscription.custom_period = subscription_data['customPeriod']
-            update_period = True
-
-        subscription.save()        
-
-        if subscription_data['type'] == "C":
-            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
-
-            if len(reservation_list) > 0:
-                for reservation in reservation_list:
-
-                    reservation.subscription = subscription
-                    reservation.customer = subscription.customer
-                    reservation.beachLoungers = subscription.beachLoungers
-                    reservation.paid = subscription.paid
-
-                    reservation.save()
-
-        else:
-            if umbrella:
-                reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.startDate, subscription.endDate])
+            if subscription.custom_period == subscription_data['customPeriod']:
+                update_period = False
             else:
-                reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.startDate, subscription.endDate])
+                subscription.custom_period = subscription_data['customPeriod']
+                update_period = True
 
-            if len(reservation_list) > 0:
-                for reservation in reservation_list:
+            subscription.save()        
 
-                    reservation.subscription = subscription
-                    reservation.customer = subscription.customer
-                    reservation.beachLoungers = subscription.beachLoungers
-                    reservation.paid = subscription.paid
+            if subscription_data['type'] == "C":
+                reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
 
-                    reservation.save()
+                if len(reservation_list) > 0:
+                    for reservation in reservation_list:
+
+                        reservation.subscription = subscription
+                        reservation.customer = subscription.customer
+                        reservation.beachLoungers = subscription.beachLoungers
+                        reservation.paid = subscription.paid
+
+                        reservation.save()
+
+            else:
+                if umbrella:
+                    reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.startDate, subscription.endDate])
+                else:
+                    reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.startDate, subscription.endDate])
+
+                if len(reservation_list) > 0:
+                    for reservation in reservation_list:
+
+                        reservation.subscription = subscription
+                        reservation.customer = subscription.customer
+                        reservation.beachLoungers = subscription.beachLoungers
+                        reservation.paid = subscription.paid
+
+                        reservation.save()
 
         serializer = SubscriptionSerializer(subscription)
 
@@ -250,7 +251,7 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
 
-        try:
+        with transaction.atomic():
             subscription = self.get_object()
 
             reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
@@ -259,9 +260,6 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
                 reservation.delete()
 
             subscription.delete()
-
-        except Http404:
-            pass
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -318,9 +316,10 @@ class ReservationList(generics.ListCreateAPIView):
 
         subscription = reservation_data.get('subscription', None)
 
-        reservation = Reservation.objects.create(umbrella=umbrella_id, date=reservation_data['date'], customer=reservation_data['customer'], beachLoungers=reservation_data['beachLoungers'], paid=reservation_data['paid'], subscription=subscription)
+        with transaction.atomic():
+            reservation = Reservation.objects.create(umbrella=umbrella_id, date=reservation_data['date'], customer=reservation_data['customer'], beachLoungers=reservation_data['beachLoungers'], paid=reservation_data['paid'], subscription=subscription)
 
-        reservation.save()
+            reservation.save()
 
         serializer = ReservationSerializer(reservation)
 
@@ -334,23 +333,24 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
         reservation_data = request.data
 
-        reservation = Reservation.objects.get(id=reservation_data['id'])
-
         umbrella_id = reservation_data.get('umbrella', {}).get('id', None)
         if umbrella_id:
             umbrella = Umbrella.objects.get(id=umbrella_id)
         else:
             umbrella = None
 
-        if reservation.subscription:
-            reservation.umbrella = umbrella
-            
-        reservation.customer = reservation_data['customer']
-        reservation.beachLoungers = reservation_data['beachLoungers']
-        reservation.paid = reservation_data['paid']
-        reservation.date = reservation_data['date']
+        with transaction.atomic():
+            reservation = Reservation.objects.get(id=reservation_data['id'])
 
-        reservation.save()
+            if reservation.subscription:
+                reservation.umbrella = umbrella
+                
+            reservation.customer = reservation_data['customer']
+            reservation.beachLoungers = reservation_data['beachLoungers']
+            reservation.paid = reservation_data['paid']
+            reservation.date = reservation_data['date']
+
+            reservation.save()
     
         serializer = ReservationSerializer(reservation)
 
@@ -358,13 +358,10 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
 
-        try:
+        with transaction.atomic():
             reservation = self.get_object()
             reservation.delete()
-
-        except Http404:
-            pass
-
+            
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class HomeView(generics.RetrieveAPIView):

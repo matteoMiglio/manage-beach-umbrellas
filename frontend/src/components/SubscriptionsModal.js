@@ -85,22 +85,44 @@ export default class SubscriptionsModal extends Component {
 
   handleChange = (e) => {
 
-    let name = e.target.name;
-    let value = e.target.value;
+    let { name, value, checked, type } = e.target;
 
+    // scelta multipla del giorno - abbonamento personalizzato
     if (name === "customDays") {
       let days = this.state.activeItem.customDays;
-      days.push(value);
-      value = days;
+      if (checked) {
+        days.push(value);
+      } else {
+        const index = days.indexOf(value);
+        if (index > -1) {
+          days.splice(index, 1);
+        }
+      }
+      value = days.sort();
     }
 
-    if (e.target.type === "select-multiple") {
+    // scelta multipla del mese - abbonamento personalizzato
+    if (type === "select-multiple") {
       value = Array.from(e.target.selectedOptions, option => option.value);
     }
 
-    if (e.target.type === "checkbox" && name != "customDays") {
-      value = e.target.checked;
+    if (type === "checkbox" && name != "customDays") {
+      value = checked;
     }
+
+    // if (type === "radio") {
+    //   if (value === "P") {
+    //     const activeItem = { ...this.state.activeItem, customDays: [], customMonths: [] };
+    //     console.log("Item updated: " + JSON.stringify(activeItem))
+    //     this.setState({ activeItem });
+    //   }
+
+    //   if (value === "C") {
+    //     const activeItem = { ...this.state.activeItem, startDate: null, endDate: null };
+    //     console.log("Item updated: " + JSON.stringify(activeItem))
+    //     this.setState({ activeItem });
+    //   }
+    // }
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
@@ -177,9 +199,8 @@ export default class SubscriptionsModal extends Component {
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
-    const customDays = this.state.activeItem.customDays;
-    const customMonths = this.state.activeItem.customMonths;
-
+    const { customDays, customMonths } = this.state.activeItem;
+    
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>{title}</ModalHeader>
@@ -293,6 +314,7 @@ export default class SubscriptionsModal extends Component {
                 <Col sm={{size: 7}}>
                   <DatePicker
                     dateFormat="dd/MM/yyyy"
+                    calendarStartDay={1}
                     selectsRange={true}
                     startDate={this.state.startDate}
                     endDate={this.state.endDate}

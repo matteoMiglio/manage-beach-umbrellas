@@ -306,7 +306,7 @@ class SubscriptionsTable extends React.Component {
         founded = true
       }
 
-      if (item.umbrella && item.umbrella.code.indexOf(searchText.toLowerCase()) != -1) {
+      if (item.umbrella && item.umbrella.code.indexOf(searchText.toUpperCase()) != -1) {
         founded = true
       }
 
