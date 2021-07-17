@@ -193,8 +193,7 @@ export default class SubscriptionsModal extends Component {
       )
     );
 
-    const { toggle, onSave, onDelete } = this.props;
-    const title = this.props.modal_title;
+    const { toggle, onSave, onDelete, modalTitle } = this.props;
     // const [startDate, endDate] = this.state.activeItem.dateRange;
     const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
@@ -203,7 +202,7 @@ export default class SubscriptionsModal extends Component {
     
     return (
       <Modal isOpen={true} toggle={toggle}>
-        <ModalHeader toggle={toggle}>{title}</ModalHeader>
+        <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
         <ModalBody>
           <Form>
             {this.state.activeItem.code ? (

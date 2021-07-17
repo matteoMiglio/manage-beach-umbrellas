@@ -133,11 +133,11 @@ class HomeCentralPane extends React.Component {
     const umbrellaTable = [];
     
     testMatrix.slice(0, testMatrix.length).map((item, index) => {
-        umbrellaTable.push(
-          <tr key={index}>
-              {this.renderSingleRow(item, showBeachLoungers)}
-          </tr>
-        );
+      umbrellaTable.push(
+        <tr key={index}>
+          {this.renderSingleRow(item, showBeachLoungers)}
+        </tr>
+      );
     });
 
     return (

@@ -85,7 +85,7 @@ export default class ReservationsModal extends Component {
     const list = this.state.umbrellaList;
 
     return list.map((item, index) => (
-      <option key={index} selected={item.code == this.state.activeItem.umbrella.code}>
+      <option key={index} selected={this.state.activeItem.umbrella ? item.code == this.state.activeItem.umbrella.code : null}>
         {item.code}
       </option>
     ));
@@ -103,11 +103,11 @@ export default class ReservationsModal extends Component {
   }
 
   render() {
-    const title = this.props.modal_title;
+    const { toggle, onSave, onDelete, modalTitle } = this.props;
 
     return (
-      <Modal isOpen={true} toggle={this.props.toggle}>
-        <ModalHeader toggle={this.props.toggle}>{title}</ModalHeader>
+      <Modal isOpen={true} toggle={toggle}>
+        <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
         <ModalBody>
           <Form>
             { this.state.activeItem.id ? (
@@ -122,7 +122,7 @@ export default class ReservationsModal extends Component {
                 <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange}>
                   <option>-</option>
                   {this.renderUmbrellaSelection()}
-                  { this.state.activeItem.id ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
+                  { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
                 </Input>
               </Col>
             </FormGroup>
@@ -163,17 +163,22 @@ export default class ReservationsModal extends Component {
         </ModalBody>   
         <ModalFooter>
           { this.state.activeItem.id ? (
-            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "print")}>
               {"Stampa ticket"}
             </Button>
           ) : (
-            <Button color="secondary" onClick={() => this.props.onSave(this.state.activeItem, "save-print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "save-print")}>
               { "Crea e stampa ticket" }
             </Button>)
           }
-          <Button color="success" onClick={() => this.props.onSave(this.state.activeItem, "save")}>
+          <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
             { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
+          { this.state.activeItem.id && !this.state.activeItem.subscription ? (
+            <Button className="btn btn-danger" onClick={() => onDelete(this.state.activeItem)}>
+              Rimuovi
+            </Button>         
+          ) : null }  
         </ModalFooter>
       </Modal>
     );

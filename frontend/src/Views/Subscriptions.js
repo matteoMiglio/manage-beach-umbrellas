@@ -220,7 +220,7 @@ class Subscriptions extends Component {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
-      modal_title: "Crea nuovo abbonamento" 
+      modalTitle: "Crea nuovo abbonamento" 
     });
   };
 
@@ -235,7 +235,7 @@ class Subscriptions extends Component {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
-      modal_title: "Modifica abbonamento" 
+      modalTitle: "Modifica abbonamento" 
     });
   };
 
@@ -401,9 +401,8 @@ class Subscriptions extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={12} sm={6} className="mx-auto px-4">
-            <SubscriptionsTable items={this.state.currentItems}
-                                totalItems={this.state.itemList}
+          <Col sm={12} className="px-4">
+            <SubscriptionsTable totalItems={this.state.itemList}
                                 itemsUnpaid={this.state.itemsUnpaid}
                                 searchText={this.state.searchText} 
                                 showBeachLoungers={this.state.showBeachLoungers}
@@ -417,9 +416,9 @@ class Subscriptions extends Component {
           <SubscriptionsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
-            onDelete={this.deleteItem}
             onSave={(item, method) => this.handleSubmit(item, method)}
-            modal_title={this.state.modal_title}
+            onDelete={this.deleteItem}
+            modalTitle={this.state.modalTitle}
           />
         ) : null}
       </Container>

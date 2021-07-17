@@ -189,11 +189,7 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
-        umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
-        if umbrella_id:
-            umbrella = Umbrella.objects.get(id=umbrella_id)
-        else:
-            umbrella = None
+        umbrella = subscription_data.get('umbrella', None)
 
         with transaction.atomic():
             subscription = Subscription.objects.get(id=subscription_data['id'])
@@ -271,7 +267,10 @@ class ReservationList(generics.ListCreateAPIView):
         queryset = Reservation.objects.all()
 
         date = self.request.query_params.get('date')
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
         umbrella_id = self.request.query_params.get('umbrella')
+        umbrella_code = self.request.query_params.get('umbrella_code')
         paid = self.request.query_params.get('paid')
         subscription = self.request.query_params.get('subscription')
         customer = self.request.query_params.get('customer')
@@ -281,10 +280,14 @@ class ReservationList(generics.ListCreateAPIView):
         try:
             if date is not None:
                 queryset = queryset.filter(date__exact=date)
+            if start_date is not None and end_date is not None:
+                queryset = queryset.filter(date__range=[start_date, end_date])
             if single is not None:
                 queryset = queryset.exclude(paid__isnull=True)
             if umbrella_id is not None:
                 queryset = queryset.filter(umbrella__exact=umbrella_id)
+            if umbrella_code is not None:
+                queryset = queryset.filter(umbrella__code__exact=umbrella_code)
             if paid is not None:
                 queryset = queryset.filter(paid__exact=paid)
             if subscription is not None:
@@ -333,11 +336,9 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 
         reservation_data = request.data
 
-        umbrella_id = reservation_data.get('umbrella', {}).get('id', None)
-        if umbrella_id:
-            umbrella = Umbrella.objects.get(id=umbrella_id)
-        else:
-            umbrella = None
+        print(reservation_data)
+
+        umbrella = reservation_data.get('umbrella', None)
 
         with transaction.atomic():
             reservation = Reservation.objects.get(id=reservation_data['id'])

@@ -67,12 +67,6 @@ class Reservations extends Component {
       .get("/api/reservations/?date=" + filterDate)
       .then((res) => {
         this.setState({ itemList: res.data });
-        axios
-          .get(`/api/reservations/?date=${filterDate}&page=${this.state.currentPage}&limit=${this.state.pageLimit}&single=y`)
-          .then(response => {
-            const currentItems = response.data;
-            this.setState({ currentItems });
-          });
       })
       .catch((err) => console.log(err))
       .finally(() => (this.setState({ isLoading: false })))
@@ -171,7 +165,7 @@ class Reservations extends Component {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
-      modal_title: "Crea nuova prenotazione" 
+      modalTitle: "Crea nuova prenotazione" 
     });
   };
 
@@ -179,11 +173,14 @@ class Reservations extends Component {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
-      modal_title: "Modifica prenotazione" 
+      modalTitle: "Modifica prenotazione" 
     });
   };
 
   deleteItem = (item) => {
+
+    this.toggle();
+
     axios
       .delete(`/api/reservations/${item.id}/`)
       .then((res) => {
@@ -278,7 +275,7 @@ class Reservations extends Component {
         </Row>
         <Row>
           <Col md={10} sm={6} className="mx-auto p-0">
-            <ReservationsTable items={this.state.currentItems}
+            <ReservationsTable totalItems={this.state.itemList}
                                searchText={this.state.searchText} 
                                itemsUnpaid={this.state.itemsUnpaid}
                                showBeachLoungers={this.state.showBeachLoungers}
@@ -287,17 +284,14 @@ class Reservations extends Component {
                                onDeleteButtonClick={this.deleteItem} />
           </Col>
         </Row>
-        <div className="d-flex align-items-center justify-content-center">
-          <Pagination totalRecords={this.state.itemList.filter(item => item.paid != null ? item : null).length} pageLimit={this.state.pageLimit} pageNeighbours={1} 
-                      onPageChanged={this.onPageChanged} />
-        </div>
         {this.renderFloatingActionButton()}
         {this.state.modal ? (
           <ReservationsModal
             activeItem={this.state.activeItem}
             toggle={this.toggle}
             onSave={(item, method) => this.handleSubmit(item, method)}
-            modal_title={this.state.modal_title}
+            onDelete={this.deleteItem}
+            modalTitle={this.state.modalTitle}
           />
         ) : null}
       </Container>

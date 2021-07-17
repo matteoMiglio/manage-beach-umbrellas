@@ -2,38 +2,8 @@ import React, { Component } from "react";
 import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
-
-class DataRows extends React.Component {
-
-    render() {
-        const item = this.props.item;
-        const date = item.date;
-        const state = item.paid ? (
-          <span style={{color: 'blue'}}>Pagato</span>
-        ) : (
-          <span style={{color: 'red'}}>Da pagare</span>
-        );
-
-        return (
-            <tr>
-                <th scope="row">{item.umbrella ? "#" + item.umbrella.code : "-"}</th>
-                <td>{item.beachLoungers}</td>
-                <td>{item.customer ? item.customer : "-"}</td>
-                <td>{state}</td>
-                <td>{date}</td>
-                <td>{item.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />}</td>
-                <td>
-                    <Button className="btn btn-secondary mr-2" size="sm" onClick={() => this.props.editItem(item)}>
-                        Modifica
-                    </Button>
-                    <Button className="btn btn-danger" size="sm" onClick={() => this.props.deleteItem(item)}>
-                        Rimuovi
-                    </Button>
-                </td>
-            </tr>
-        );
-    }
-}
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import MyTable from "./Table";
 
 class ReservationsTable extends React.Component {
 
@@ -42,31 +12,80 @@ class ReservationsTable extends React.Component {
     this.handleEditItem = this.handleEditItem.bind(
       this
     );
-
-    this.handleDeleteItem = this.handleDeleteItem.bind(
-      this
-    );
   }
 
   handleEditItem(e) {
-    this.props.onEditButtonClick(e);
-  }
-  
-  handleDeleteItem(e) {
-    this.props.onDeleteButtonClick(e);
+    this.props.onEditButtonClick(e.original);
   }
 
   render() {
 
-    const { searchText, itemsUnpaid, showBeachLoungers, showUmbrellas } = this.props;
+    const { totalItems, searchText, itemsUnpaid, showBeachLoungers, showUmbrellas, showNoSubscription } = this.props;
 
-    const rows = [];
+    // console.log(totalItems)
 
-    this.props.items.forEach((item) => {
+    const columns = [
+      {
+        Header: 'Ombrellone',
+        accessor: 'umbrella.code',
+        Cell: (row) => {
+          return <span style={{fontWeight: 'bold'}}>{row.row.original.umbrella ? "#" + row.row.original.umbrella.code : "-"}</span>;
+        }
+      },
+      {
+        Header: 'Lettini',
+        accessor: 'beachLoungers',
+      },
+      {
+        Header: 'Intestatario',
+        accessor: 'customer',
+      },
+      {
+        Header: 'Stato',
+        accessor: 'paid',
+        Cell: (row) => {
+          const state = row.row.original.paid ? (
+            <span style={{color: 'blue'}}>Pagato</span>
+          ) : (
+            <span style={{color: 'red'}}>Da pagare</span>
+          );
+          return state;
+        }
+      },
+      {
+        Header: 'Data',
+        accessor: 'date',
+        Cell: (row) => {
+          return row.row.original.date
+        }
+      },
+      {
+        Header: 'Oggetto',
+        accessor: 'endDate',
+        Cell: (row) => {
+          return row.row.original.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />
+        }
+      },
+      {
+        Header: 'Abbonamento',
+        accessor: 'subscription',
+        Cell: (row) => {
+          return row.row.original.subscription ? <FaCheckCircle /> : <FaTimesCircle />
+        }
+      },
+    ]
+
+    const filteredItems = [];
+
+    totalItems.forEach((item) => {
 
       let founded = false
 
       if (item.customer.toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
+        founded = true
+      }
+
+      if (item.umbrella && item.umbrella.code.indexOf(searchText.toUpperCase()) != -1) {
         founded = true
       }
 
@@ -75,6 +94,11 @@ class ReservationsTable extends React.Component {
 
       if ((item.paid == null) || (itemsUnpaid && item.paid)) {
         return;
+      }
+
+      if (showNoSubscription) {
+        if (item.subscription != null)
+          return;
       }
 
       if (showUmbrellas) {
@@ -87,33 +111,11 @@ class ReservationsTable extends React.Component {
         return;
       }
 
-      rows.push(
-        <DataRows
-          item={item}
-          key={item.id}
-          editItem={this.handleEditItem}
-          deleteItem={this.handleDeleteItem}
-        />
-      );
+      filteredItems.push(item);
     });
 
     return (
-      <Table responsive>
-        <thead align="center">
-          <tr>
-            <th>Ombrellone</th>
-            <th>Lettini</th>
-            <th>Instestatario</th>
-            <th>Stato</th>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody align="center">
-          {rows}
-        </tbody>
-      </Table>
+      <MyTable data={filteredItems} columns={columns} handleEditItem={(e) => this.handleEditItem(e)} />
     );
   }
 }
