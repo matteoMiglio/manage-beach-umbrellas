@@ -277,7 +277,6 @@ class Home extends Component {
         <Row>
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane testMatrix={this.state.testMatrix}
-                             splitRow={this.state.splitRow}
                              showBeachLoungers={this.state.showBeachLoungers}
                              ref={el => (this.componentRef = el)} />
           </Col>

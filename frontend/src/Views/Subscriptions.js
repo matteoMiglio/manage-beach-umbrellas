@@ -62,29 +62,12 @@ class Subscriptions extends Component {
     this.refreshList();
   }
 
-  onPageChanged = data => {
-    const { currentPage, totalPages, pageLimit } = data;
-  
-    axios
-      .get(`/api/subscriptions?page=${currentPage}&limit=${pageLimit}`)
-      .then(response => {
-        const currentItems = response.data;
-        this.setState({ currentPage, currentItems, totalPages });
-      });
-  }
-
   refreshList = () => {
     
     axios
       .get("/api/subscriptions/")
       .then((res) => {
         this.setState({ itemList: res.data })
-        axios
-          .get(`/api/subscriptions?page=${this.state.currentPage}&limit=${this.state.pageLimit}`)
-          .then(response => {
-            const currentItems = response.data;
-            this.setState({ currentItems });
-          });
       })
       .catch((err) => console.log(err))
       .finally(() => (this.setState({ isLoading: false })))
@@ -327,54 +310,6 @@ class Subscriptions extends Component {
   };
 
   render() {
-
-    const columns = [
-      {
-        Header: '#',
-        accessor: 'code',
-      },
-      {
-        Header: 'Ombrellone',
-        accessor: 'umbrella.code',
-      },
-      {
-        Header: 'Intestatario',
-        accessor: 'customer',
-      },
-      {
-        Header: 'Lettini',
-        accessor: 'beachLoungers',
-      },
-      {
-        Header: 'Stato',
-        accessor: 'paid',
-      },
-      {
-        Header: 'Totale',
-        accessor: 'total',
-      },
-      {
-        Header: 'Acconto',
-        accessor: 'deposit',
-      },
-      {
-        Header: 'Tipo',
-        accessor: 'type',
-      },
-      {
-        Header: 'Validità',
-        accessor: 'startDate',
-      },
-      // {
-      //   Header: 'Oggetto',
-      //   accessor: 'col2',
-      // },
-      // {
-      //   Header: 'Action',
-      //   accessor: 'col2',
-      // },
-    ]
-
 
     if (this.state.isLoading) return null;
 

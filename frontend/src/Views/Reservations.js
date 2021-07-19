@@ -43,21 +43,6 @@ class Reservations extends Component {
     this.refreshList();
   }
 
-  onPageChanged = data => {
-
-    let tmp = this.state.filterDate.toISOString();
-    const filterDate = tmp.substring(0, tmp.indexOf('T'));
-
-    const { currentPage, totalPages, pageLimit } = data;
-  
-    axios
-      .get(`/api/reservations/?date=${filterDate}&page=${currentPage}&limit=${pageLimit}&single=y`)
-      .then(response => {
-        const currentItems = response.data;
-        this.setState({ currentPage, currentItems, totalPages });
-      });
-  }
-
   refreshList = () => {
 
     let tmp = this.state.filterDate.toISOString();

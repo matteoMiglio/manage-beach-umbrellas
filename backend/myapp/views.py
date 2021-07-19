@@ -153,7 +153,7 @@ class SubscriptionList(generics.ListCreateAPIView):
                 for month in custom_months:
                     tuple = calendar.monthrange(current_year, int(month))
 
-                    start_date = datetime(current_year, int(month), tuple[0])
+                    start_date = datetime(current_year, int(month), 1)
                     end_date = datetime(current_year, int(month), tuple[1])
                     delta = timedelta(days=1)
                     
