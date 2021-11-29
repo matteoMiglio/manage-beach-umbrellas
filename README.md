@@ -13,7 +13,7 @@ I focused on developing to deliver the app as fast as I could. So, I didn't care
 
 There is no authentication to access the app.
 
-## Technologies Used
+## 🧰 Technologies Used
 
 * Front-end: React 
 * Back-end: Django
