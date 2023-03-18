@@ -8,8 +8,8 @@ def main():
 
     url = 'http://localhost:8000/api/reservations/'    
 
-    start_date = date(2021, 5, 1)
-    end_date = date(2021, 9, 30)
+    start_date = date(2023, 5, 1)
+    end_date = date(2023, 9, 30)
     delta = timedelta(days=1)
     while start_date <= end_date:
 
@@ -17,16 +17,16 @@ def main():
 
             myobj = {'date': start_date.strftime('%Y-%m-%d'),
                     'umbrella': i, 
-                    'paid': "null", 
+                    'paid': False, 
                     'subscription': None, 
-                    'beachLoungers': 1
+                    'sunbeds': 1,
+                    'customer': "test"
             }
 
             x = requests.post(url, data = myobj)
             print(x.text)
 
         start_date += delta
-
 
 if __name__ == '__main__':
     main()

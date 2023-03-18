@@ -173,12 +173,12 @@ export default class SubscriptionsModal extends Component {
     ));
   }
 
-  renderBeachLoungersSelection = () => {
+  renderSunbedsSelection = () => {
 
-    const beachLoungersList = [1,2,3,4,5]
+    const sunbedsList = [1,2,3,4,5]
 
-    return beachLoungersList.map((item) => (
-      <option key={item} selected={item == this.state.activeItem.beachLoungers}>
+    return sunbedsList.map((item) => (
+      <option key={item} selected={item == this.state.activeItem.sunbeds}>
         {item}
       </option>
     ));
@@ -223,8 +223,8 @@ export default class SubscriptionsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Lettini</Label>
               <Col sm={6}>
-                <Input type="select" name="beachLoungers" id="beach_loungers-id" onChange={this.handleChange}>
-                  {this.renderBeachLoungersSelection()}
+                <Input type="select" name="sunbeds" id="sunbeds-id" onChange={this.handleChange}>
+                  {this.renderSunbedsSelection()}
                 </Input>
               </Col>
             </FormGroup>

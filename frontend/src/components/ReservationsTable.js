@@ -20,7 +20,7 @@ class ReservationsTable extends React.Component {
 
   render() {
 
-    const { totalItems, searchText, itemsUnpaid, showBeachLoungers, showUmbrellas, showNoSubscription } = this.props;
+    const { totalItems, searchText, itemsUnpaid, showSunbeds, showUmbrellas, showNoSubscription } = this.props;
 
     // console.log(totalItems)
 
@@ -34,7 +34,7 @@ class ReservationsTable extends React.Component {
       },
       {
         Header: 'Lettini',
-        accessor: 'beachLoungers',
+        accessor: 'sunbeds',
       },
       {
         Header: 'Intestatario',
@@ -106,7 +106,7 @@ class ReservationsTable extends React.Component {
         return;
       }
 
-      if (showBeachLoungers) {
+      if (showSunbeds) {
         if (item.umbrella != null)
         return;
       }

@@ -23,7 +23,7 @@ const createEmptyItem = () => {
     code: null,
     umbrella: "",
     customer: "",
-    beachLoungers: 1,
+    sunbeds: 1,
     startDate: null,
     endDate: null,
     type: "",
@@ -47,7 +47,7 @@ class Subscriptions extends Component {
       searchText: '',
       itemsUnpaid: false,
       showUmbrellas: false,
-      showBeachLoungers: false,
+      showSunbeds: false,
       modal: false, 
       myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
       currentPage: 1, 
@@ -92,8 +92,8 @@ class Subscriptions extends Component {
       }
 
       if (item.type === "S") {
-        item.startDate = "2021-05-1";
-        item.endDate = "2021-09-30";
+        item.startDate = "2023-05-1";
+        item.endDate = "2023-09-30";
       }
 
       if (item.paid === "on")
@@ -111,7 +111,7 @@ class Subscriptions extends Component {
             if (method.includes("print")) {
               const obj = {
                 type: "subscription",
-                beachLoungers: item.beachLoungers,
+                sunbeds: item.sunbeds,
                 umbrella: item.umbrella,
                 code: item.code,
                 startDate: item.startDate,
@@ -142,7 +142,7 @@ class Subscriptions extends Component {
           if (method.includes("print")) {
             const obj = {
               type: "subscription",
-              beachLoungers: item.beachLoungers,
+              sunbeds: item.sunbeds,
               umbrella: item.umbrella,
               code: res.data.code,
               startDate: item.startDate,
@@ -164,7 +164,7 @@ class Subscriptions extends Component {
       if (method.includes("print")) {
         const obj = {
           type: "subscription",
-          beachLoungers: item.beachLoungers,
+          sunbeds: item.sunbeds,
           umbrella: item.umbrella,
           code: item.code,
           startDate: item.startDate,
@@ -184,7 +184,7 @@ class Subscriptions extends Component {
     // if (method.includes("print")) {
     //   const obj = {
     //     type: "subscription",
-    //     beachLoungers: item.beachLoungers,
+    //     sunbeds: item.sunbeds,
     //     umbrella: item.umbrella,
     //     // code: item.code,
     //     startDate: item.startDate,
@@ -289,10 +289,10 @@ class Subscriptions extends Component {
     });
   }
 
-  handleShowBeachLoungersChange = (el) => {
+  handleShowSunbedsChange = (el) => {
 
     this.setState({
-      showBeachLoungers: el,
+      showSunbeds: el,
     });
   }
 
@@ -328,10 +328,10 @@ class Subscriptions extends Component {
             <SubscriptionsSearchBar onFilterTextChange={this.handleFilterTextChange}
                                     onUnpaidItemsChange={this.handleShowUnpaidChange} 
                                     onShowUmbrellasChange={this.handleShowUmbrellaChange} 
-                                    onShowBeachLoungersChange={this.handleShowBeachLoungersChange} 
+                                    onShowSunbedsChange={this.handleShowSunbedsChange} 
                                     itemsPaid={this.state.itemsPaid}
                                     searchText={this.state.searchText}
-                                    showBeachLoungers={this.state.showBeachLoungers}
+                                    showSunbeds={this.state.showSunbeds}
                                     showUmbrellas={this.state.showUmbrellas} />
           </Col>
         </Row>
@@ -340,7 +340,7 @@ class Subscriptions extends Component {
             <SubscriptionsTable totalItems={this.state.itemList}
                                 itemsUnpaid={this.state.itemsUnpaid}
                                 searchText={this.state.searchText} 
-                                showBeachLoungers={this.state.showBeachLoungers}
+                                showSunbeds={this.state.showSunbeds}
                                 showUmbrellas={this.state.showUmbrellas} 
                                 onEditButtonClick={this.editItem} 
                                 onDeleteButtonClick={this.deleteItem} />

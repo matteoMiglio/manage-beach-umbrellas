@@ -31,7 +31,7 @@ class SubscriptionsTable extends Component {
 
   render() {
 
-    const { searchText, itemsUnpaid, showBeachLoungers, showUmbrellas, totalItems } = this.props;
+    const { searchText, itemsUnpaid, showSunbeds, showUmbrellas, totalItems } = this.props;
 
     // console.log(totalItems)
 
@@ -52,7 +52,7 @@ class SubscriptionsTable extends Component {
       },
       {
         Header: 'Lettini',
-        accessor: 'beachLoungers',
+        accessor: 'sunbeds',
       },
       {
         Header: 'Intestatario',
@@ -118,11 +118,11 @@ class SubscriptionsTable extends Component {
           switch (row.row.original.type) {
             case "S": 
               type = "Stagionale";
-              validity = row.row.original.startDate + " -> " + row.row.original.endDate
+              validity = row.row.original.start_date + " -> " + row.row.original.end_date
               break;
             case "P":
               type = "Periodo";
-              validity = row.row.original.startDate + " -> " + row.row.original.endDate
+              validity = row.row.original.start_date + " -> " + row.row.original.end_date
               break;
             case "C":
               type = "Personalizzato";
@@ -193,7 +193,7 @@ class SubscriptionsTable extends Component {
           return;
       }
 
-      if (showBeachLoungers) {
+      if (showSunbeds) {
         if (item.umbrella != null)
           return;
       }

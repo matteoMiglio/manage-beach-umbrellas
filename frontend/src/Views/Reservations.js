@@ -31,7 +31,7 @@ class Reservations extends Component {
       searchText: '',
       itemsUnpaid: false,
       showUmbrellas: false,
-      showBeachLoungers: false,
+      showSunbeds: false,
       currentPage: 1, 
       totalPages: null,
       pageLimit: 10,
@@ -101,7 +101,7 @@ class Reservations extends Component {
     if (method.includes("print")) {
       const obj = {
         type: "reservation",
-        beachLoungers: item.beachLoungers,
+        sunbeds: item.sunbeds,
         umbrella: item.umbrella
       }
   
@@ -143,7 +143,7 @@ class Reservations extends Component {
     const newDate = tmp.substring(0, tmp.indexOf('T'));
     const item = { umbrella: "", 
                   customer: "",
-                  beachLoungers: 1,
+                  sunbeds: 1,
                   date: newDate, 
                   paid: false };
 
@@ -210,10 +210,10 @@ class Reservations extends Component {
     });
   }
 
-  handleShowBeachLoungersChange = (el) => {
+  handleShowSunbedsChange = (el) => {
 
     this.setState({
-      showBeachLoungers: el,
+      showSunbeds: el,
     });
   }
 
@@ -250,11 +250,11 @@ class Reservations extends Component {
                                    onFilterTextChange={this.handleFilterTextChange}
                                    onUnpaidItemsChange={this.handleShowUnpaidChange} 
                                    onShowUmbrellasChange={this.handleShowUmbrellaChange} 
-                                   onShowBeachLoungersChange={this.handleShowBeachLoungersChange} 
+                                   onShowSunbedsChange={this.handleShowSunbedsChange} 
                                    filterDate={this.state.filterDate}
                                    itemsUnpaid={this.state.itemsUnpaid}
                                    searchText={this.state.searchText}
-                                   showBeachLoungers={this.state.showBeachLoungers}
+                                   showSunbeds={this.state.showSunbeds}
                                    showUmbrellas={this.state.showUmbrellas} />
           </Col>
         </Row>
@@ -263,7 +263,7 @@ class Reservations extends Component {
             <ReservationsTable totalItems={this.state.itemList}
                                searchText={this.state.searchText} 
                                itemsUnpaid={this.state.itemsUnpaid}
-                               showBeachLoungers={this.state.showBeachLoungers}
+                               showSunbeds={this.state.showSunbeds}
                                showUmbrellas={this.state.showUmbrellas} 
                                onEditButtonClick={this.editItem} 
                                onDeleteButtonClick={this.deleteItem} />

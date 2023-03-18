@@ -24,7 +24,7 @@ class ReservationsSearchBar extends React.Component {
     this.handleShowUmbrellasChange = this.handleShowUmbrellasChange.bind(
       this
     );
-    this.handleShowBeachLoungersChange = this.handleShowBeachLoungersChange.bind(
+    this.handleShowSunbedsChange = this.handleShowSunbedsChange.bind(
       this
     );
   }
@@ -45,8 +45,8 @@ class ReservationsSearchBar extends React.Component {
     this.props.onShowUmbrellasChange(e.target.checked);
   }
 
-  handleShowBeachLoungersChange(e) {
-    this.props.onShowBeachLoungersChange(e.target.checked);
+  handleShowSunbedsChange(e) {
+    this.props.onShowSunbedsChange(e.target.checked);
   }
 
   getDateString(date) {
@@ -71,7 +71,7 @@ class ReservationsSearchBar extends React.Component {
       )
     );
 
-    const { filterDate, searchText, itemsUnpaid, showBeachLoungers, showUmbrellas } = this.props;
+    const { filterDate, searchText, itemsUnpaid, showSunbeds, showUmbrellas } = this.props;
 
     return (
       <Form inline>
@@ -97,8 +97,8 @@ class ReservationsSearchBar extends React.Component {
                        onChange={this.handleShowUmbrellasChange} label="Mostra solo ombrelloni" />
         </FormGroup>
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
-          <CustomInput type="switch" id="showBeachLoungers" name="showBeachLoungers" checked={showBeachLoungers}
-                       onChange={this.handleShowBeachLoungersChange} label="Mostra solo lettini" />
+          <CustomInput type="switch" id="showSunbeds" name="showSunbeds" checked={showSunbeds}
+                       onChange={this.handleShowSunbedsChange} label="Mostra solo lettini" />
         </FormGroup>
       </Form>
     );

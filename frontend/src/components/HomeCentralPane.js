@@ -28,10 +28,10 @@ class CardUmbrella extends React.Component {
 
   render() {
     const item = this.props.item;
-    const showBeachLoungers = this.props.showBeachLoungers;
-    const numBeachLoungers = item.tmp_res ? item.tmp_res.beachLoungers : item.tmp_umbrella.beachLoungers;
+    const showSunbeds = this.props.showSunbeds;
+    const numSunbeds = item.tmp_res ? item.tmp_res.sunbeds : item.tmp_umbrella.sunbeds;
     const umbrellaCode = item.tmp_umbrella.code;
-    const beachLoungersImages = [];
+    const sunbedsImages = [];
 
     var color = "";
     if (umbrellaCode === "")
@@ -39,40 +39,40 @@ class CardUmbrella extends React.Component {
     else
       color = this.getUmbrellaColor(item.tmp_res);
 
-    if (numBeachLoungers != 0) {
-      if (numBeachLoungers == 1) {
-        beachLoungersImages.push(
+    if (numSunbeds != 0) {
+      if (numSunbeds == 1) {
+        sunbedsImages.push(
           <BeachLoungerLogo color="black" width={20} />
         );
       }
-      else if (numBeachLoungers == 2) {
-        beachLoungersImages.push(
+      else if (numSunbeds == 2) {
+        sunbedsImages.push(
           <div style={{display: "block"}}>
             <BeachLoungerLogo key={0} color="black" width={20} />
             <BeachLoungerLogo key={1} color="black" width={20} />
           </div>
         );
       }
-      else if (numBeachLoungers == 3) {
-        beachLoungersImages.push(
+      else if (numSunbeds == 3) {
+        sunbedsImages.push(
           <div style={{display: "block"}}>
             <BeachLoungerLogo key={0} color="black" width={20} />
             <BeachLoungerLogo key={1} color="black" width={20} />
           </div>
         );
-        beachLoungersImages.push(
+        sunbedsImages.push(
           <div style={{display: "block"}}>
             <BeachLoungerLogo key={2} color="black" width={20} />
           </div>
         );
       } else {
-        beachLoungersImages.push(
+        sunbedsImages.push(
           <div style={{display: "block"}}>
             <BeachLoungerLogo key={0} color="black" width={20} />
             <BeachLoungerLogo key={1} color="black" width={20} />
           </div>
         );
-        beachLoungersImages.push(
+        sunbedsImages.push(
           <div style={{display: "block"}}>
             <BeachLoungerLogo key={2} color="black" width={20} />
             <BeachLoungerLogo key={3} color="black" width={20} />
@@ -93,9 +93,9 @@ class CardUmbrella extends React.Component {
             <div>
               <UmbrellaLogo color={color} width={40} />
             </div>
-            {showBeachLoungers ? (            
+            {showSunbeds ? (            
               <div>
-                {beachLoungersImages}
+                {sunbedsImages}
               </div>
             ) : null}
           </Card>
@@ -110,7 +110,7 @@ class HomeCentralPane extends React.Component {
     super(props);
   }
 
-  renderSingleRow = (items, showBeachLoungers) => {
+  renderSingleRow = (items, showSunbeds) => {
     const row = [];
 
     items.slice(0, items.length).forEach((item, index) => {
@@ -121,21 +121,21 @@ class HomeCentralPane extends React.Component {
         );
       } 
 
-      row.push(<CardUmbrella item={item} key={item.tmp_umbrella.id} showBeachLoungers={showBeachLoungers} className="mb-4 text-center border-0" />);
+      row.push(<CardUmbrella item={item} key={item.tmp_umbrella.id} showSunbeds={showSunbeds} className="mb-4 text-center border-0" />);
     });
 
     return row;
   }
 
   render() {
-    const showBeachLoungers = this.props.showBeachLoungers;
+    const showSunbeds = this.props.showSunbeds;
     const testMatrix = this.props.testMatrix;
     const umbrellaTable = [];
     
     testMatrix.slice(0, testMatrix.length).map((item, index) => {
       umbrellaTable.push(
         <tr key={index}>
-          {this.renderSingleRow(item, showBeachLoungers)}
+          {this.renderSingleRow(item, showSunbeds)}
         </tr>
       );
     });

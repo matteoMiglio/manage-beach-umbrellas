@@ -11,7 +11,7 @@ class HomeRightPane extends React.Component {
     const totalUmbrella = parseInt(this.props.totalUmbrella);
     const reservedUmbrella = parseInt(this.props.reservedUmbrella);
     const freeUmbrella = totalUmbrella - reservedUmbrella;
-    const freeBeachLoungers = this.props.freeBeachLoungers;
+    const freeSunbeds = this.props.freeSunbeds;
 
     return (
       <Row className="my-4">
@@ -36,7 +36,7 @@ class HomeRightPane extends React.Component {
         <Col md="3">
           <Card className='text-center' body>
             <CardTitle tag="h6">Lettini Liberi</CardTitle>
-            <CardText>{freeBeachLoungers}</CardText>
+            <CardText>{freeSunbeds}</CardText>
           </Card>
         </Col>
       </Row>

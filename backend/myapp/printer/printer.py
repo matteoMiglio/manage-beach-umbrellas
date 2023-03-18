@@ -12,7 +12,7 @@ class Printer():
         self.logo_image = os.path.join(os.path.dirname(__file__), "./images/Logo_512.png")
         self.tz = pytz.timezone('Europe/Rome')
 
-    def print_subscription(self, umbrella_number, beach_loungers, code, start_date, end_date):
+    def print_subscription(self, umbrella_number, sunbeds, code, start_date, end_date):
 
         start_date_dt = datetime.strptime(start_date, '%Y-%m-%d')
         end_date_dt =datetime.strptime(end_date, '%Y-%m-%d')
@@ -24,23 +24,23 @@ class Printer():
 
         # TITLE
         dummy.set(align='center', text_type="B", width=2, height=2)
-        dummy.text('\nAbbonamento #' + str(code))
+        dummy.text(f"\nAbbonamento #{code}")
     
         #BODY
         dummy.set(align='center', width=1, height=1)
         dummy.text("\n\n")
 
         if umbrella_number != None:
-            dummy.text("\nOmbrellone: #" + str(umbrella_number) + "\n")
+            dummy.text(f"\nOmbrellone: #{umbrella_number}\n")
 
-        dummy.text("\nLettini: " + str(beach_loungers) + "\n")
-        dummy.text("\nData di inizio: " + str(start_date_dt.strftime("%d/%m/%Y")) + "\n")
-        dummy.text("\nData di fine: " + str(end_date_dt.strftime("%d/%m/%Y")) + "\n")
+        dummy.text(f"\nLettini: {sunbeds}\n")
+        dummy.text(f"\nData di inizio: {start_date_dt.strftime('%d/%m/%Y')}\n")
+        dummy.text(f"\nData di fine: {end_date_dt.strftime('%d/%m/%Y')}\n")
 
         # DATETIME
         now = datetime.now(self.tz)
         dt_string = now.strftime("%H:%M %d/%m/%Y")
-        dummy.text("\n\n" + str(dt_string) + "\n\n")
+        dummy.text(f"\n\n{dt_string}\n\n")
 
         # FOOTER
         dummy.set(align='center', text_type="B", width=1, height=2)
@@ -50,7 +50,7 @@ class Printer():
 
         self.printer_network._raw(dummy.output)
 
-    def print_reservation(self, umbrella_number, beach_loungers):
+    def print_reservation(self, umbrella_number, sunbeds):
 
         dummy = Dummy()
 
@@ -62,14 +62,14 @@ class Printer():
         dummy.text("\n\n")
 
         if umbrella_number != None:
-            dummy.text("\nOmbrellone: #" + str(umbrella_number) + "\n")
+            dummy.text(f"\nOmbrellone: #{umbrella_number}\n")
 
-        dummy.text("\nLettini: " + str(beach_loungers) + "\n")
+        dummy.text(f"\nLettini: {sunbeds}\n")
 
         # DATETIME
         now = datetime.now()
         dt_string = now.strftime("%H:%M %d/%m/%Y")
-        dummy.text("\n\n" + str(dt_string) + "\n\n")
+        dummy.text(f"\n\n{dt_string}\n\n")
 
         # FOOTER
 

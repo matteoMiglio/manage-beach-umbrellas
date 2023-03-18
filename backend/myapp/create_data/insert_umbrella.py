@@ -26,9 +26,9 @@ def main():
             myobj = {
                 'code': "1B", 
                 'description': "", 
-                'beachLoungers': 2,
+                'sunbeds': 2,
                 'row': j, 
-                'col': col
+                'column': col
             }
             x = requests.post(url, data = myobj)
             print(x.text)
@@ -39,9 +39,9 @@ def main():
                 myobj = {
                     'code': "2B", 
                     'description': "", 
-                    'beachLoungers': 2,
+                    'sunbeds': 2,
                     'row': j, 
-                    'col': col
+                    'column': col
                 }
                 x = requests.post(url, data = myobj)
                 print(x.text)
@@ -52,9 +52,9 @@ def main():
                     myobj = {
                         'code': "12B", 
                         'description': "", 
-                        'beachLoungers': 2,
+                        'sunbeds': 2,
                         'row': j, 
-                        'col': col
+                        'column': col
                     }
                     x = requests.post(url, data = myobj)
                     print(x.text)
@@ -65,9 +65,9 @@ def main():
                         myobj = {
                             'code': "13B", 
                             'description': "", 
-                            'beachLoungers': 2,
+                            'sunbeds': 2,
                             'row': j, 
-                            'col': col
+                            'column': col
                         }
                         x = requests.post(url, data = myobj)
                         print(x.text)
@@ -77,9 +77,9 @@ def main():
         myobj = {
             'code': "", 
             'description': "",
-            'beachLoungers': 0, 
+            'sunbeds': 0, 
             'row': j, 
-            'col': col
+            'column': col
         }
 
         x = requests.post(url, data = myobj)
@@ -98,9 +98,9 @@ def main():
                 myobj = {
                     'code': "", 
                     'description': "", 
-                    'beachLoungers': 0,
+                    'sunbeds': 0,
                     'row': row, 
-                    'col': col
+                    'column': col
                 }
                 x = requests.post(url, data = myobj)
                 print(x.text)
@@ -110,9 +110,9 @@ def main():
                 myobj = {
                     'code': "", 
                     'description': "", 
-                    'beachLoungers': 0,
+                    'sunbeds': 0,
                     'row': row, 
-                    'col': col
+                    'column': col
                 }
                 x = requests.post(url, data = myobj)
                 print(x.text)
@@ -122,9 +122,9 @@ def main():
                 myobj = {
                     'code': "", 
                     'description': "", 
-                    'beachLoungers': 0,
+                    'sunbeds': 0,
                     'row': row, 
-                    'col': col
+                    'column': col
                 }
                 x = requests.post(url, data = myobj)
                 print(x.text)
@@ -134,9 +134,9 @@ def main():
                 myobj = {
                     'code': "", 
                     'description': "", 
-                    'beachLoungers': 0,
+                    'sunbeds': 0,
                     'row': row, 
-                    'col': col
+                    'column': col
                 }
                 x = requests.post(url, data = myobj)
                 print(x.text)
@@ -145,9 +145,9 @@ def main():
             myobj = {
                 'code': i, 
                 'description': "", 
-                'beachLoungers': 2,
+                'sunbeds': 2,
                 'row': row, 
-                'col': col
+                'column': col
             }
             
             # print(myobj)

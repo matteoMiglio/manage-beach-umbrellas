@@ -49,10 +49,10 @@ class Home extends Component {
     super(props);
     this.state = {
       testMatrix: [],
-      freeBeachLoungers: null,
+      freeSunbeds: null,
       reservedUmbrella: 0,
       filterDate: new Date(),
-      showBeachLoungers: false,
+      showSunbeds: false,
       modal: false,
       myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""}
     };
@@ -82,12 +82,12 @@ class Home extends Component {
     );
 
     axios
-      .get("/api/beach-loungers-count/" + "?date=" + filterDate, {
+      .get("/api/sunbeds-count/" + "?date=" + filterDate, {
         headers: {
             'Content-Type': 'application/json',
         }
       })
-      .then((res) => this.setState({ freeBeachLoungers: res.data }))
+      .then((res) => this.setState({ freeSunbeds: res.data }))
       .catch((err) => console.log(err));
 
     axios
@@ -169,7 +169,7 @@ class Home extends Component {
     if (method.includes("print")) {
       const obj = {
         type: "reservation",
-        beachLoungers: item.beachLoungers,
+        sunbeds: item.sunbeds,
         umbrella: item.umbrella
       }
   
@@ -184,7 +184,7 @@ class Home extends Component {
     const newDate = tmp.substring(0, tmp.indexOf('T'));
     const item = { umbrella: "", 
                    customer: "",
-                   beachLoungers: 1,
+                   sunbeds: 1,
                    date: newDate, 
                    paid: false };
 
@@ -229,9 +229,9 @@ class Home extends Component {
                 onClick={() => this.createItem()}>            
           <BeachLoungerLogo width={25} color="white" />
         </Action>
-        <Action text={this.state.showBeachLoungers ? "Nascondi lettini" : "Mostra lettini"}
+        <Action text={this.state.showSunbeds ? "Nascondi lettini" : "Mostra lettini"}
                 style={actionButtonStyles}
-                onClick={() => this.setState({showBeachLoungers: !this.state.showBeachLoungers})}>  
+                onClick={() => this.setState({showSunbeds: !this.state.showSunbeds})}>  
           <GrView />   
         </Action>
         <Action text="Stampa piantina"
@@ -241,7 +241,7 @@ class Home extends Component {
               return <FaPrint />;
             }}
             documentTitle={"Planimetria_" + this.state.filterDate.toLocaleDateString()}
-            onBeforeGetContent={() => this.setState({showBeachLoungers: true})}
+            onBeforeGetContent={() => this.setState({showSunbeds: true})}
             content={() => this.componentRef}
           />
         </Action>
@@ -271,13 +271,13 @@ class Home extends Component {
           <Col sm={12} md={8}>
             <HomeRightPane totalUmbrella={totalUmbrella}
                            reservedUmbrella={reservedUmbrella}
-                           freeBeachLoungers={this.state.freeBeachLoungers} />
+                           freeSunbeds={this.state.freeSunbeds} />
           </Col>
         </Row>
         <Row>
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane testMatrix={this.state.testMatrix}
-                             showBeachLoungers={this.state.showBeachLoungers}
+                             showSunbeds={this.state.showSunbeds}
                              ref={el => (this.componentRef = el)} />
           </Col>
         </Row>

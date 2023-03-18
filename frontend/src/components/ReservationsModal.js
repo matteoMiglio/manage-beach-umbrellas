@@ -91,12 +91,12 @@ export default class ReservationsModal extends Component {
     ));
   }
 
-  renderBeachLoungersSelection = () => {
+  renderSunbedsSelection = () => {
 
-    const beachLoungersList = [1,2,3,4,5] // max numero di lettini concessi per ombrellone
+    const sunbedsList = [1,2,3,4,5] // max numero di lettini concessi per ombrellone
 
-    return beachLoungersList.map((item) => (
-      <option key={item} selected={item == this.state.activeItem.beachLoungers}>
+    return sunbedsList.map((item) => (
+      <option key={item} selected={item == this.state.activeItem.sunbeds}>
         {item}
       </option>
     ));
@@ -104,6 +104,8 @@ export default class ReservationsModal extends Component {
 
   render() {
     const { toggle, onSave, onDelete, modalTitle } = this.props;
+
+    const input_disabled = this.state.activeItem.subscription ? true : false;
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -116,21 +118,27 @@ export default class ReservationsModal extends Component {
                 <Label sm={6}>{this.state.activeItem.id}</Label>
               </FormGroup> 
             ) : null}
+            { this.state.activeItem.subscription ? (
+              <FormGroup row>
+                <Label sm={6}>Codice Abbonamento</Label>
+                <Label sm={6}>{this.state.activeItem.subscription}</Label>
+              </FormGroup> 
+            ) : null}            
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
-                <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange}>
+                <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.umbrella}>
                   <option>-</option>
-                  {this.renderUmbrellaSelection()}
+                  { this.renderUmbrellaSelection() }
                   { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
                 </Input>
               </Col>
             </FormGroup>
             <FormGroup row>
-              <Label for="beachLoungers" sm={6}>Lettini</Label>
+              <Label for="sunbeds" sm={6}>Lettini</Label>
               <Col sm={6}>
-                <Input type="select" name="beachLoungers" id="beach_loungers-id" onChange={this.handleChange}>
-                  {this.renderBeachLoungersSelection()}
+                <Input type="select" name="sunbeds" id="sunbeds-id" onChange={this.handleChange} disabled={input_disabled}>
+                  { this.renderSunbedsSelection() }
                 </Input>
               </Col>
             </FormGroup>
@@ -143,20 +151,21 @@ export default class ReservationsModal extends Component {
                 value={this.state.activeItem.customer}
                 onChange={this.handleChange}
                 placeholder="Immetti nome cliente"
+                disabled={input_disabled}
               />
             </FormGroup>
             <FormGroup row>
               <Label sm={6} for="date">Data</Label>
               <Col sm={6}>
-                <Input type="date" name="date" id="date" value={this.state.activeItem.date} onChange={this.handleChange} />
+                <Input type="date" name="date" id="date" value={this.state.activeItem.date} onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.umbrella} />
               </Col>
             </FormGroup>
             <FormGroup>
               { this.state.activeItem.id ? (
                 <CustomInput type="switch" id="switch-paid" name="paid" label="Pagato"
-                  defaultChecked={this.state.activeItem.paid} onChange={this.handleChange} />
+                  defaultChecked={this.state.activeItem.paid} onChange={this.handleChange} disabled={input_disabled} />
               ) : (
-                <CustomInput type="switch" id="switch-paid" name="paid" label="Pagato" onChange={this.handleChange} />
+                <CustomInput type="switch" id="switch-paid" name="paid" label="Pagato" onChange={this.handleChange} disabled={input_disabled} />
               ) }
             </FormGroup>
           </Form>
@@ -171,9 +180,11 @@ export default class ReservationsModal extends Component {
               { "Crea e stampa ticket" }
             </Button>)
           }
-          <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
-            { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
-          </Button>
+          { this.state.activeItem.id && !this.state.activeItem.subscription ? (
+            <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
+              { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
+            </Button>        
+          ) : null }          
           { this.state.activeItem.id && !this.state.activeItem.subscription ? (
             <Button className="btn btn-danger" onClick={() => onDelete(this.state.activeItem)}>
               Rimuovi
