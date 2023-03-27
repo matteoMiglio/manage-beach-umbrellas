@@ -57,10 +57,6 @@ export default class ReservationsModal extends Component {
     console.log("Item updated: ");
     console.log(activeItem);
     this.setState({ activeItem });
-
-    if (name == "date"){
-      this.refreshList();
-    }
   };
 
   renderUmbrellaSelection = () => {
