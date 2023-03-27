@@ -1,11 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { Row, Col, Card, CardTitle, CardText } from 'reactstrap';
 
 class HomeRightPane extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const totalUmbrella = parseInt(this.props.totalUmbrella);

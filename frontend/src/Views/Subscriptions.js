@@ -3,7 +3,7 @@ import SubscriptionsModal from "../components/SubscriptionsModal";
 import SubscriptionsSearchBar from "../components/SubscriptionsSearchBar";
 import SubscriptionsTable from "../components/SubscriptionsTable";
 import Notification from "../components/Notification";
-import { Button, Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import axios from "axios";
 import { Fab } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
@@ -12,10 +12,6 @@ import { GrFormAdd } from "react-icons/gr";
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-}
-
-const actionButtonStyles = {
-  backgroundColor: '#ab50e4'
 }
 
 const createEmptyItem = () => {
@@ -300,7 +296,6 @@ class Subscriptions extends Component {
     return (
       <Fab
         mainButtonStyles={mainButtonStyles}
-        // actionButtonStyles={actionButtonStyles}
         icon={<GrFormAdd />}
         event="click"
         onClick={() => this.createItem()}

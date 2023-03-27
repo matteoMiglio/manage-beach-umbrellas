@@ -7,11 +7,7 @@ import {
   Row,
   Col
 } from 'reactstrap';
-import DatePicker, {
-  registerLocale,
-  setDefaultLocale,
-  getDefaultLocale
-} from "react-datepicker";
+import { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);

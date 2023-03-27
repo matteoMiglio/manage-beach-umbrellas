@@ -1,13 +1,9 @@
-import React, { Component } from "react";
-import { Table, UncontrolledTooltip, Card, CardBody, CardText, CardTitle } from 'reactstrap';
+import React from "react";
+import { Table, UncontrolledTooltip, Card, CardTitle } from 'reactstrap';
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 
 class CardUmbrella extends React.Component {
- 
-  constructor(props) {
-    super(props);
-  }
 
   getUmbrellaColor = (reservation) => {
     let color = "";
@@ -106,10 +102,6 @@ class CardUmbrella extends React.Component {
 
 class HomeCentralPane extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   renderSingleRow = (items, showSunbeds) => {
     const row = [];
 
@@ -133,7 +125,7 @@ class HomeCentralPane extends React.Component {
     const umbrellaTable = [];
     
     testMatrix.slice(0, testMatrix.length).map((item, index) => {
-      umbrellaTable.push(
+      return umbrellaTable.push(
         <tr key={index}>
           {this.renderSingleRow(item, showSunbeds)}
         </tr>

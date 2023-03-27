@@ -69,7 +69,7 @@ class Home extends Component {
 
     trackPromise(
       axios
-        .get("/api/get-matrix/" + "?date=" + filterDate, {
+        .get("/api/get-matrix/?date=" + filterDate, {
           headers: {
               'Content-Type': 'application/json',
           }
@@ -82,7 +82,7 @@ class Home extends Component {
     );
 
     axios
-      .get("/api/sunbeds-count/" + "?date=" + filterDate, {
+      .get("/api/sunbeds-count/?date=" + filterDate, {
         headers: {
             'Content-Type': 'application/json',
         }
@@ -91,7 +91,7 @@ class Home extends Component {
       .catch((err) => console.log(err));
 
     axios
-      .get("/api/reserved-umbrella-count/" + "?date=" + filterDate, {
+      .get("/api/reserved-umbrella-count/?date=" + filterDate, {
         headers: {
             'Content-Type': 'application/json',
         }

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Button, Label, Input, FormGroup, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import MyTable from "./Table";
@@ -113,19 +112,15 @@ class SubscriptionsTable extends Component {
         Header: 'Validità',
         accessor: 'startDate',
         Cell: (row) => {
-          let type = "";
           let validity = "";
           switch (row.row.original.type) {
             case "S": 
-              type = "Stagionale";
               validity = row.row.original.start_date + " -> " + row.row.original.end_date
               break;
             case "P":
-              type = "Periodo";
               validity = row.row.original.start_date + " -> " + row.row.original.end_date
               break;
             case "C":
-              type = "Personalizzato";
               var days = row.row.original.custom_period.split("-")[0].split(",")
               var months = row.row.original.custom_period.split("-")[1].split(",")
       
@@ -140,7 +135,7 @@ class SubscriptionsTable extends Component {
               else
                 validity += " nel mese di "
       
-              for(var i=0; i<months.length; i++) {
+              for(i=0; i<months.length; i++) {
                 validity += monthNames[months[i]]
                 if (i != (months.length - 1)) 
                   validity += ", "
@@ -148,7 +143,6 @@ class SubscriptionsTable extends Component {
       
               break;
             default:
-              type = "-";
               validity = "-";
           }
           return validity;

@@ -1,10 +1,7 @@
-import React, { Component, useState } from "react";
-import { Table, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
+import React, { Component } from "react";
+import { Table } from 'reactstrap';
 
 class MyCalendar extends Component {
-    constructor(props) {
-      super(props);
-    }
   
     renderSingleRow = (items, data) => {
 
@@ -59,7 +56,7 @@ class MyCalendar extends Component {
         matrix.push(days.splice(0, 7));
   
       matrix.slice(0, matrix.length).map((row, index) => {
-        calendar.push(
+        return calendar.push(
           <tr key={index} style={{ height: 90 }}>
             {this.renderSingleRow(row, data)}
           </tr>

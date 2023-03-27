@@ -1,7 +1,6 @@
 import React from 'react';
-import { Nav, Navbar, Form, FormControl } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import styled from 'styled-components';
-import Logo from '../Logo';
 
 const Styles = styled.div`
   .navbar { background-color: #784877; }

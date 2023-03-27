@@ -1,22 +1,17 @@
 import React, { Component } from "react";
-import { Row, Col, Button, Container } from 'reactstrap';
+import { Row, Col, Container } from 'reactstrap';
 import ReservationsTable from '../components/ReservationsTable';
 import ReservationsModal from '../components/ReservationsModal';
 import ReservationsSearchBar from '../components/ReservationsSearchBar';
 import Notification from "../components/Notification";
-import Pagination from "../components/Pagination";
 import axios from "axios";
-import { Fab, Action } from 'react-tiny-fab';
+import { Fab } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
-import { GrElevator, GrFormAdd } from "react-icons/gr";
+import { GrFormAdd } from "react-icons/gr";
 
 const mainButtonStyles = {
   backgroundColor: '#ab50e4',
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-}
-
-const actionButtonStyles = {
-  backgroundColor: '#ab50e4'
 }
 
 class Reservations extends Component {
@@ -221,7 +216,6 @@ class Reservations extends Component {
     return (
       <Fab
         mainButtonStyles={mainButtonStyles}
-        // actionButtonStyles={actionButtonStyles}
         icon={<GrFormAdd />}
         event="click"
         onClick={() => this.createItem()}

@@ -1,6 +1,6 @@
-import React, { Component, ForwardedRef } from "react";
-import { Form, Button, Label, Input, FormGroup } from 'reactstrap';
-import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
+import React from "react";
+import { Button } from 'reactstrap';
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);

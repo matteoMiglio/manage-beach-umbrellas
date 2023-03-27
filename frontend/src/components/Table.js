@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { Button, Table, Label, Input, FormGroup, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
-import BeachLoungerLogo from "../images/BeachLoungerLogo";
-import UmbrellaLogo from "../images/UmbrellaLogo";
+import { Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 import { useTable, usePagination } from 'react-table';
 
 function FunctionTable({ columns, data, handleEditItem }) {
@@ -22,8 +20,11 @@ function FunctionTable({ columns, data, handleEditItem }) {
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
+    // setPageSize,
+    state: { 
+      pageIndex, 
+      // pageSize 
+    },
   } = useTable(
     {
       columns,

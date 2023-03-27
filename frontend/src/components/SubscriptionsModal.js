@@ -14,8 +14,7 @@ import {
   CustomInput
 } from "reactstrap";
 import axios from "axios";
-import FormFreePeriod from "./FormFreePeriod";
-import DatePicker, { registerLocale, setDefaultLocale, getDefaultLocale } from "react-datepicker";
+import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);

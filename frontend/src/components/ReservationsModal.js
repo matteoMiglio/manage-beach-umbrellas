@@ -9,31 +9,10 @@ import {
   FormGroup,
   Input,
   Label,
-  Row,
   Col,
   CustomInput
 } from "reactstrap";
 import axios from "axios";
-
-function fakerUmbrellas() {
-  var i = 0;
-
-  const createUmbrella = () => {
-    i++;
-    return {
-      id: i,
-      position: i,
-    }
-  }
-  
-  const createUmbrellas = (numUmbrella = 5) => {
-    return new Array(numUmbrella)
-      .fill(undefined)
-      .map(createUmbrella);
-  }
-  
-  return createUmbrellas(120);
-}
 
 export default class ReservationsModal extends Component {
   constructor(props) {
@@ -53,7 +32,7 @@ export default class ReservationsModal extends Component {
     const date = this.state.activeItem.date;
 
     axios
-      .get("/api/free-umbrella-reservation/" + "?date=" + date, {
+      .get("/api/free-umbrella-reservation/?date=" + date, {
         headers: {
             'Content-Type': 'application/json',
         }
@@ -75,9 +54,13 @@ export default class ReservationsModal extends Component {
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
-    // console.log("Item updated:")
-    // console.log(activeItem);
+    console.log("Item updated: ");
+    console.log(activeItem);
     this.setState({ activeItem });
+
+    if (name == "date"){
+      this.refreshList();
+    }
   };
 
   renderUmbrellaSelection = () => {
@@ -127,7 +110,7 @@ export default class ReservationsModal extends Component {
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
-                <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.umbrella}>
+                <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.id}>
                   <option>-</option>
                   { this.renderUmbrellaSelection() }
                   { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
@@ -157,7 +140,7 @@ export default class ReservationsModal extends Component {
             <FormGroup row>
               <Label sm={6} for="date">Data</Label>
               <Col sm={6}>
-                <Input type="date" name="date" id="date" value={this.state.activeItem.date} onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.umbrella} />
+                <Input type="date" name="date" id="date" value={this.state.activeItem.date} onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.id} />
               </Col>
             </FormGroup>
             <FormGroup>
@@ -180,7 +163,7 @@ export default class ReservationsModal extends Component {
               { "Crea e stampa ticket" }
             </Button>)
           }
-          { this.state.activeItem.id && !this.state.activeItem.subscription ? (
+          { !this.state.activeItem.subscription ? (
             <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
               { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
             </Button>        

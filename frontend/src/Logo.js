@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 
 const cls1Style = {
   fill: '#574c3c'

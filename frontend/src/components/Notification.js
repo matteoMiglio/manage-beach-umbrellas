@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { Toast, ToastBody, ToastHeader } from 'reactstrap';
 
 class Notification extends Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+    // super(props);
     // this.handleToggle = this.handleToggle.bind(
     //   this
     // );
-  }
+  // }
 
   // handleToggle() {
   //   this.props.onToggle();

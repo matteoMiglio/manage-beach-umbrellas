@@ -1,5 +1,4 @@
-import React, { Component } from "react";
-import { Table, Button, Label, Input, FormGroup } from 'reactstrap';
+import React from "react";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
