@@ -32,7 +32,7 @@ export default class ReservationsModal extends Component {
     const date = this.state.activeItem.date;
 
     axios
-      .get("/api/free-umbrella-reservation/?date=" + date, {
+      .get("/api/free-umbrella-reservation?date=" + date, {
         headers: {
             'Content-Type': 'application/json',
         }

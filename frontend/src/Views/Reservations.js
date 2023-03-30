@@ -101,7 +101,7 @@ class Reservations extends Component {
       }
   
       axios
-        .post("/api/print-ticket/", obj)
+        .post("/api/printer/ticket/", obj)
         .then((res) => console.log(res.data));
     }
   };

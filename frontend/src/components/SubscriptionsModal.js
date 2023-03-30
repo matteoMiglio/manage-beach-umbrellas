@@ -19,7 +19,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);
 
-
 export default class SubscriptionsModal extends Component {
   constructor(props) {
     super(props);
@@ -111,7 +110,7 @@ export default class SubscriptionsModal extends Component {
 
     const activeItem = { ...this.state.activeItem, [name]: value };
 
-    console.log("Item updated: ");
+    console.log("Active Item updated: ");
     console.log(activeItem);
     this.setState({ activeItem });
   };
@@ -185,7 +184,7 @@ export default class SubscriptionsModal extends Component {
     const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
 
     const { customDays, customMonths } = this.state.activeItem;
-    
+
     return (
       <Modal isOpen={true} toggle={toggle}>
         <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
@@ -382,18 +381,20 @@ export default class SubscriptionsModal extends Component {
             onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} /> */}
         </ModalBody>   
         <ModalFooter>
-        { this.state.activeItem.id ? (
+          { this.state.activeItem.id ? (
             <Button color="secondary" onClick={() => onSave(this.state.activeItem, "print")}>
               {"Stampa ticket"}
             </Button>
           ) : (
             <Button color="secondary" onClick={() => onSave(this.state.activeItem, "save-print")}>
               { "Crea e stampa ticket" }
-            </Button>)
-          }
+            </Button>
+          )}
+
           <Button color="success" onClick={() => onSave(this.state.activeItem, "save")}>
             { this.state.activeItem.id ? "Salva modifiche" : "Crea" }
           </Button>
+
           { this.state.activeItem.id ? (
             <Button className="btn btn-danger" onClick={() => onDelete(this.state.activeItem)}>
               Rimuovi

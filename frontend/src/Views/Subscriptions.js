@@ -115,7 +115,7 @@ class Subscriptions extends Component {
               }
 
               axios
-                .post("/api/print-ticket/", obj)
+                .post("/api/printer/ticket/", obj)
                 .then((res) => console.log(res.data));
             }
           })
@@ -146,7 +146,7 @@ class Subscriptions extends Component {
             }
         
             axios
-              .post("/api/print-ticket/", obj)
+              .post("/api/printer/ticket/", obj)
               .then((res) => console.log(res.data));
           }
         })
@@ -168,7 +168,7 @@ class Subscriptions extends Component {
         }
   
         axios
-          .post("/api/print-ticket/", obj)
+          .post("/api/printer/ticket/", obj)
           .then((res) => console.log(res.data));
       }
     }
@@ -188,7 +188,7 @@ class Subscriptions extends Component {
     //   }
   
     //   axios
-    //     .post("/api/print-ticket/", obj)
+    //     .post("/api/printer/ticket/", obj)
     //     .then((res) => console.log(res.data));
     // }
   };

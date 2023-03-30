@@ -44,10 +44,18 @@ class ReservedUmbrellaView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
 
         date = self.request.query_params.get('date')
-        
-        reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False).exclude(umbrella__code__exact="")
+        reserved = self.request.query_params.get('reserved')
 
-        return HttpResponse(len(reservations))
+        if date:
+            if reserved and reserved == 'True':
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False).exclude(umbrella__code__exact="")
+            else:
+                # gestire questo fatto. torna 0 non va bene
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True)
+
+            return HttpResponse(len(reservations))
+        else:
+            return HttpResponse(0)
 
 class PrintTicketView(generics.CreateAPIView):
 
