@@ -252,7 +252,7 @@ class Home extends Component {
   render() {
 
     const reservedUmbrella = this.state.reservedUmbrella;
-    const totalUmbrella = 128;
+    const totalUmbrella = 90;
 
     return (
       <Container fluid className="pt-5">

@@ -8,157 +8,48 @@ def main():
 
     url = 'http://localhost:8000/api/umbrellas/'    
 
-    # for i in range(1, 121):
+    total_rows = 6
+    total_columns = 13
 
-    #     myobj = {'code': i, 
-    #             'description': "", 
-    #             'row': 0, 
-    #     }
-        
-    #     x = requests.post(url, data = myobj)
-    #     print(x.text)
+    first_group = 1
 
+    for row in range(0, total_rows):
 
-    # prima fila custom
-    j = 0
-    for col in range(0, 13):
-        if col == 0:
-            myobj = {
-                'code': "1B", 
-                'description': "", 
-                'sunbeds': 2,
-                'row': j, 
-                'column': col
-            }
-            x = requests.post(url, data = myobj)
-            print(x.text)
-            # print(myobj)
-            continue
-        else:
-            if col == 1:
-                myobj = {
-                    'code': "2B", 
-                    'description': "", 
-                    'sunbeds': 2,
-                    'row': j, 
-                    'column': col
-                }
-                x = requests.post(url, data = myobj)
-                print(x.text)
-                # print(myobj)
-                continue                
-            else:
-                if col == 11:
-                    myobj = {
-                        'code': "12B", 
-                        'description': "", 
-                        'sunbeds': 2,
-                        'row': j, 
-                        'column': col
-                    }
-                    x = requests.post(url, data = myobj)
-                    print(x.text)
-                    # print(myobj)
-                    continue                    
-                else:
-                    if col == 12:
-                        myobj = {
-                            'code': "13B", 
-                            'description': "", 
-                            'sunbeds': 2,
-                            'row': j, 
-                            'column': col
-                        }
-                        x = requests.post(url, data = myobj)
-                        print(x.text)
-                        # print(myobj)
-                        continue
-                        
-        myobj = {
-            'code': "", 
-            'description': "",
-            'sunbeds': 0, 
-            'row': j, 
-            'column': col
-        }
-
-        x = requests.post(url, data = myobj)
-        print(x.text)
-        
-        # print(myobj)
-
-
-    i = 1
-
-    for row in range(1, 12):
-
-        for col in range(0, 13):
-
-            if row in [9,10,11] and col == 0:
-                myobj = {
-                    'code': "", 
-                    'description': "", 
-                    'sunbeds': 0,
-                    'row': row, 
-                    'column': col
-                }
-                x = requests.post(url, data = myobj)
-                print(x.text)
-                continue
-
-            if row in [8,9,10,11] and (col == 4 or col == 5):
-                myobj = {
-                    'code': "", 
-                    'description': "", 
-                    'sunbeds': 0,
-                    'row': row, 
-                    'column': col
-                }
-                x = requests.post(url, data = myobj)
-                print(x.text)
-                continue
-
-            if row in [10,11] and col in [6,7,8]:
-                myobj = {
-                    'code': "", 
-                    'description': "", 
-                    'sunbeds': 0,
-                    'row': row, 
-                    'column': col
-                }
-                x = requests.post(url, data = myobj)
-                print(x.text)
-                continue
-
-            if row == 11 and col in [9,10]:
-                myobj = {
-                    'code': "", 
-                    'description': "", 
-                    'sunbeds': 0,
-                    'row': row, 
-                    'column': col
-                }
-                x = requests.post(url, data = myobj)
-                print(x.text)
-                continue
+        for col in range(0, total_columns):
 
             myobj = {
-                'code': i, 
+                'code': (total_columns*(row+1))-col, 
                 'description': "", 
                 'sunbeds': 2,
                 'row': row, 
                 'column': col
             }
             
-            # print(myobj)
-
+            print(myobj)
             x = requests.post(url, data = myobj)
-            print(x.text)
 
-            i += 1
-            if i == 103:
-                i += 1
+            first_group += 1
 
+    last_rows = 2
+    last_columns = 6
+
+    for row in range(0, last_rows):
+
+        index = first_group + (row+1)*last_columns
+        for col in range(0, last_columns):
+
+            myobj = {
+                'code': index, 
+                'description': "", 
+                'sunbeds': 2,
+                'row': row + total_rows + 1, 
+                'column': col
+            }
+            
+            print(myobj)
+            x = requests.post(url, data = myobj)
+
+            index -= 1
 
 if __name__ == '__main__':
     main()

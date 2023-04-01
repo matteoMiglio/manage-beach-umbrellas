@@ -107,7 +107,7 @@ class HomeCentralPane extends React.Component {
 
     items.slice(0, items.length).forEach((item, index) => {
        
-      if (index == 6) {
+      if (index == 7) {
         row.push( 
           <td key={index+Math.floor(Math.random() * 100)+300} width="25px"></td>
         );
