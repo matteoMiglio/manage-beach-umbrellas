@@ -78,14 +78,14 @@ class FormFreePeriod extends React.Component {
               <FormGroup>
                 <Label size="sm" for={"startDateFreePeriod" + (i+1) + "Subscription"}>Data Inizio</Label>
                 <Input size="sm" type="date" name="startDate" id={"startDateFreePeriod" + (i+1) + "Subcscription"} 
-                       value={this.getDateString(el.startDate)} onChange={this.handleChange.bind(this, i)} />
+                       value={this.getDateString(el.start_date)} onChange={this.handleChange.bind(this, i)} />
               </FormGroup>
             </Col>
             <Col sm={4}>
               <FormGroup>
                 <Label size="sm" for={"endDateFreePeriod" + (i+1) + "Subscription"}>Data Fine</Label>
                 <Input size="sm" type="date" name="endDate" id={"endDateFreePeriod" + (i+1) + "Subcscription"} 
-                       value={this.getDateString(el.endDate)} onChange={this.handleChange.bind(this, i)} />
+                       value={this.getDateString(el.end_date)} onChange={this.handleChange.bind(this, i)} />
               </FormGroup>
             </Col>
             <Col sm={{size: 3, offset: 1}}>

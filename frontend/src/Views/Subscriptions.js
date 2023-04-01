@@ -20,8 +20,8 @@ const createEmptyItem = () => {
     umbrella: "",
     customer: "",
     sunbeds: 1,
-    startDate: null,
-    endDate: null,
+    start_date: null,
+    end_date: null,
     type: "",
     paid: false,
     deposit: null,
@@ -72,8 +72,6 @@ class Subscriptions extends Component {
   handleSubmit = (item, method) => {
     this.toggle();
 
-    item['customPeriod'] = item.customDays.join(",") + "-" + item.customMonths.join(",");
-
     if (method.includes("save")) {
       if (item.umbrella === "" || item.umbrella === "-") {
         item.umbrella = null;
@@ -88,8 +86,8 @@ class Subscriptions extends Component {
       }
 
       if (item.type === "S") {
-        item.startDate = "2023-05-1";
-        item.endDate = "2023-09-30";
+        item.start_date = "2023-05-1";
+        item.end_date = "2023-09-30";
       }
 
       if (item.paid === "on")
@@ -110,8 +108,10 @@ class Subscriptions extends Component {
                 sunbeds: item.sunbeds,
                 umbrella: item.umbrella,
                 code: item.code,
-                startDate: item.startDate,
-                endDate: item.endDate
+                start_date: item.start_date,
+                end_date: item.end_date,
+                subscription_type: item.type,
+                custom_period: item.custom_period                
               }
 
               axios
@@ -141,8 +141,10 @@ class Subscriptions extends Component {
               sunbeds: item.sunbeds,
               umbrella: item.umbrella,
               code: res.data.code,
-              startDate: item.startDate,
-              endDate: item.endDate
+              start_date: item.start_date,
+              end_date: item.end_date,
+              subscription_type: item.type,
+              custom_period: item.custom_period              
             }
         
             axios
@@ -158,13 +160,16 @@ class Subscriptions extends Component {
 
     } else {
       if (method.includes("print")) {
+
         const obj = {
           type: "subscription",
           sunbeds: item.sunbeds,
           umbrella: item.umbrella,
           code: item.code,
-          startDate: item.startDate,
-          endDate: item.endDate
+          start_date: item.start_date,
+          end_date: item.end_date,
+          subscription_type: item.type,
+          custom_period: item.custom_period
         }
   
         axios
@@ -183,8 +188,8 @@ class Subscriptions extends Component {
     //     sunbeds: item.sunbeds,
     //     umbrella: item.umbrella,
     //     // code: item.code,
-    //     startDate: item.startDate,
-    //     endDate: item.endDate
+    //     start_date: item.start_date,
+    //     end_date: item.end_date
     //   }
   
     //   axios

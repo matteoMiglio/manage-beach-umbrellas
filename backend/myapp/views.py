@@ -65,21 +65,29 @@ class PrintTicketView(generics.CreateAPIView):
         
         ticket = request.data
         type = ticket.get('type')
-        umbrella_number = ticket.get('umbrella', None)
         sunbeds = ticket.get('sunbeds')
+        umbrella = ticket.get('umbrella')
+
+        if isinstance(umbrella, dict):
+            umbrella_code = umbrella.get('code')
+        else:
+            umbrella_code = umbrella
 
         if type == "reservation":
 
-            printer.print_reservation(umbrella_number, sunbeds)
+            printer.print_reservation(umbrella_code, sunbeds)
 
             return Response("OK", status=status.HTTP_200_OK)
 
         if type == "subscription":
+
+            subscription_type = ticket.get('subscription_type')
             start_date = ticket.get('start_date')
             end_date = ticket.get('end_date')
             code = ticket.get('code')
+            custom_period = ticket.get('custom_period')
 
-            printer.print_subscription(umbrella_number, sunbeds, code, start_date, end_date)
+            printer.print_subscription(umbrella_code, sunbeds, code, start_date, end_date, subscription_type, custom_period)
 
             return Response("OK", status=status.HTTP_200_OK)
 
@@ -130,15 +138,15 @@ class SubscriptionList(generics.ListCreateAPIView):
 
         code = get_random_string(length=4, allowed_chars='1234567890')
 
-        if subscription_data['startDate'] == "":
+        if subscription_data['start_date'] == "":
             start_date = None
         else:
-            start_date = subscription_data['startDate']
+            start_date = subscription_data['start_date']
 
-        if subscription_data['endDate'] == "":
+        if subscription_data['end_date'] == "":
             end_date = None
         else: 
-            end_date = subscription_data['endDate'] 
+            end_date = subscription_data['end_date'] 
 
         with transaction.atomic():
             new_subscription = Subscription.objects.create(
@@ -151,7 +159,7 @@ class SubscriptionList(generics.ListCreateAPIView):
                 start_date=start_date, 
                 paid=subscription_data['paid'], 
                 deposit=subscription_data['deposit'], 
-                custom_period=subscription_data['customPeriod'], 
+                custom_period=subscription_data.get('customPeriod', ""), 
                 total=subscription_data['total']
             )
 

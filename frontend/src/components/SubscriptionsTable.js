@@ -110,7 +110,7 @@ class SubscriptionsTable extends Component {
       },
       {
         Header: 'Validità',
-        accessor: 'startDate',
+        accessor: 'start_date',
         Cell: (row) => {
           let validity = "";
           switch (row.row.original.type) {
@@ -150,7 +150,7 @@ class SubscriptionsTable extends Component {
       },
       {
         Header: 'Oggetto',
-        accessor: 'endDate',
+        accessor: 'end_date',
         Cell: (row) => {
           return row.row.original.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />
         }

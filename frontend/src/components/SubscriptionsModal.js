@@ -25,33 +25,33 @@ export default class SubscriptionsModal extends Component {
     this.state = {
       activeItem: this.props.activeItem,
       umbrellaList: [],
-      startDate: this.props.activeItem.startDate ? new Date(this.props.activeItem.startDate) : null,
-      endDate: this.props.activeItem.endDate ? new Date(this.props.activeItem.endDate) : null,
+      start_date: this.props.activeItem.start_date ? new Date(this.props.activeItem.start_date) : null,
+      end_date: this.props.activeItem.end_date ? new Date(this.props.activeItem.end_date) : null,
     };
   }
 
   onChangeDateRange = (dates) => {
     const [start, end] = dates;
-    const startDate = start;
-    const endDate = end;
-    this.setState({ startDate, endDate });
+    const start_date = start;
+    const end_date = end;
+    this.setState({ start_date, end_date });
 
     const activeItem = { ...this.state.activeItem };
 
-    if (startDate) {
-      let tmp = startDate.toLocaleDateString();
-      activeItem.startDate = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
+    if (start_date) {
+      let tmp = start_date.toLocaleDateString();
+      activeItem.start_date = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
     }
     else {
-      activeItem.startDate = null;
+      activeItem.start_date = null;
     }
 
-    if (endDate) {
-      let tmp = endDate.toLocaleDateString();
-      activeItem.endDate = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
+    if (end_date) {
+      let tmp = end_date.toLocaleDateString();
+      activeItem.end_date = tmp.split("/")[2] + "-" + tmp.split("/")[1] + "-" + tmp.split("/")[0];
     }
     else{
-      activeItem.endDate = null;
+      activeItem.end_date = null;
     }
 
     this.setState({ activeItem });
@@ -133,7 +133,7 @@ export default class SubscriptionsModal extends Component {
 
   handleAddClickFreePeriod() {
     let freePeriodList = [...this.state.activeItem.freePeriodList];
-    freePeriodList.push({startDate: null, endDate: null});
+    freePeriodList.push({start_date: null, end_date: null});
 
     const activeItem = { ...this.state.activeItem, freePeriodList: freePeriodList};
     this.setState({ activeItem });
@@ -179,11 +179,13 @@ export default class SubscriptionsModal extends Component {
     );
 
     const { toggle, onSave, onDelete, modalTitle } = this.props;
-    // const [startDate, endDate] = this.state.activeItem.dateRange;
-    const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.startDate);
-    const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.endDate);
+    // const [start_date, end_date] = this.state.activeItem.dateRange;
+    const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.start_date);
+    const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.end_date);
 
     const { customDays, customMonths } = this.state.activeItem;
+
+    console.log(this.state.activeItem);
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -287,8 +289,8 @@ export default class SubscriptionsModal extends Component {
                     dateFormat="dd/MM/yyyy"
                     calendarStartDay={1}
                     selectsRange={true}
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
+                    startDate={this.state.start_date}
+                    endDate={this.state.end_date}
                     locale="it"
                     customInput={<CustomInputDatePicker />}
                     // shouldCloseOnSelect={false}

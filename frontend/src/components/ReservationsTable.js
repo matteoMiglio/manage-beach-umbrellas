@@ -60,7 +60,7 @@ class ReservationsTable extends React.Component {
       },
       {
         Header: 'Oggetto',
-        accessor: 'endDate',
+        accessor: 'end_date',
         Cell: (row) => {
           return row.row.original.umbrella ? <UmbrellaLogo width={25} color="black" /> : <BeachLoungerLogo width={25} color="black" />
         }

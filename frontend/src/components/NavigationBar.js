@@ -24,7 +24,7 @@ export const NavigationBar = () => (
   <Styles>
     <Navbar fixed="top" expand="md">
       {/* <Navbar.Brand href="/"><Logo /></Navbar.Brand> */}
-      <Navbar.Brand href="/">Calipso</Navbar.Brand>
+      <Navbar.Brand href="/">Palm Beach</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
