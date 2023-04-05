@@ -14,7 +14,6 @@ class Umbrella(models.Model):
 
     def _str_(self):
         return self.code
-        # return self.id
 
 class Subscription(models.Model):
     id = models.AutoField(primary_key=True)
@@ -62,6 +61,26 @@ class Constant(models.Model):
     value = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def _str_(self):
+        return self.id
+    
+class Audit(models.Model):
+    id = models.AutoField(primary_key=True)
+    message = models.TextField(blank=True)
+    EVENT_TYPE = (
+        ('A', 'add'),
+        ('D', 'delete'),
+        ('U', 'update'),
+    )
+    type = models.CharField(max_length=1, choices=EVENT_TYPE, default="A")
+    CATEGORY_TYPE = (
+        ('R', 'reservation'),
+        ('S', 'subscription'),
+        ('C', 'constant'),
+    )
+    category = models.CharField(max_length=1, choices=CATEGORY_TYPE, default="R")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def _str_(self):
         return self.id

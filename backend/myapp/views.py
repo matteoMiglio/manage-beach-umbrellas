@@ -162,8 +162,14 @@ class SubscriptionList(generics.ListCreateAPIView):
                 custom_period=subscription_data.get('customPeriod', ""), 
                 total=subscription_data['total']
             )
-
             new_subscription.save()
+
+            audit_log = Audit.objects.create(
+                message=f"È stato creato un nuovo abbonamento con ID {new_subscription.id}",
+                type="A",
+                category="S"
+            )
+            audit_log.save()
 
             if subscription_data['type'] == "C": # periodo custom, es. tutti i sabati e domeniche di ogni mese
                 tmp = new_subscription.custom_period.split("-")
@@ -225,12 +231,13 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
-        umbrella = subscription_data.get('umbrella', None)
+        umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
+        umbrella_object = Umbrella.objects.get(id=umbrella_id)
 
         with transaction.atomic():
             subscription = Subscription.objects.get(id=subscription_data['id'])
 
-            subscription.umbrella = umbrella
+            subscription.umbrella = umbrella_object
             subscription.type = subscription_data['type']
             subscription.paid = subscription_data['paid']
             subscription.start_date = subscription_data['start_date']
@@ -240,42 +247,49 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
             subscription.deposit = subscription_data['deposit']
             subscription.total = subscription_data['total']
 
-            if subscription.custom_period == subscription_data['customPeriod']:
-                update_period = False
-            else:
-                subscription.custom_period = subscription_data['customPeriod']
-                update_period = True
-
             subscription.save()        
 
-            if subscription_data['type'] == "C":
-                reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
+            audit_log = Audit.objects.create(
+                message=f"È stato modificato l'abbonamento con ID {subscription.id}",
+                type="U",
+                category="S"
+            )
+            audit_log.save()
 
-                if len(reservation_list) > 0:
-                    for reservation in reservation_list:
+            # if subscription.custom_period == subscription_data['custom_period']:
+            #     update_period = False
+            # else:
+            #     subscription.custom_period = subscription_data['custom_period']
+            #     update_period = True
 
-                        reservation.subscription = subscription
-                        reservation.customer = subscription.customer
-                        reservation.sunbeds = subscription.sunbeds
-                        reservation.paid = subscription.paid
+            # if subscription_data['type'] == "C":
+            #     reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
 
-                        reservation.save()
+            #     if len(reservation_list) > 0:
+            #         for reservation in reservation_list:
 
-            else:
-                if umbrella:
-                    reservation_list = Reservation.objects.filter(umbrella__exact=umbrella, date__range=[subscription.start_date, subscription.end_date])
-                else:
-                    reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.start_date, subscription.end_date])
+            #             reservation.subscription = subscription
+            #             reservation.customer = subscription.customer
+            #             reservation.sunbeds = subscription.sunbeds
+            #             reservation.paid = subscription.paid
 
-                if len(reservation_list) > 0:
-                    for reservation in reservation_list:
+            #             reservation.save()
 
-                        reservation.subscription = subscription
-                        reservation.customer = subscription.customer
-                        reservation.sunbeds = subscription.sunbeds
-                        reservation.paid = subscription.paid
+            # else:
+            #     if umbrella_id:
+            #         reservation_list = Reservation.objects.filter(umbrella__exact=umbrella_id, date__range=[subscription.start_date, subscription.end_date])
+            #     else:
+            #         reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.start_date, subscription.end_date])
 
-                        reservation.save()
+            #     if len(reservation_list) > 0:
+            #         for reservation in reservation_list:
+
+            #             reservation.subscription = subscription
+            #             reservation.customer = subscription.customer
+            #             reservation.sunbeds = subscription.sunbeds
+            #             reservation.paid = subscription.paid
+
+            #             reservation.save()
 
         serializer = SubscriptionSerializer(subscription)
 
@@ -292,6 +306,13 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
                 reservation.delete()
 
             subscription.delete()
+
+            audit_log = Audit.objects.create(
+                message=f"È stato cancellato l'abbonamento con ID {subscription.id}",
+                type="D",
+                category="S"
+            )
+            audit_log.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -367,6 +388,13 @@ class ReservationList(generics.ListCreateAPIView):
 
             reservation.save()
 
+            audit_log = Audit.objects.create(
+                message=f"È stata creata una nuova prenotazione con ID {reservation.id}",
+                type="A",
+                category="R"
+            )
+            audit_log.save()
+
         serializer = ReservationSerializer(reservation)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -380,7 +408,7 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
         reservation_data = request.data
 
         if reservation_data.get('subscription'):
-           print("You can't udpate a reservation that is related to a subscription") 
+           print("You can't update a reservation that is related to a subscription") 
            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             print(reservation_data)
@@ -399,7 +427,15 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
                 reservation.date = reservation_data['date']
 
                 reservation.save()
-        
+
+                audit_log = Audit.objects.create(
+                    message=f"È stato modificata la prenotazione con ID {reservation.id}",
+                    type="U",
+                    category="R"
+                )
+
+                audit_log.save()
+
             serializer = ReservationSerializer(reservation)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -412,7 +448,15 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
         else:
             with transaction.atomic():
                 reservation.delete()
-            
+
+                audit_log = Audit.objects.create(
+                    message=f"È stato cancellato la prenotazione con ID {reservation.id}",
+                    type="D",
+                    category="R"
+                )
+
+                audit_log.save()
+                
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class HomeView(generics.RetrieveAPIView):
