@@ -103,20 +103,7 @@ class Subscriptions extends Component {
             this.toggleAlert();
 
             if (method.includes("print")) {
-              const obj = {
-                type: "subscription",
-                sunbeds: item.sunbeds,
-                umbrella: item.umbrella,
-                id: item.id,
-                start_date: item.start_date,
-                end_date: item.end_date,
-                subscription_type: item.type,
-                custom_period: item.custom_period                
-              }
-
-              axios
-                .post("/api/printer/ticket/", obj)
-                .then((res) => console.log(res.data));
+              this.printTicket(item);
             }
           })
           .catch((err) => {
@@ -136,20 +123,8 @@ class Subscriptions extends Component {
           this.toggleAlert();
 
           if (method.includes("print")) {
-            const obj = {
-              type: "subscription",
-              sunbeds: item.sunbeds,
-              umbrella: item.umbrella,
-              id: res.data.id,
-              start_date: item.start_date,
-              end_date: item.end_date,
-              subscription_type: item.type,
-              custom_period: item.custom_period              
-            }
-        
-            axios
-              .post("/api/printer/ticket/", obj)
-              .then((res) => console.log(res.data));
+            item.id = res.data.id;
+            this.printTicket(item);
           }
         })
         .catch((err) => {
@@ -160,23 +135,27 @@ class Subscriptions extends Component {
 
     } else {
       if (method.includes("print")) {
-
-        const obj = {
-          type: "subscription",
-          sunbeds: item.sunbeds,
-          umbrella: item.umbrella,
-          id: item.id,
-          start_date: item.start_date,
-          end_date: item.end_date,
-          subscription_type: item.type,
-          custom_period: item.custom_period
-        }
-  
-        axios
-          .post("/api/printer/ticket/", obj)
-          .then((res) => console.log(res.data));
+        this.printTicket(item);
       }
     }
+  };
+
+  printTicket = (item) => {
+
+    const obj = {
+      type: "subscription",
+      sunbeds: item.sunbeds,
+      umbrella: item.umbrella,
+      id: item.id,
+      start_date: item.start_date,
+      end_date: item.end_date,
+      subscription_type: item.type,
+      custom_period: item.custom_period
+    }
+
+    axios
+      .post("/api/printer/ticket/", obj)
+      .then((res) => console.log(res.data));
   };
 
   createItem = () => {
