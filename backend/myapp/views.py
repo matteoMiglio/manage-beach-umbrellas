@@ -93,7 +93,7 @@ class PrintTicketView(generics.CreateAPIView):
 
 class UmbrellaView(viewsets.ModelViewSet):
     serializer_class = UmbrellaSerializer
-    queryset = Umbrella.objects.exclude(code__exact="")
+    queryset = Umbrella.objects.all().extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
 class SubscriptionList(generics.ListCreateAPIView):
     serializer_class = SubscriptionSerializer
@@ -497,17 +497,14 @@ class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 
         date = self.request.query_params.get('date')
 
-        umbrellas = list(Umbrella.objects.exclude(code__exact=""))
-
         reservations = Reservation.objects.filter(date__exact=date)
 
-        reserved_umbrella = []
-        for reservation in reservations:
-            reserved_umbrella.append(reservation.umbrella)
+        object_id_list = [reservation.umbrella.id for reservation in reservations]
 
-        free_umbrella = set(umbrellas).difference(set(reserved_umbrella))
+        free_umbrellas = Umbrella.objects.all() \
+                            .exclude(id__in=object_id_list) \
+                            .extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
-        serializer = UmbrellaSerializer(free_umbrella, many=True)
+        serializer = UmbrellaSerializer(free_umbrellas, many=True)
 
-        json_stuff = json.dumps(serializer.data)    
-        return HttpResponse(json_stuff, content_type ="application/json")
+        return Response(serializer.data, status=status.HTTP_200_OK)
