@@ -192,10 +192,10 @@ export default class SubscriptionsModal extends Component {
         <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
         <ModalBody>
           <Form>
-            {this.state.activeItem.code ? (
+            {this.state.activeItem.id ? (
               <FormGroup row>
                 <Label sm={6}>Codice Abbonamento</Label>
-                <Label sm={6}>{this.state.activeItem.code}</Label>
+                <Label sm={6}>{this.state.activeItem.id}</Label>
               </FormGroup>
             ) : null }
             <FormGroup row>

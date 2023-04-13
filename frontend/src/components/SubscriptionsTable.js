@@ -37,9 +37,9 @@ class SubscriptionsTable extends Component {
     const columns = [
       {
         Header: '#',
-        accessor: 'code',
+        accessor: 'id',
         Cell: (row) => {
-          return <span style={{fontWeight: 'bold'}}>{row.row.original.code}</span>;
+          return <span style={{fontWeight: 'bold'}}>{row.row.original.id}</span>;
         }
       },
       {
@@ -171,7 +171,7 @@ class SubscriptionsTable extends Component {
         founded = true
       }
 
-      if (item.code.indexOf(searchText.toLowerCase()) != -1) {
+      if (item.id.toString().indexOf(searchText.toLowerCase()) != -1) {
         founded = true
       }
 

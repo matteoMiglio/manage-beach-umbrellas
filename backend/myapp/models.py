@@ -17,7 +17,6 @@ class Umbrella(models.Model):
 
 class Subscription(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.CharField(max_length=4)
     umbrella = models.ForeignKey(Umbrella, on_delete=models.CASCADE, null=True, blank=True)
     customer = models.TextField(blank=True)
     sunbeds = models.PositiveSmallIntegerField(default=2)

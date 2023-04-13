@@ -16,7 +16,6 @@ const mainButtonStyles = {
 
 const createEmptyItem = () => {
   const item = {
-    code: null,
     umbrella: "",
     customer: "",
     sunbeds: 1,
@@ -93,6 +92,7 @@ class Subscriptions extends Component {
       if (item.paid === "on")
         item.paid = true;
 
+      // se esiste l'ID vuol dire che l'abbonamento esiste già e faccio un update
       if (item.id) {
         axios
           .put(`/api/subscriptions/${item.id}/`, item)
@@ -107,7 +107,7 @@ class Subscriptions extends Component {
                 type: "subscription",
                 sunbeds: item.sunbeds,
                 umbrella: item.umbrella,
-                code: item.code,
+                id: item.id,
                 start_date: item.start_date,
                 end_date: item.end_date,
                 subscription_type: item.type,
@@ -140,7 +140,7 @@ class Subscriptions extends Component {
               type: "subscription",
               sunbeds: item.sunbeds,
               umbrella: item.umbrella,
-              code: res.data.code,
+              id: res.data.id,
               start_date: item.start_date,
               end_date: item.end_date,
               subscription_type: item.type,
@@ -165,7 +165,7 @@ class Subscriptions extends Component {
           type: "subscription",
           sunbeds: item.sunbeds,
           umbrella: item.umbrella,
-          code: item.code,
+          id: item.id,
           start_date: item.start_date,
           end_date: item.end_date,
           subscription_type: item.type,
@@ -177,25 +177,6 @@ class Subscriptions extends Component {
           .then((res) => console.log(res.data));
       }
     }
-
-    // console.log("item\n" + item.code)
-    // console.log("tmp \n" + code)
-    // return
-
-    // if (method.includes("print")) {
-    //   const obj = {
-    //     type: "subscription",
-    //     sunbeds: item.sunbeds,
-    //     umbrella: item.umbrella,
-    //     // code: item.code,
-    //     start_date: item.start_date,
-    //     end_date: item.end_date
-    //   }
-  
-    //   axios
-    //     .post("/api/printer/ticket/", obj)
-    //     .then((res) => console.log(res.data));
-    // }
   };
 
   createItem = () => {

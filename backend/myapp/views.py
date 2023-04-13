@@ -84,7 +84,7 @@ class PrintTicketView(generics.CreateAPIView):
             subscription_type = ticket.get('subscription_type')
             start_date = ticket.get('start_date')
             end_date = ticket.get('end_date')
-            code = ticket.get('code')
+            code = ticket.get('id')
             custom_period = ticket.get('custom_period')
 
             printer.print_subscription(umbrella_code, sunbeds, code, start_date, end_date, subscription_type, custom_period)
@@ -136,8 +136,6 @@ class SubscriptionList(generics.ListCreateAPIView):
         else:
             umbrella_id = None
 
-        code = get_random_string(length=4, allowed_chars='1234567890')
-
         if subscription_data['start_date'] == "":
             start_date = None
         else:
@@ -151,7 +149,6 @@ class SubscriptionList(generics.ListCreateAPIView):
         with transaction.atomic():
             new_subscription = Subscription.objects.create(
                 umbrella=umbrella_id, 
-                code=code, 
                 customer=subscription_data['customer'], 
                 sunbeds=subscription_data['sunbeds'], 
                 type=subscription_data['type'], 
