@@ -85,7 +85,7 @@ class Printer():
 
         return val_days, val_months
 
-    def print_reservation(self, umbrella_code, sunbeds):
+    def print_reservation(self, id, umbrella_code, sunbeds):
 
         dummy = Dummy()
 
@@ -93,7 +93,9 @@ class Printer():
         dummy.image(self.logo_image)
 
         # TITLE
-    
+        dummy.set(align='center', text_type="B", width=2, height=2)
+        dummy.text(f"\Ticket #{id}")
+
         #BODY
         dummy.set(align='center', width=1, height=1)
         dummy.text("\n")

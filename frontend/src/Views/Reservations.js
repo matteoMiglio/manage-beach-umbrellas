@@ -61,6 +61,7 @@ class Reservations extends Component {
         item.umbrella = null;
       }
   
+      // se esiste l'ID vuol dire che la reservation esiste già e faccio un update
       if (item.id) {
         axios
           .put(`/api/reservations/${item.id}/`, item)
@@ -69,6 +70,10 @@ class Reservations extends Component {
             
             this.updateAlert("Modifica avvenuta con successo", "lightgreen")
             this.toggleAlert();
+
+            if (method.includes("print")) {
+              this.printTicket(item);
+            }            
           })
           .catch((err) => {
             console.log(err)
@@ -85,25 +90,36 @@ class Reservations extends Component {
 
           this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
           this.toggleAlert();
+
+          if (method.includes("print")) {
+            item.id = res.data.id;
+            this.printTicket(item);
+          } 
         })
         .catch((err) => {
           console.log(err)
           this.updateAlert("Inserimento fallito", "lightcoral");
           this.toggleAlert();
         });
+    } else {
+      if (method.includes("print")) {
+        this.printTicket(item);
+      }
+    }
+  };
+
+  printTicket = (item) => {
+
+    const obj = {
+      type: "reservation",
+      id: item.id,
+      sunbeds: item.sunbeds,
+      umbrella: item.umbrella
     }
 
-    if (method.includes("print")) {
-      const obj = {
-        type: "reservation",
-        sunbeds: item.sunbeds,
-        umbrella: item.umbrella
-      }
-  
-      axios
-        .post("/api/printer/ticket/", obj)
-        .then((res) => console.log(res.data));
-    }
+    axios
+      .post("/api/printer/ticket/", obj)
+      .then((res) => console.log(res.data));
   };
 
   toggle = () => {

@@ -74,8 +74,10 @@ class PrintTicketView(generics.CreateAPIView):
             umbrella_code = umbrella
 
         if type == "reservation":
+            
+            ticket_id = ticket.get('id')
 
-            printer.print_reservation(umbrella_code, sunbeds)
+            printer.print_reservation(ticket_id, umbrella_code, sunbeds)
 
             return Response("OK", status=status.HTTP_200_OK)
 
