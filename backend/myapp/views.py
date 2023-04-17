@@ -137,26 +137,33 @@ class SubscriptionList(generics.ListCreateAPIView):
         umbrella = subscription_data.get('umbrella', None)
 
         if umbrella:
-            umbrella_id = Umbrella.objects.filter(code__exact=umbrella).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella).first()
         else:
-            umbrella_id = None
+            umbrella_obj = None
 
-        if subscription_data['start_date'] == "":
-            start_date = None
-        else:
-            start_date = subscription_data['start_date']
+        subcription_type = subscription_data['type']
 
-        if subscription_data['end_date'] == "":
-            end_date = None
-        else: 
-            end_date = subscription_data['end_date'] 
+        start_date = None if subscription_data['start_date'] == "" else subscription_data['start_date']
+        end_date = None if subscription_data['end_date'] == "" else subscription_data['end_date'] 
+
+        if umbrella_obj and start_date and end_date:
+            if subcription_type in ["S", "P"] and len(Reservation.objects.filter(umbrella__id__exact=umbrella_obj.id, date__range=[start_date, end_date])) > 0:
+
+                audit_log = Audit.objects.create(
+                    message=f"Non è stato possibile creare l'abbonamento perchè va in overlap",
+                    type="A",
+                    category="S"
+                )
+                audit_log.save()     
+
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         with transaction.atomic():
             new_subscription = Subscription.objects.create(
-                umbrella=umbrella_id, 
+                umbrella=umbrella_obj, 
                 customer=subscription_data['customer'], 
                 sunbeds=subscription_data['sunbeds'], 
-                type=subscription_data['type'], 
+                type=subcription_type, 
                 end_date=end_date, 
                 start_date=start_date, 
                 paid=subscription_data['paid'], 
@@ -173,7 +180,7 @@ class SubscriptionList(generics.ListCreateAPIView):
             )
             audit_log.save()
 
-            if subscription_data['type'] == "C": # periodo custom, es. tutti i sabati e domeniche di ogni mese
+            if subcription_type == "C": # periodo custom, es. tutti i sabati e domeniche di ogni mese
                 tmp = new_subscription.custom_period.split("-")
                 custom_days = tmp[0].split(",")
                 custom_months = tmp[1].split(",")
@@ -372,16 +379,30 @@ class ReservationList(generics.ListCreateAPIView):
         # se contiene umbrella vuol dire che è una prenotazione per un ombrellone
         umbrella_selected = reservation_data.get('umbrella', None)
         if umbrella_selected:
-            umbrella_id = Umbrella.objects.filter(code__exact=umbrella_selected).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected).first()
         else:
-            umbrella_id = None
+            umbrella_obj = None
 
-        price = self.get_reservation_price(umbrella_id, int(reservation_data['sunbeds']))
+        dt = reservation_data['date']
+
+        price = self.get_reservation_price(umbrella_obj, int(reservation_data['sunbeds']))
+
+        if umbrella_obj and dt:
+            if len(Reservation.objects.filter(umbrella__id__exact=umbrella_obj.id, date__exact=dt)) > 0:
+
+                audit_log = Audit.objects.create(
+                    message=f"Non è stato possibile creare la prenotazione perchè va in overlap",
+                    type="A",
+                    category="R"
+                )
+                audit_log.save()     
+
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         with transaction.atomic():
             reservation = Reservation.objects.create(
-                umbrella=umbrella_id, 
-                date=reservation_data['date'], 
+                umbrella=umbrella_obj, 
+                date=dt, 
                 customer=reservation_data['customer'], 
                 sunbeds=reservation_data['sunbeds'], 
                 paid=reservation_data['paid'],
