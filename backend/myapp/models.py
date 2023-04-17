@@ -48,6 +48,7 @@ class Reservation(models.Model):
     sunbeds = models.PositiveSmallIntegerField(default=2)
     date = models.DateField(blank=True)
     paid = models.BooleanField(null=True)
+    price = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

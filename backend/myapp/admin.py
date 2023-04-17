@@ -18,7 +18,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('umbrella', 'customer', 'start_date', 'end_date', 'sunbeds', 'paid', 'type', 'deposit', 'total', 'custom_period')
 
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('umbrella', 'customer', 'date', 'sunbeds', 'paid', 'subscription')
+    list_display = ('umbrella', 'customer', 'date', 'sunbeds', 'paid', 'price', 'subscription')
 
 # Register your models here.
 admin.site.register(Constant, ConstantAdmin)

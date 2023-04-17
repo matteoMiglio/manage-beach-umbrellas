@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import viewsets, generics
 from .serializers import *
 from .models import *
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+import pytz
 from django.db.models import Avg, Count, Min, Sum
 from .printer.printer import Printer
 from django.utils.crypto import get_random_string
@@ -14,6 +15,8 @@ import calendar
 from django.db import transaction
 
 ELEMENT_PER_PAGE = 10
+
+tz_rome = pytz.timezone('Europe/Rome')
 
 class ConstantView(viewsets.ModelViewSet):
     serializer_class = ConstantSerializer
@@ -373,7 +376,7 @@ class ReservationList(generics.ListCreateAPIView):
         else:
             umbrella_id = None
 
-        subscription = reservation_data.get('subscription', None)
+        price = self.get_reservation_price(umbrella_id, int(reservation_data['sunbeds']))
 
         with transaction.atomic():
             reservation = Reservation.objects.create(
@@ -381,8 +384,8 @@ class ReservationList(generics.ListCreateAPIView):
                 date=reservation_data['date'], 
                 customer=reservation_data['customer'], 
                 sunbeds=reservation_data['sunbeds'], 
-                paid=reservation_data['paid'], 
-                subscription=subscription
+                paid=reservation_data['paid'],
+                price=price
             )
 
             reservation.save()
@@ -397,6 +400,39 @@ class ReservationList(generics.ListCreateAPIView):
         serializer = ReservationSerializer(reservation)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_reservation_price(self, umbrella, sunbeds):
+
+        price = 0
+
+        now = datetime.now(tz=tz_rome)
+        half_day_time =  time(hour = 14, minute = 00, second = 00)
+
+        if now.time() >= half_day_time:
+            half_day = True
+        else: 
+            half_day = False
+
+        if umbrella:
+
+            if sunbeds == 1:
+                price = 15
+            elif sunbeds == 2:
+                price = 20
+            elif sunbeds == 3:
+                price = 25
+            elif sunbeds == 4:
+                price = 30
+
+            if half_day:
+                price -= 5
+        else:
+            if half_day:
+                price = 5 * sunbeds
+            else:
+                price = 7 * sunbeds
+
+        return price
 
 class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
@@ -496,7 +532,7 @@ class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 
         date = self.request.query_params.get('date')
 
-        reservations = Reservation.objects.filter(date__exact=date)
+        reservations = Reservation.objects.filter(date__exact=date, umbrella_id__isnull=False)
 
         object_id_list = [reservation.umbrella.id for reservation in reservations]
 

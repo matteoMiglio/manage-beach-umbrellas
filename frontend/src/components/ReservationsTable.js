@@ -21,7 +21,7 @@ class ReservationsTable extends React.Component {
 
     const { totalItems, searchText, itemsUnpaid, showSunbeds, showUmbrellas, showNoSubscription } = this.props;
 
-    // console.log(totalItems)
+    // console.log(totalItems);
 
     const columns = [
       {
@@ -51,6 +51,17 @@ class ReservationsTable extends React.Component {
           return state;
         }
       },
+      {
+        Header: 'Prezzo',
+        accessor: 'price',
+        Cell: (row) => {
+          return row.row.original.subscription ? (
+            <span style={{color: '#ccc'}}>0€</span>
+          ) : (
+            row.row.original.price ? row.row.original.price+"€" : "0€"
+          );          
+        }
+      },      
       {
         Header: 'Data',
         accessor: 'date',
