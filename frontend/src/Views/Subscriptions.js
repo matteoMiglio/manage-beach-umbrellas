@@ -123,7 +123,7 @@ class Subscriptions extends Component {
           this.toggleAlert();
 
           if (method.includes("print")) {
-            item.id = res.data.id;
+            item.code = res.data.code;
             this.printTicket(item);
           }
         })
@@ -146,7 +146,7 @@ class Subscriptions extends Component {
       type: "subscription",
       sunbeds: item.sunbeds,
       umbrella: item.umbrella,
-      id: item.id,
+      code: item.code,
       start_date: item.start_date,
       end_date: item.end_date,
       subscription_type: item.type,

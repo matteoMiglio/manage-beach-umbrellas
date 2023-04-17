@@ -28,11 +28,11 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservation
-        fields = ('id', 'umbrella', 'customer', 'date', 'sunbeds', 'paid', 'price', 'subscription', 'created_at', 'updated_at')
+        fields = ('id', 'umbrella', 'code', 'customer', 'date', 'sunbeds', 'paid', 'price', 'subscription', 'created_at', 'updated_at')
 
 class SubscriptionSerializer(serializers.ModelSerializer):
     umbrella = UmbrellaSerializer(many=False)
 
     class Meta:
         model = Subscription
-        fields = ('id', 'umbrella', 'customer', 'start_date', 'end_date', 'sunbeds', 'paid', 'type', 'deposit', 'total', 'custom_period', 'created_at', 'updated_at')
+        fields = ('id', 'code', 'umbrella', 'customer', 'start_date', 'end_date', 'sunbeds', 'paid', 'type', 'deposit', 'total', 'custom_period', 'created_at', 'updated_at')

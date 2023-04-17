@@ -78,7 +78,7 @@ class PrintTicketView(generics.CreateAPIView):
 
         if type == "reservation":
             
-            ticket_id = ticket.get('id')
+            ticket_id = ticket.get('code')
 
             printer.print_reservation(ticket_id, umbrella_code, sunbeds)
 
@@ -89,7 +89,7 @@ class PrintTicketView(generics.CreateAPIView):
             subscription_type = ticket.get('subscription_type')
             start_date = ticket.get('start_date')
             end_date = ticket.get('end_date')
-            code = ticket.get('id')
+            code = ticket.get('code')
             custom_period = ticket.get('custom_period')
 
             printer.print_subscription(umbrella_code, sunbeds, code, start_date, end_date, subscription_type, custom_period)
@@ -385,7 +385,8 @@ class ReservationList(generics.ListCreateAPIView):
                 customer=reservation_data['customer'], 
                 sunbeds=reservation_data['sunbeds'], 
                 paid=reservation_data['paid'],
-                price=price
+                price=price,
+                code=1
             )
 
             reservation.save()

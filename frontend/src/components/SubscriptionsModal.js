@@ -195,7 +195,7 @@ export default class SubscriptionsModal extends Component {
             {this.state.activeItem.id ? (
               <FormGroup row>
                 <Label sm={6}>Codice Abbonamento</Label>
-                <Label sm={6}>{this.state.activeItem.id}</Label>
+                <Label sm={6}>{this.state.activeItem.code}</Label>
               </FormGroup>
             ) : null }
             <FormGroup row>

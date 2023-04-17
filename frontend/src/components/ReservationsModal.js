@@ -87,10 +87,10 @@ export default class ReservationsModal extends Component {
         <ModalHeader toggle={toggle}>{modalTitle}</ModalHeader>
         <ModalBody>
           <Form>
-            { this.state.activeItem.id ? (
+            { this.state.activeItem.id && !this.state.activeItem.subscription ? (
               <FormGroup row>
                 <Label sm={6}>Codice Prenotazione</Label>
-                <Label sm={6}>{this.state.activeItem.id}</Label>
+                <Label sm={6}>{this.state.activeItem.code}</Label>
               </FormGroup> 
             ) : null}
             { this.state.activeItem.subscription ? (

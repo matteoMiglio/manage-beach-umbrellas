@@ -17,6 +17,7 @@ class Umbrella(models.Model):
 
 class Subscription(models.Model):
     id = models.AutoField(primary_key=True)
+    code = models.PositiveSmallIntegerField(default=1, unique=True)
     umbrella = models.ForeignKey(Umbrella, on_delete=models.CASCADE, null=True, blank=True)
     customer = models.TextField(blank=True)
     sunbeds = models.PositiveSmallIntegerField(default=2)
@@ -38,10 +39,23 @@ class Subscription(models.Model):
 
     def _str_(self):
         return self.code
+    
+    def save(self, *args, **kwargs):
+        # This means that the model isn't saved to the database yet
+        if self._state.adding:
+            # Get the maximum display_id value from the database
+            last_id = Subscription.objects.all().aggregate(largest=models.Max('code')).get('largest')
 
+            # aggregate can return None! Check it first.
+            # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
+            if last_id is not None:
+                self.code = last_id + 1
+
+        super(Subscription, self).save(*args, **kwargs)    
 
 class Reservation(models.Model):
     id = models.AutoField(primary_key=True)
+    code = models.IntegerField(null=True, blank=True)
     umbrella = models.ForeignKey(Umbrella, on_delete=models.CASCADE, null=True, blank=True)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, null=True, blank=True)
     customer = models.TextField(blank=True)
@@ -54,6 +68,17 @@ class Reservation(models.Model):
 
     def _str_(self):
         return self.id
+
+    def save(self, *args, **kwargs):
+        # This means that the model isn't saved to the database yet
+
+        if self._state.adding and not self._state.fields_cache.get('subscription'):
+            last_id = Reservation.objects.all().aggregate(largest=models.Max('code')).get('largest')
+
+            if last_id is not None:
+                self.code = last_id + 1
+
+        super(Reservation, self).save(*args, **kwargs)   
 
 class Constant(models.Model):
     id = models.AutoField(primary_key=True)

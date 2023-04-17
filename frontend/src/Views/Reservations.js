@@ -92,7 +92,7 @@ class Reservations extends Component {
           this.toggleAlert();
 
           if (method.includes("print")) {
-            item.id = res.data.id;
+            item.code = res.data.code;
             this.printTicket(item);
           } 
         })
@@ -112,7 +112,7 @@ class Reservations extends Component {
 
     const obj = {
       type: "reservation",
-      id: item.id,
+      code: item.code,
       sunbeds: item.sunbeds,
       umbrella: item.umbrella
     }
