@@ -1,0 +1,95 @@
+---
+
+- hosts: web_server
+  become: yes
+
+  tasks:
+    - apt:
+        autoclean: true
+        cache_valid_time: 86400
+
+    - apt:
+        autoremove: true
+        cache_valid_time: 86400
+
+    - apt:
+      name: '*'
+      state: latest
+      cache_valid_time: 86400
+
+    - name: install required dependencies
+      apt:
+        name: 
+          - python3-pip 
+          - python3-dev
+          - python3-venv
+          - libpq-dev
+          - postgresql
+          - postgresql-contrib
+          - nginx
+          - curl 
+          - git
+          - gcc
+          # - uwsgi
+          - npm
+        state: latest
+        cache_valid_time: 86400
+
+# create user and database on postgres
+
+
+
+# venv on my backend
+
+# pip install django gunicorn django-cors-headers djangorestframework django-filter escpos uwsgi
+
+
+    - copy:
+        src: ./files/gunicorn.socket
+        dst: /etc/systemd/system/
+        owner: root
+        group: root
+        mode: '0644'        
+
+    - name: copy gunicorn.service
+      template:
+        src: ./templates/gunicorn.service.j2
+        dest: /etc/systemd/system/gunicorn.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - service:
+        name: gunicorn.socket
+        state: restarted
+        enabled: true
+
+
+    # - name: "create www directory"
+    #   file:
+    #     path: /var/www/{{ domain }}
+    #     state: directory
+    #     mode: '0775'
+    #     owner: "{{ ansible_user }}"
+    #     group: "{{ ansible_user }}"
+
+    # - name: delete default nginx site
+    #   file:
+    #     path: /etc/nginx/sites-enabled/default
+    #     state: absent
+    #   notify: restart nginx
+
+    # - name: copy nginx site.conf
+    #   template:
+    #     src: site.conf.j2
+    #     dest: /etc/nginx/sites-enabled/{{ domain }}
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   notify: restart nginx
+
+    # handlers:
+    #   - name: restart nginx
+    #     service:
+    #       name: nginx
+    #       state: restarted

@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=pi
+Group=www-data
+WorkingDirectory=/home/pi/manage-umbrella/backend
+ExecStart=/home/pi/.local/share/virtualenvs/manage-umbrella-rK0Z8vuF/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          backend.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
