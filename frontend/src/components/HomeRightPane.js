@@ -18,13 +18,13 @@ class HomeRightPane extends React.Component {
           </Card>
         </Col>
         <Col md="3">
-          <Card className='text-center' body>
+          <Card className='text-center' body color="danger" outline>
             <CardTitle tag="h6">Ombrelloni Occupati</CardTitle>
             <CardText>{reservedUmbrella}</CardText>
           </Card>
         </Col>
         <Col md="3">
-          <Card className='text-center' body>
+          <Card className='text-center' body color="success" outline>
             <CardTitle tag="h6">Ombrelloni Liberi</CardTitle>
             <CardText>{freeUmbrella}</CardText>
           </Card>
