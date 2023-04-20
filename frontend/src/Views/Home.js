@@ -191,7 +191,7 @@ class Home extends Component {
     this.setState({ 
       activeItem: item, 
       modal: !this.state.modal, 
-      modal_title: "Crea nuova prenotazione" 
+      modalTitle: "Crea nuova prenotazione" 
     });
   };
 
@@ -290,7 +290,7 @@ class Home extends Component {
             activeItem={this.state.activeItem}
             toggle={this.toggle}
             onSave={(item, method) => this.handleSubmit(item, method)}
-            modal_title={this.state.modal_title}
+            modalTitle={this.state.modalTitle}
           />
         ) : null}
       </Container>

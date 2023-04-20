@@ -75,15 +75,17 @@ class ReservationsSearchBar extends React.Component {
 
     return (
       <Form inline>
-        <DatePicker
-          todayButton="Oggi"
-          dateFormat="dd/MM/yyyy"
-          locale="it"
-          calendarStartDay={1}
-          selected={filterDate}
-          onChange={(date) => this.handleFilterDateChange(date)}
-          customInput={<CustomInputDatePicker />}
-        />
+        <FormGroup className="mx-2 mr-sm-2 mb-sm-0">
+          <DatePicker
+            todayButton="Oggi"
+            dateFormat="dd/MM/yyyy"
+            locale="it"
+            calendarStartDay={1}
+            selected={filterDate}
+            onChange={(date) => this.handleFilterDateChange(date)}
+            customInput={<CustomInputDatePicker />}
+          />
+        </FormGroup>
         <FormGroup className="mx-2 mr-sm-2 mb-sm-0">
           <Input type="text" name="searchText" id="searchText" placeholder="Ricerca cliente"
                  value={searchText} onChange={this.handleFilterTextChange} />
