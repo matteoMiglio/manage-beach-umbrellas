@@ -5,14 +5,13 @@ from rest_framework import viewsets, generics
 from .serializers import *
 from .models import *
 from datetime import datetime, timedelta, time
-import pytz
 from django.db.models import Avg, Count, Min, Sum
-from .printer.printer import Printer
-from django.utils.crypto import get_random_string
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import IntegrityError, transaction
 import json
 import calendar
-from django.db import transaction
+import pytz
+from .printer.printer import Printer
 
 ELEMENT_PER_PAGE = 10
 
@@ -142,96 +141,101 @@ class SubscriptionList(generics.ListCreateAPIView):
             umbrella_obj = None
 
         subcription_type = subscription_data['type']
-
         start_date = None if subscription_data['start_date'] == "" else subscription_data['start_date']
         end_date = None if subscription_data['end_date'] == "" else subscription_data['end_date'] 
 
-        if umbrella_obj and start_date and end_date:
-            if subcription_type in ["S", "P"] and len(Reservation.objects.filter(umbrella__id__exact=umbrella_obj.id, date__range=[start_date, end_date])) > 0:
+        if subcription_type == "C":
+            custom_period = ','.join(subscription_data.get('customDays')) + '-' + ','.join(subscription_data.get('customMonths'))
+        else:
+            custom_period = None
+
+        try:
+            with transaction.atomic():
+                new_subscription = Subscription.objects.create(
+                    umbrella=umbrella_obj, 
+                    customer=subscription_data['customer'], 
+                    sunbeds=subscription_data['sunbeds'], 
+                    type=subcription_type, 
+                    end_date=end_date, 
+                    start_date=start_date, 
+                    paid=subscription_data['paid'], 
+                    deposit=subscription_data['deposit'], 
+                    custom_period=custom_period, 
+                    total=subscription_data['total']
+                )
+                new_subscription.save()
 
                 audit_log = Audit.objects.create(
-                    message=f"Non è stato possibile creare l'abbonamento perchè va in overlap",
+                    message=f"È stato creato un nuovo abbonamento con ID {new_subscription.id}",
                     type="A",
                     category="S"
                 )
-                audit_log.save()     
+                audit_log.save()
 
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+                if subcription_type == "C": # periodo custom, es. tutti i sabati e domeniche di ogni mese
+                    custom_days = subscription_data.get('customDays')
+                    custom_months = subscription_data.get('customMonths')
 
-        with transaction.atomic():
-            new_subscription = Subscription.objects.create(
-                umbrella=umbrella_obj, 
-                customer=subscription_data['customer'], 
-                sunbeds=subscription_data['sunbeds'], 
-                type=subcription_type, 
-                end_date=end_date, 
-                start_date=start_date, 
-                paid=subscription_data['paid'], 
-                deposit=subscription_data['deposit'], 
-                custom_period=subscription_data.get('customPeriod', ""), 
-                total=subscription_data['total']
-            )
-            new_subscription.save()
+                    current_year = datetime.now().year
 
-            audit_log = Audit.objects.create(
-                message=f"È stato creato un nuovo abbonamento con ID {new_subscription.id}",
-                type="A",
-                category="S"
-            )
-            audit_log.save()
+                    for month in custom_months:
+                        tuple = calendar.monthrange(current_year, int(month))
 
-            if subcription_type == "C": # periodo custom, es. tutti i sabati e domeniche di ogni mese
-                tmp = new_subscription.custom_period.split("-")
-                custom_days = tmp[0].split(",")
-                custom_months = tmp[1].split(",")
+                        start_date = datetime(current_year, int(month), 1)
+                        end_date = datetime(current_year, int(month), tuple[1])
+                        delta = timedelta(days=1)
+                        
+                        while start_date <= end_date:
 
-                current_year = datetime.now().year
+                            if str(start_date.weekday()) in custom_days:
+                                reservation = Reservation.objects.create(
+                                    umbrella=new_subscription.umbrella, 
+                                    date=start_date, 
+                                    customer=new_subscription.customer, 
+                                    sunbeds=new_subscription.sunbeds, 
+                                    paid=new_subscription.paid, 
+                                    subscription=new_subscription
+                                )
 
-                for month in custom_months:
-                    tuple = calendar.monthrange(current_year, int(month))
+                                reservation.save()
 
-                    start_date = datetime(current_year, int(month), 1)
-                    end_date = datetime(current_year, int(month), tuple[1])
+                            start_date += delta
+
+                else:
+                    start_date = datetime.strptime(new_subscription.start_date, '%Y-%m-%d')
+                    end_date = datetime.strptime(new_subscription.end_date, '%Y-%m-%d')
                     delta = timedelta(days=1)
-                    
                     while start_date <= end_date:
 
-                        if str(start_date.weekday()) in custom_days:
-                            reservation = Reservation.objects.create(
-                                umbrella=new_subscription.umbrella, 
-                                date=start_date, 
-                                customer=new_subscription.customer, 
-                                sunbeds=new_subscription.sunbeds, 
-                                paid=new_subscription.paid, 
-                                subscription=new_subscription
-                            )
+                        reservation = Reservation.objects.create(
+                            umbrella=new_subscription.umbrella, 
+                            date=start_date, 
+                            customer=new_subscription.customer, 
+                            sunbeds=new_subscription.sunbeds, 
+                            paid=new_subscription.paid, 
+                            subscription=new_subscription
+                        )
 
-                            reservation.save()
+                        reservation.save()
 
                         start_date += delta
 
-            else:
-                start_date = datetime.strptime(new_subscription.start_date, '%Y-%m-%d')
-                end_date = datetime.strptime(new_subscription.end_date, '%Y-%m-%d')
-                delta = timedelta(days=1)
-                while start_date <= end_date:
+            serializer = SubscriptionSerializer(new_subscription)
 
-                    reservation = Reservation.objects.create(
-                        umbrella=new_subscription.umbrella, 
-                        date=start_date, 
-                        customer=new_subscription.customer, 
-                        sunbeds=new_subscription.sunbeds, 
-                        paid=new_subscription.paid, 
-                        subscription=new_subscription
-                    )
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-                    reservation.save()
+        except IntegrityError:
 
-                    start_date += delta
+            print("Non è stato possibile creare l'abbonamento perchè va in overlap")
 
-        serializer = SubscriptionSerializer(new_subscription)
+            audit_log = Audit.objects.create(
+                message=f"Non è stato possibile creare l'abbonamento perchè va in overlap",
+                type="A",
+                category="S"
+            )
+            audit_log.save()            
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)       
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
@@ -264,41 +268,6 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
                 category="S"
             )
             audit_log.save()
-
-            # if subscription.custom_period == subscription_data['custom_period']:
-            #     update_period = False
-            # else:
-            #     subscription.custom_period = subscription_data['custom_period']
-            #     update_period = True
-
-            # if subscription_data['type'] == "C":
-            #     reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
-
-            #     if len(reservation_list) > 0:
-            #         for reservation in reservation_list:
-
-            #             reservation.subscription = subscription
-            #             reservation.customer = subscription.customer
-            #             reservation.sunbeds = subscription.sunbeds
-            #             reservation.paid = subscription.paid
-
-            #             reservation.save()
-
-            # else:
-            #     if umbrella_id:
-            #         reservation_list = Reservation.objects.filter(umbrella__exact=umbrella_id, date__range=[subscription.start_date, subscription.end_date])
-            #     else:
-            #         reservation_list = Reservation.objects.filter(umbrella__isnull=True, date__range=[subscription.start_date, subscription.end_date])
-
-            #     if len(reservation_list) > 0:
-            #         for reservation in reservation_list:
-
-            #             reservation.subscription = subscription
-            #             reservation.customer = subscription.customer
-            #             reservation.sunbeds = subscription.sunbeds
-            #             reservation.paid = subscription.paid
-
-            #             reservation.save()
 
         serializer = SubscriptionSerializer(subscription)
 
@@ -377,7 +346,7 @@ class ReservationList(generics.ListCreateAPIView):
         reservation_data = request.data
 
         # se contiene umbrella vuol dire che è una prenotazione per un ombrellone
-        umbrella_selected = reservation_data.get('umbrella', None)
+        umbrella_selected = reservation_data.get('umbrella')
         if umbrella_selected:
             umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected).first()
         else:
@@ -387,41 +356,43 @@ class ReservationList(generics.ListCreateAPIView):
 
         price = self.get_reservation_price(umbrella_obj, int(reservation_data['sunbeds']))
 
-        if umbrella_obj and dt:
-            if len(Reservation.objects.filter(umbrella__id__exact=umbrella_obj.id, date__exact=dt)) > 0:
+        try: 
+            with transaction.atomic():
+                reservation = Reservation.objects.create(
+                    umbrella=umbrella_obj, 
+                    date=dt, 
+                    customer=reservation_data['customer'], 
+                    sunbeds=reservation_data['sunbeds'], 
+                    paid=reservation_data['paid'],
+                    price=price,
+                    code=1
+                )
+
+                reservation.save()
 
                 audit_log = Audit.objects.create(
-                    message=f"Non è stato possibile creare la prenotazione perchè va in overlap",
+                    message=f"È stata creata una nuova prenotazione con ID {reservation.id}",
                     type="A",
                     category="R"
                 )
-                audit_log.save()     
+                audit_log.save()
 
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            serializer = ReservationSerializer(reservation)
 
-        with transaction.atomic():
-            reservation = Reservation.objects.create(
-                umbrella=umbrella_obj, 
-                date=dt, 
-                customer=reservation_data['customer'], 
-                sunbeds=reservation_data['sunbeds'], 
-                paid=reservation_data['paid'],
-                price=price,
-                code=1
-            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-            reservation.save()
+        except IntegrityError:
+
+            print("Non è stato possibile creare la prenotazione perchè va in overlap")
 
             audit_log = Audit.objects.create(
-                message=f"È stata creata una nuova prenotazione con ID {reservation.id}",
+                message=f"Non è stato possibile creare la prenotazione perchè va in overlap",
                 type="A",
                 category="R"
             )
-            audit_log.save()
+            audit_log.save()         
 
-        serializer = ReservationSerializer(reservation)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)  
 
     def get_reservation_price(self, umbrella, sunbeds):
 

@@ -27,7 +27,7 @@ class Subscription(models.Model):
         ('C', 'custom'),
     )
     type = models.CharField(max_length=1, choices=SUBSCRIPTIONS_TYPE, default='S')
-    custom_period = models.CharField(max_length=30, blank=True, default="")
+    custom_period = models.CharField(max_length=30, blank=True, null=True)
     deposit = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     total = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
@@ -68,6 +68,9 @@ class Reservation(models.Model):
 
     def _str_(self):
         return self.id
+
+    class Meta:
+        unique_together = ('umbrella', 'date',)
 
     def save(self, *args, **kwargs):
         # This means that the model isn't saved to the database yet
