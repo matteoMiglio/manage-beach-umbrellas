@@ -31,7 +31,7 @@ export const NavigationBar = () => (
           <Nav.Item><Nav.Link href="/umbrellas">Ombrelloni</Nav.Link></Nav.Item> 
           <Nav.Item><Nav.Link href="/subscriptions">Abbonamenti</Nav.Link></Nav.Item>
           <Nav.Item><Nav.Link href="/reservations">Prenotazioni</Nav.Link></Nav.Item>
-          {/* <Nav.Item><Nav.Link href="/settings">Impostazioni</Nav.Link></Nav.Item> */}
+          <Nav.Item><Nav.Link href="/settings">Impostazioni</Nav.Link></Nav.Item>
         </Nav>
       </Navbar.Collapse>
     </Navbar>

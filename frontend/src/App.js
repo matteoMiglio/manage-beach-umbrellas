@@ -5,6 +5,7 @@ import Reservations from './Views/Reservations';
 import Subscriptions from './Views/Subscriptions';
 import Umbrellas from './Views/Umbrellas';
 import Home from './Views/Home';
+import Settings from './Views/Settings';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/umbrellas" component={Umbrellas} />
           <Route path="/reservations" component={Reservations} />
           <Route path="/subscriptions" component={Subscriptions} />
+          <Route path="/settings" component={Settings} />
         </Switch>
       </Router>
     </React.Fragment>
