@@ -9,43 +9,25 @@ class ReservationsSearchBar extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(
-      this
-    );
-    this.handleFilterDateChange = this.handleFilterDateChange.bind(
-        this
-    );
-    this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
-      this
-    );
-    this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
-      this
-    );
-    this.handleShowUmbrellasChange = this.handleShowUmbrellasChange.bind(
-      this
-    );
-    this.handleShowSunbedsChange = this.handleShowSunbedsChange.bind(
-      this
-    );
   }
 
-  handleFilterTextChange(e) {
+  handleFilterTextChange = (e) => {
     this.props.onFilterTextChange(e.target.value);
   }
 
-  handleFilterDateChange(date) {
+  handleFilterDateChange = (date) => {
     this.props.onFilterDateChange(date);
   }
 
-  handleShowUnpaidChange(e) {
+  handleShowUnpaidChange = (e) => {
     this.props.onUnpaidItemsChange(e.target.checked);
   }
 
-  handleShowUmbrellasChange(e) {
+  handleShowUmbrellasChange = (e) => {
     this.props.onShowUmbrellasChange(e.target.checked);
   }
 
-  handleShowSunbedsChange(e) {
+  handleShowSunbedsChange = (e) => {
     this.props.onShowSunbedsChange(e.target.checked);
   }
 
@@ -101,7 +83,7 @@ class ReservationsSearchBar extends React.Component {
         <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
           <CustomInput type="switch" id="showSunbeds" name="showSunbeds" checked={showSunbeds}
                        onChange={this.handleShowSunbedsChange} label="Mostra solo lettini" />
-        </FormGroup>
+        </FormGroup>     
       </Form>
     );
   }
