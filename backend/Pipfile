@@ -38,6 +38,7 @@ urllib3 = "==1.26.15"
 viivakoodi = "==0.8.0"
 virtualenv = "==20.21.0"
 virtualenv-clone = "==0.5.7"
+django-seed = "*"
 
 [dev-packages]
 
