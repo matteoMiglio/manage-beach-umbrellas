@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import MyTable from "./Table";
+import { isLastDayOfMonth, isFirstDayOfMonth } from "date-fns";
 
 const dayNames = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 const monthNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
@@ -10,23 +11,17 @@ class SubscriptionsTable extends Component {
 
   constructor(props) {
     super(props);
-    this.handleEditItem = this.handleEditItem.bind(
-      this
-    );
-
-    this.handleDeleteItem = this.handleDeleteItem.bind(
-      this
-    );
   }
 
-  handleEditItem(e) {
+  handleEditItem = (e) => {
     this.props.onEditButtonClick(e.original);
-    // console.log(e.original)
   }
   
-  handleDeleteItem(e) {
+  handleDeleteItem = (e) => {
     this.props.onDeleteButtonClick(e);
   }
+
+
 
   render() {
 
@@ -115,10 +110,23 @@ class SubscriptionsTable extends Component {
           let validity = "";
           switch (row.row.original.type) {
             case "S": 
-              validity = row.row.original.start_date + " -> " + row.row.original.end_date;
+              validity = "-";
               break;
             case "P":
-              validity = row.row.original.start_date + " -> " + row.row.original.end_date;
+
+              let sd = new Date(row.row.original.start_date);
+              let startDateMonth = sd.getMonth() + 1;
+              let ed = new Date(row.row.original.end_date);
+              let endDateMonth = ed.getMonth() + 1;         
+
+              if (isFirstDayOfMonth(sd) && isLastDayOfMonth(ed)) {
+                let diff = endDateMonth - startDateMonth;
+                let tmp_months = [...Array(diff + 1).keys()].map(i => monthNames[i + startDateMonth]);
+                validity = tmp_months.join(', ');
+              } else {
+                validity = row.row.original.start_date + " -> " + row.row.original.end_date;
+              }
+
               break;
             case "C":
               var days = row.row.original.custom_period.split("-")[0].split(",");
