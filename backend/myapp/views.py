@@ -145,7 +145,13 @@ class SubscriptionList(generics.ListCreateAPIView):
         end_date = None if subscription_data['end_date'] == "" else subscription_data['end_date'] 
 
         if subcription_type == "C":
-            custom_period = ','.join(subscription_data.get('customDays')) + '-' + ','.join(subscription_data.get('customMonths'))
+            cd = subscription_data.get('customDays')
+            cd.sort()
+
+            cm = subscription_data.get('customMonths')
+            cm.sort()
+
+            custom_period = ','.join(cd) + '-' + ','.join(cm)
         else:
             custom_period = None
 

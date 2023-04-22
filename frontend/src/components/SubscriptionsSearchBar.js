@@ -5,34 +5,26 @@ class SubscriptionsSearchBar extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(
-        this
-    );
-    this.handleShowUnpaidChange = this.handleShowUnpaidChange.bind(
-        this
-    );
-    this.handleShowUmbrellasChange = this.handleShowUmbrellasChange.bind(
-      this
-    );
-    this.handleShowSunbedsChange = this.handleShowSunbedsChange.bind(
-      this
-    );
   }
 
-  handleFilterTextChange(e) {
+  handleFilterTextChange = (e) => {
     this.props.onFilterTextChange(e.target.value);
   }
   
-  handleShowUnpaidChange(e) {
+  handleShowUnpaidChange = (e) => {
     this.props.onUnpaidItemsChange(e.target.checked);
   }
 
-  handleShowUmbrellasChange(e) {
+  handleShowUmbrellasChange = (e) => {
     this.props.onShowUmbrellasChange(e.target.checked);
   }
 
-  handleShowSunbedsChange(e) {
+  handleShowSunbedsChange = (e) => {
     this.props.onShowSunbedsChange(e.target.checked);
+  }
+
+  handleShowSeasonalSubscriptionsChange = (e) => {
+    this.props.onShowSeasonalSubscriptions(e.target.checked);
   }
 
   render() {
@@ -40,6 +32,7 @@ class SubscriptionsSearchBar extends React.Component {
     const itemsUnpaid = this.props.itemsUnpaid;
     const showSunbeds = this.props.showSunbeds;
     const showUmbrellas = this.props.showUmbrellas;
+    const showSeasonalSubscriptions = this.props.showSeasonalSubscriptions;
 
     return (
       <Form inline>
@@ -60,6 +53,10 @@ class SubscriptionsSearchBar extends React.Component {
           <CustomInput type="switch" id="showSunbeds" name="showSunbeds" checked={showSunbeds}
                        onChange={this.handleShowSunbedsChange} label="Mostra solo lettini" />
         </FormGroup>
+        <FormGroup className="mb-2 mr-sm-2 mb-sm-0">
+          <CustomInput type="switch" id="ShowSeasonalSubscriptions" name="ShowSeasonalSubscriptions" checked={showSeasonalSubscriptions}
+                       onChange={this.handleShowSeasonalSubscriptionsChange} label="Mostra solo stagionali" />
+        </FormGroup>            
       </Form>
     );
   }

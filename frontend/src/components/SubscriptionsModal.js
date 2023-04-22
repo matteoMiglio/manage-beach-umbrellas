@@ -203,7 +203,7 @@ export default class SubscriptionsModal extends Component {
               <Col sm={6}>
                 <Input type="select" name="umbrella" id="position-id" onChange={this.handleChange} disabled={this.state.activeItem.id}>
                   <option>-</option>
-                  {this.renderUmbrellaSelection()}
+                  {(this.state.activeItem.id && !this.state.activeItem.umbrella) ? null : this.renderUmbrellaSelection() }
                 </Input>
               </Col>
             </FormGroup>

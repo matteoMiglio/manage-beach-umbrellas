@@ -30,7 +30,7 @@ class SubscriptionsTable extends Component {
 
   render() {
 
-    const { searchText, itemsUnpaid, showSunbeds, showUmbrellas, totalItems } = this.props;
+    const { searchText, itemsUnpaid, showSunbeds, showUmbrellas, showSeasonalSubscriptions, totalItems } = this.props;
 
     // console.log(totalItems)
 
@@ -115,19 +115,27 @@ class SubscriptionsTable extends Component {
           let validity = "";
           switch (row.row.original.type) {
             case "S": 
-              validity = row.row.original.start_date + " -> " + row.row.original.end_date
+              validity = row.row.original.start_date + " -> " + row.row.original.end_date;
               break;
             case "P":
-              validity = row.row.original.start_date + " -> " + row.row.original.end_date
+              validity = row.row.original.start_date + " -> " + row.row.original.end_date;
               break;
             case "C":
-              var days = row.row.original.custom_period.split("-")[0].split(",")
-              var months = row.row.original.custom_period.split("-")[1].split(",")
+              var days = row.row.original.custom_period.split("-")[0].split(",");
+              var months = row.row.original.custom_period.split("-")[1].split(",");
       
-              for (var i=0; i<days.length; i++) {
-                validity += dayNames[days[i]]
-                if (i != (days.length - 1)) 
-                  validity += ", "
+              var midweek = ['0', '1', '2', '3', '4']
+              var weekend = ['5', '6']
+              if (days.length === midweek.length && days.every(function(value, index) { return value === midweek[index]})) {
+                validity += "Infrasettimanale "
+              } else if (days.length === weekend.length && days.every(function(value, index) { return value === weekend[index]})) {
+                validity += "Weekend "
+              } else {
+                for (var i=0; i<days.length; i++) {
+                  validity += dayNames[days[i]]
+                  if (i != (days.length - 1)) 
+                    validity += ", "
+                }
               }
       
               if (months.length > 1)
@@ -163,34 +171,29 @@ class SubscriptionsTable extends Component {
 
       let founded = false
 
-      if (item.customer.toLowerCase().indexOf(searchText.toLowerCase()) != -1) {
+      if (item.customer.toLowerCase().indexOf(searchText.toLowerCase()) != -1)
         founded = true
-      }
 
-      if (item.umbrella && item.umbrella.code.indexOf(searchText.toUpperCase()) != -1) {
+      if (item.umbrella && item.umbrella.code.indexOf(searchText.toUpperCase()) != -1)
         founded = true
-      }
 
-      if (item.code.toString().indexOf(searchText.toLowerCase()) != -1) {
+      if (item.code.toString().indexOf(searchText.toLowerCase()) != -1)
         founded = true
-      }
 
       if (!founded)
         return;
 
-      if ((item.paid == null) || (itemsUnpaid && item.paid)) {
+      if ((item.paid == null) || (itemsUnpaid && item.paid))
         return;
-      }
 
-      if (showUmbrellas) {
-        if (item.umbrella == null)
-          return;
-      }
+      if (showUmbrellas && item.umbrella == null) 
+        return;
 
-      if (showSunbeds) {
-        if (item.umbrella != null)
-          return;
-      }
+      if (showSunbeds && item.umbrella != null)
+        return;
+
+      if (showSeasonalSubscriptions && item.type != "S")
+        return;
 
       filteredItems.push(item);
     });

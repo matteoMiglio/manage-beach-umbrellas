@@ -257,6 +257,13 @@ class Subscriptions extends Component {
     });
   }
 
+  handleShowSeasonalSubscriptionsChange = (el) => {
+
+    this.setState({
+      showSeasonalSubscriptions: el,
+    });
+  }
+
   renderFloatingActionButton = () => {
     return (
       <Fab
@@ -289,10 +296,12 @@ class Subscriptions extends Component {
                                     onUnpaidItemsChange={this.handleShowUnpaidChange} 
                                     onShowUmbrellasChange={this.handleShowUmbrellaChange} 
                                     onShowSunbedsChange={this.handleShowSunbedsChange} 
+                                    onShowSeasonalSubscriptions={this.handleShowSeasonalSubscriptionsChange} 
                                     itemsPaid={this.state.itemsPaid}
                                     searchText={this.state.searchText}
                                     showSunbeds={this.state.showSunbeds}
-                                    showUmbrellas={this.state.showUmbrellas} />
+                                    showUmbrellas={this.state.showUmbrellas}
+                                    showSeasonalSubscriptions={this.state.showSeasonalSubscriptions} />
           </Col>
         </Row>
         <Row>
@@ -302,6 +311,7 @@ class Subscriptions extends Component {
                                 searchText={this.state.searchText} 
                                 showSunbeds={this.state.showSunbeds}
                                 showUmbrellas={this.state.showUmbrellas} 
+                                showSeasonalSubscriptions={this.state.showSeasonalSubscriptions}
                                 onEditButtonClick={this.editItem} 
                                 onDeleteButtonClick={this.deleteItem} />
           </Col>
