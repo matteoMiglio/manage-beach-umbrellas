@@ -365,6 +365,7 @@ export default class SubscriptionsModal extends Component {
                       disabled={this.state.activeItem.id}
                       multiple
                     >
+                      <option value={5} selected={customMonths.includes("5")}>Maggio</option>
                       <option value={6} selected={customMonths.includes("6")}>Giugno</option>
                       <option value={7} selected={customMonths.includes("7")}>Luglio</option>
                       <option value={8} selected={customMonths.includes("8")}>Agosto</option>

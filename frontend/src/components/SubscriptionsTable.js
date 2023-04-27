@@ -124,7 +124,9 @@ class SubscriptionsTable extends Component {
                 let tmp_months = [...Array(diff + 1).keys()].map(i => monthNames[i + startDateMonth]);
                 validity = tmp_months.join(', ');
               } else {
-                validity = row.row.original.start_date + " -> " + row.row.original.end_date;
+                let startDateString = sd.getDate() + " " + monthNames[startDateMonth];
+                let endDateString = ed.getDate() + " " + monthNames[endDateMonth];
+                validity = startDateString + " al " + endDateString;
               }
 
               break;
