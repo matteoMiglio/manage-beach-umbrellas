@@ -32,7 +32,7 @@ class Printer():
         dummy.set(align='center', width=1, height=1)
         dummy.text("\n\n")
 
-        if umbrella_code != None:
+        if umbrella_code:
             dummy.text(f"\nOmbrellone: #{umbrella_code}\n")
 
         dummy.text(f"\nLettini: {sunbeds}\n")
@@ -85,7 +85,7 @@ class Printer():
 
         return val_days, val_months
 
-    def print_reservation(self, id, umbrella_code, sunbeds):
+    def print_reservation(self, ticket_id, umbrella_code, sunbeds):
 
         dummy = Dummy()
 
@@ -94,13 +94,13 @@ class Printer():
 
         # TITLE
         dummy.set(align='center', text_type="B", width=2, height=2)
-        dummy.text(f"\Ticket #{id}")
+        dummy.text(f"Ticket #{ticket_id}")
 
         #BODY
         dummy.set(align='center', width=1, height=1)
         dummy.text("\n")
 
-        if umbrella_code != None:
+        if umbrella_code:
             dummy.text(f"\nOmbrellone: #{umbrella_code}\n")
 
         dummy.text(f"\nLettini: {sunbeds}\n")

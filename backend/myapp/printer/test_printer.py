@@ -5,12 +5,12 @@ import pytz
 
 ip = "192.168.1.100"
 printer_network = Network(ip)
-logo_image = os.path.join(os.path.dirname(__file__), "./images/Logo_512.png")
 
 dummy = Dummy()
 
 # LOGO
-dummy.image(logo_image)
+dummy.set(align='center', width=1, height=1)
+dummy.text("\nPROVA PROVA\n")
 
 dummy.cut()
 
