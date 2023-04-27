@@ -19,6 +19,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import it from 'date-fns/locale/it';
 registerLocale('it', it);
 
+const heighSelect = {
+  height: '120px'
+}
+
 export default class SubscriptionsModal extends Component {
   constructor(props) {
     super(props);
@@ -363,6 +367,7 @@ export default class SubscriptionsModal extends Component {
                       id="customMonths-id"
                       onChange={this.handleChange}
                       disabled={this.state.activeItem.id}
+                      style={heighSelect}
                       multiple
                     >
                       <option value={5} selected={customMonths.includes("5")}>Maggio</option>

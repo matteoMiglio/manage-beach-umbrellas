@@ -214,7 +214,6 @@ class Home extends Component {
     return (
       <Fab
         mainButtonStyles={mainButtonStyles}
-        // actionButtonStyles={actionButtonStyles}
         icon={<GrFormAdd />}
         event="click"
         alwaysShowTitle={true}
