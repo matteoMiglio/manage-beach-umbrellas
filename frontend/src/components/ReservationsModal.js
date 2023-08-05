@@ -60,7 +60,7 @@ export default class ReservationsModal extends Component {
     const list = this.state.umbrellaList;
 
     return list.map((item, index) => (
-      <option key={index} selected={this.state.activeItem.umbrella ? item.code == this.state.activeItem.umbrella.code : null}>
+      <option key={index} selected={item.code == this.state.activeItem.umbrella.code}>
         {item.code}
       </option>
     ));
@@ -104,8 +104,7 @@ export default class ReservationsModal extends Component {
               <Col sm={6}>
                 <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.id}>
                   <option>-</option>
-                  { this.renderUmbrellaSelection() }
-                  { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : null}
+                  { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : this.renderUmbrellaSelection()}
                 </Input>
               </Col>
             </FormGroup>
@@ -147,7 +146,7 @@ export default class ReservationsModal extends Component {
         </ModalBody>   
         <ModalFooter>
           { this.state.activeItem.id ? (
-            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "save-print")}>
               {"Stampa ticket"}
             </Button>
           ) : (

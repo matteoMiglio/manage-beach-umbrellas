@@ -183,13 +183,8 @@ export default class SubscriptionsModal extends Component {
     );
 
     const { toggle, onSave, onDelete, modalTitle } = this.props;
-    // const [start_date, end_date] = this.state.activeItem.dateRange;
-    const startDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.start_date);
-    const endDatePeriodicSubscriptions = this.getDateString(this.state.activeItem.end_date);
 
     const { customDays, customMonths } = this.state.activeItem;
-
-    console.log(this.state.activeItem);
 
     return (
       <Modal isOpen={true} toggle={toggle}>
@@ -207,7 +202,7 @@ export default class SubscriptionsModal extends Component {
               <Col sm={6}>
                 <Input type="select" name="umbrella" id="position-id" onChange={this.handleChange} disabled={this.state.activeItem.id}>
                   <option>-</option>
-                  {(this.state.activeItem.id && !this.state.activeItem.umbrella) ? null : this.renderUmbrellaSelection() }
+                  { this.renderUmbrellaSelection() }
                 </Input>
               </Col>
             </FormGroup>
@@ -390,7 +385,7 @@ export default class SubscriptionsModal extends Component {
         </ModalBody>   
         <ModalFooter>
           { this.state.activeItem.id ? (
-            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "print")}>
+            <Button color="secondary" onClick={() => onSave(this.state.activeItem, "save-print")}>
               {"Stampa ticket"}
             </Button>
           ) : (
