@@ -3,7 +3,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets, generics
 from .serializers import *
-from .models import *
+from .models.season import Season
+from .models.audit import Audit
+from .models.reservation import Reservation
+from .models.subscription import Subscription
+from .models.umbrella import Umbrella
+from .models.constant import Constant
 from datetime import datetime, timedelta, time
 from django.db.models import Avg, Count, Min, Sum
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

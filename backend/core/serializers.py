@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from .models import Umbrella
-from .models import Subscription
-from .models import Reservation
-from .models import Constant
-from .models import Audit
+from .models.season import Season
+from .models.audit import Audit
+from .models.reservation import Reservation
+from .models.subscription import Subscription
+from .models.umbrella import Umbrella
+from .models.constant import Constant
 
 class AuditSerializer(serializers.ModelSerializer):
 
@@ -16,6 +17,12 @@ class ConstantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Constant
         fields = ('id', 'key', 'value', 'created_at', 'updated_at')
+
+class SeasonSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Season
+        fields = ('season', 'start_date', 'end_date')
 
 class UmbrellaSerializer(serializers.ModelSerializer):
 

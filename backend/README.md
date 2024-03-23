@@ -30,7 +30,7 @@ python3 manage.py migrate
 
 # seeding
 python3 manage.py loaddata core/seed/new_umbrellas.json 
-# if I want to flush the database
+# flush the database
 python3 manage.py flush 
 
 systemctl restart gunicorn.socket gunicorn.service nginx
