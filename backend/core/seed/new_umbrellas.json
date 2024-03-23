@@ -1,6 +1,6 @@
 [
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 1,
         "fields": {
             "code": "13",
@@ -13,7 +13,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 2,
         "fields": {
             "code": "12",
@@ -26,7 +26,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 3,
         "fields": {
             "code": "11",
@@ -39,7 +39,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 4,
         "fields": {
             "code": "10",
@@ -52,7 +52,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 5,
         "fields": {
             "code": "9",
@@ -65,7 +65,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 6,
         "fields": {
             "code": "8",
@@ -78,7 +78,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 7,
         "fields": {
             "code": "7",
@@ -91,7 +91,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 8,
         "fields": {
             "code": "6",
@@ -104,7 +104,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 9,
         "fields": {
             "code": "5",
@@ -117,7 +117,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 10,
         "fields": {
             "code": "4",
@@ -130,7 +130,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 11,
         "fields": {
             "code": "3",
@@ -143,7 +143,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 12,
         "fields": {
             "code": "2",
@@ -156,7 +156,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 13,
         "fields": {
             "code": "1",
@@ -169,7 +169,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 14,
         "fields": {
             "code": "26",
@@ -182,7 +182,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 15,
         "fields": {
             "code": "25",
@@ -195,7 +195,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 16,
         "fields": {
             "code": "24",
@@ -208,7 +208,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 17,
         "fields": {
             "code": "23",
@@ -221,7 +221,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 18,
         "fields": {
             "code": "22",
@@ -234,7 +234,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 19,
         "fields": {
             "code": "21",
@@ -247,7 +247,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 20,
         "fields": {
             "code": "20",
@@ -260,7 +260,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 21,
         "fields": {
             "code": "19",
@@ -273,7 +273,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 22,
         "fields": {
             "code": "18",
@@ -286,7 +286,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 23,
         "fields": {
             "code": "17",
@@ -299,7 +299,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 24,
         "fields": {
             "code": "16",
@@ -312,7 +312,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 25,
         "fields": {
             "code": "15",
@@ -325,7 +325,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 26,
         "fields": {
             "code": "14",
@@ -338,7 +338,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 27,
         "fields": {
             "code": "39",
@@ -351,7 +351,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 28,
         "fields": {
             "code": "38",
@@ -364,7 +364,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 29,
         "fields": {
             "code": "37",
@@ -377,7 +377,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 30,
         "fields": {
             "code": "36",
@@ -390,7 +390,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 31,
         "fields": {
             "code": "35",
@@ -403,7 +403,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 32,
         "fields": {
             "code": "34",
@@ -416,7 +416,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 33,
         "fields": {
             "code": "33",
@@ -429,7 +429,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 34,
         "fields": {
             "code": "32",
@@ -442,7 +442,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 35,
         "fields": {
             "code": "31",
@@ -455,7 +455,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 36,
         "fields": {
             "code": "30",
@@ -468,7 +468,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 37,
         "fields": {
             "code": "29",
@@ -481,7 +481,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 38,
         "fields": {
             "code": "28",
@@ -494,7 +494,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 39,
         "fields": {
             "code": "27",
@@ -507,7 +507,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 40,
         "fields": {
             "code": "52",
@@ -520,7 +520,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 41,
         "fields": {
             "code": "51",
@@ -533,7 +533,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 42,
         "fields": {
             "code": "50",
@@ -546,7 +546,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 43,
         "fields": {
             "code": "49",
@@ -559,7 +559,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 44,
         "fields": {
             "code": "48",
@@ -572,7 +572,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 45,
         "fields": {
             "code": "47",
@@ -585,7 +585,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 46,
         "fields": {
             "code": "46",
@@ -598,7 +598,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 47,
         "fields": {
             "code": "45",
@@ -611,7 +611,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 48,
         "fields": {
             "code": "44",
@@ -624,7 +624,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 49,
         "fields": {
             "code": "43",
@@ -637,7 +637,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 50,
         "fields": {
             "code": "42",
@@ -650,7 +650,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 51,
         "fields": {
             "code": "41",
@@ -663,7 +663,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 52,
         "fields": {
             "code": "40",
@@ -676,7 +676,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 53,
         "fields": {
             "code": "65",
@@ -689,7 +689,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 54,
         "fields": {
             "code": "64",
@@ -702,7 +702,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 55,
         "fields": {
             "code": "63",
@@ -715,7 +715,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 56,
         "fields": {
             "code": "62",
@@ -728,7 +728,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 57,
         "fields": {
             "code": "61",
@@ -741,7 +741,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 58,
         "fields": {
             "code": "60",
@@ -754,7 +754,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 59,
         "fields": {
             "code": "59",
@@ -767,7 +767,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 60,
         "fields": {
             "code": "58",
@@ -780,7 +780,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 61,
         "fields": {
             "code": "57",
@@ -793,7 +793,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 62,
         "fields": {
             "code": "56",
@@ -806,7 +806,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 63,
         "fields": {
             "code": "55",
@@ -819,7 +819,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 64,
         "fields": {
             "code": "54",
@@ -832,7 +832,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 65,
         "fields": {
             "code": "53",
@@ -845,7 +845,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 66,
         "fields": {
             "code": "78",
@@ -858,7 +858,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 67,
         "fields": {
             "code": "77",
@@ -871,7 +871,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 68,
         "fields": {
             "code": "76",
@@ -884,7 +884,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 69,
         "fields": {
             "code": "75",
@@ -897,7 +897,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 70,
         "fields": {
             "code": "74",
@@ -910,7 +910,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 71,
         "fields": {
             "code": "73",
@@ -923,7 +923,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 72,
         "fields": {
             "code": "72",
@@ -936,7 +936,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 73,
         "fields": {
             "code": "71",
@@ -949,7 +949,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 74,
         "fields": {
             "code": "70",
@@ -962,7 +962,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 75,
         "fields": {
             "code": "69",
@@ -975,7 +975,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 76,
         "fields": {
             "code": "68",
@@ -988,7 +988,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 77,
         "fields": {
             "code": "67",
@@ -1001,7 +1001,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 78,
         "fields": {
             "code": "66",
@@ -1014,7 +1014,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 79,
         "fields": {
             "code": "84",
@@ -1027,7 +1027,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 80,
         "fields": {
             "code": "83",
@@ -1040,7 +1040,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 81,
         "fields": {
             "code": "82",
@@ -1053,7 +1053,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 82,
         "fields": {
             "code": "81",
@@ -1066,7 +1066,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 83,
         "fields": {
             "code": "80",
@@ -1079,7 +1079,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 84,
         "fields": {
             "code": "79",
@@ -1092,7 +1092,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 85,
         "fields": {
             "code": "90",
@@ -1105,7 +1105,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 86,
         "fields": {
             "code": "89",
@@ -1118,7 +1118,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 87,
         "fields": {
             "code": "88",
@@ -1131,7 +1131,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 88,
         "fields": {
             "code": "87",
@@ -1144,7 +1144,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 89,
         "fields": {
             "code": "86",
@@ -1157,7 +1157,7 @@
         }
     },
     {
-        "model": "myapp.umbrella",
+        "model": "core.umbrella",
         "pk": 90,
         "fields": {
             "code": "85",

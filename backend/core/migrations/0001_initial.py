@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('paid', models.BooleanField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('umbrella', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='myapp.umbrella')),
+                ('umbrella', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.umbrella')),
             ],
         ),
         migrations.CreateModel(
@@ -64,8 +64,8 @@ class Migration(migrations.Migration):
                 ('paid', models.BooleanField(null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('subscription', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='myapp.subscription')),
-                ('umbrella', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='myapp.umbrella')),
+                ('subscription', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.subscription')),
+                ('umbrella', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.umbrella')),
             ],
         ),
     ]

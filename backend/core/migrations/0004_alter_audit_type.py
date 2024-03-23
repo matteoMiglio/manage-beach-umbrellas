@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('myapp', '0003_audit_category'),
+        ('core', '0003_audit_category'),
     ]
 
     operations = [

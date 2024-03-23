@@ -29,7 +29,7 @@ mkdir database
 python3 manage.py migrate 
 
 # seeding
-python3 manage.py loaddata myapp/seed/new_umbrellas.json 
+python3 manage.py loaddata core/seed/new_umbrellas.json 
 # if I want to flush the database
 python3 manage.py flush 
 

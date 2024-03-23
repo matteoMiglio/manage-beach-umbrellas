@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('myapp', '0005_remove_subscription_code'),
+        ('core', '0005_remove_subscription_code'),
     ]
 
     operations = [

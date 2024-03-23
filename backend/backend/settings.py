@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'myapp'
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -73,14 +74,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'database/db.sqlite3',
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': BASE_DIR / config('MYSQL_DATABASE'),
-        # 'USER': config('MYSQL_USER'),
-        # 'PASSWORD': config('MYSQL_PASSWORD'),
-        # 'HOST': config('DB_HOST', 'db'),
-        # 'PORT': config('DB_PORT', '3306'),
+        'ENGINE': config('SQL_ENGINE', default='django.db.backends.sqlite3'),
+        "NAME": config('SQL_DATABASE', default=os.path.join(BASE_DIR, "db.sqlite3")),
+        'USER': config('SQL_USER', default='user'),
+        'PASSWORD': config('SQL_PASSWORD', default='password'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='3306'),
     }
 }
 
