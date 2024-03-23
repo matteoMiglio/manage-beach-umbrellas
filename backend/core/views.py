@@ -17,10 +17,12 @@ import json
 import calendar
 import pytz
 from .printer.main import Printer
+from datetime import datetime
 
 ELEMENT_PER_PAGE = 10
 
 tz_rome = pytz.timezone('Europe/Rome')
+season = datetime.now().year
 
 class ConstantView(viewsets.ModelViewSet):
     serializer_class = ConstantSerializer
@@ -35,7 +37,7 @@ class SunbedsFreeView(generics.RetrieveAPIView):
         # total_beach_loungers = Constant.objects.all()
         total_sunbeds = 200
 
-        sunbeds = Reservation.objects.filter(umbrella__isnull=True, date__exact=date).aggregate(Sum('sunbeds'))
+        sunbeds = Reservation.objects.filter(umbrella__isnull=True, date__exact=date, season__exact=season).aggregate(Sum('sunbeds'))
 
         umbrella_sunbeds_int = 0
 
@@ -55,10 +57,10 @@ class ReservedUmbrellaView(generics.RetrieveAPIView):
 
         if date:
             if reserved and reserved == 'True':
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False).exclude(umbrella__code__exact="")
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False, season__exact=season).exclude(umbrella__code__exact="")
             else:
                 # gestire questo fatto. torna 0 non va bene
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True)
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True, season__exact=season)
 
             return HttpResponse(len(reservations))
         else:
@@ -102,14 +104,14 @@ class PrintTicketView(generics.CreateAPIView):
 
 class UmbrellaView(viewsets.ModelViewSet):
     serializer_class = UmbrellaSerializer
-    queryset = Umbrella.objects.all().extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
+    queryset = Umbrella.objects.filter(season__exact=season).extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
 class SubscriptionList(generics.ListCreateAPIView):
     serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
 
-        queryset = Subscription.objects.all().order_by('id')
+        queryset = Subscription.objects.filter(season__exact=season).order_by('id')
 
         subscription_type = self.request.query_params.get('type')
         umbrella_id = self.request.query_params.get('umbrella')
@@ -141,7 +143,7 @@ class SubscriptionList(generics.ListCreateAPIView):
         umbrella = subscription_data.get('umbrella', None)
 
         if umbrella:
-            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella, season__exact=season).first()
         else:
             umbrella_obj = None
 
@@ -172,7 +174,8 @@ class SubscriptionList(generics.ListCreateAPIView):
                     paid=subscription_data['paid'], 
                     deposit=subscription_data['deposit'], 
                     custom_period=custom_period, 
-                    total=subscription_data['total']
+                    total=subscription_data['total'],
+                    season=season
                 )
                 new_subscription.save()
 
@@ -205,7 +208,8 @@ class SubscriptionList(generics.ListCreateAPIView):
                                     customer=new_subscription.customer, 
                                     sunbeds=new_subscription.sunbeds, 
                                     paid=new_subscription.paid, 
-                                    subscription=new_subscription
+                                    subscription=new_subscription,
+                                    season=season
                                 )
 
                                 reservation.save()
@@ -224,7 +228,8 @@ class SubscriptionList(generics.ListCreateAPIView):
                             customer=new_subscription.customer, 
                             sunbeds=new_subscription.sunbeds, 
                             paid=new_subscription.paid, 
-                            subscription=new_subscription
+                            subscription=new_subscription,
+                            season=season
                         )
 
                         reservation.save()
@@ -250,16 +255,16 @@ class SubscriptionList(generics.ListCreateAPIView):
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
-    queryset = Subscription.objects.all().order_by('id')
+    queryset = Subscription.objects.filter(season__exact=season).order_by('id')
 
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
         umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
-        umbrella_object = Umbrella.objects.get(id=umbrella_id)
+        umbrella_object = Umbrella.objects.filter(season__exact=season).get(id=umbrella_id)
 
         with transaction.atomic():
-            subscription = Subscription.objects.get(id=subscription_data['id'])
+            subscription = Subscription.objects.filter(season__exact=season).get(id=subscription_data['id'])
 
             subscription.umbrella = umbrella_object
             subscription.type = subscription_data['type']
@@ -289,7 +294,7 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         with transaction.atomic():
             subscription = self.get_object()
 
-            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id)
+            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id, season__exact=season)
 
             for reservation in reservation_list:
                 reservation.delete()
@@ -310,7 +315,7 @@ class ReservationList(generics.ListCreateAPIView):
 
     def get_queryset(self):
 
-        queryset = Reservation.objects.all().order_by('id')
+        queryset = Reservation.objects.filter(season__exact=season).order_by('id')
 
         date = self.request.query_params.get('date')
         start_date = self.request.query_params.get('start_date')
@@ -359,7 +364,7 @@ class ReservationList(generics.ListCreateAPIView):
         # se contiene umbrella vuol dire che è una prenotazione per un ombrellone
         umbrella_selected = reservation_data.get('umbrella')
         if umbrella_selected:
-            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected, season__exact=season).first()
         else:
             umbrella_obj = None
 
@@ -376,7 +381,8 @@ class ReservationList(generics.ListCreateAPIView):
                     sunbeds=reservation_data['sunbeds'], 
                     paid=reservation_data['paid'],
                     price=price,
-                    code=1
+                    code=1,
+                    season=season
                 )
 
                 reservation.save()
@@ -440,7 +446,7 @@ class ReservationList(generics.ListCreateAPIView):
 
 class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
-    queryset = Reservation.objects.all().order_by('id')
+    queryset = Reservation.objects.filter(season__exact=season).order_by('id')
 
     def put(self, request, *args, **kwargs):
 
@@ -455,7 +461,7 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
             umbrella = reservation_data.get('umbrella', None)
 
             with transaction.atomic():
-                reservation = Reservation.objects.get(id=reservation_data['id'])
+                reservation = Reservation.objects.filter(season__exact=season).get(id=reservation_data['id'])
 
                 if reservation.subscription:
                     reservation.umbrella = umbrella
@@ -507,15 +513,15 @@ class HomeView(generics.RetrieveAPIView):
         matrix = list()
 
         for i in range(0, 12):
-            u_list = Umbrella.objects.filter(row__exact=i)
+            umbrella_list = Umbrella.objects.filter(row__exact=i, season__exact=season)
             
             row_list = []
-            for u in u_list:
+            for umbrella in umbrella_list:
                 el = {}
-                serializer = UmbrellaSerializer(u)
+                serializer = UmbrellaSerializer(umbrella)
                 el['tmp_umbrella'] = serializer.data
 
-                r = u.reservation_set.filter(date__exact=date).first()
+                r = umbrella.reservation_set.filter(date__exact=date, season__exact=season).first()
 
                 if r == None:
                     el['tmp_res'] = None
@@ -536,11 +542,11 @@ class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 
         date = self.request.query_params.get('date')
 
-        reservations = Reservation.objects.filter(date__exact=date, umbrella_id__isnull=False)
+        reservations = Reservation.objects.filter(date__exact=date, umbrella_id__isnull=False, season__exact=season)
 
         object_id_list = [reservation.umbrella.id for reservation in reservations]
 
-        free_umbrellas = Umbrella.objects.all() \
+        free_umbrellas = Umbrella.objects.filter(season__exact=season) \
                             .exclude(id__in=object_id_list) \
                             .extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
