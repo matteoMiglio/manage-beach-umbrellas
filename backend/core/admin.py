@@ -13,16 +13,16 @@ class ConstantAdmin(admin.ModelAdmin):
     list_display = ('key', 'value')
 
 class SeasonAdmin(admin.ModelAdmin):
-    list_display = ('start_date', 'end_date')
+    list_display = ('season', 'start_date', 'end_date')
 
 class UmbrellaAdmin(admin.ModelAdmin):
-    list_display = ('code', 'description', 'sunbeds', 'row', 'column')
+    list_display = ('code', 'description', 'sunbeds', 'row', 'column', 'season')
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('umbrella', 'code', 'customer', 'start_date', 'end_date', 'sunbeds', 'paid', 'type', 'deposit', 'total', 'custom_period')
+    list_display = ('umbrella', 'code', 'customer', 'start_date', 'end_date', 'sunbeds', 'paid', 'type', 'deposit', 'total', 'season', 'custom_period')
 
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('umbrella', 'code', 'customer', 'date', 'sunbeds', 'paid', 'price', 'subscription')
+    list_display = ('umbrella', 'code', 'customer', 'date', 'sunbeds', 'paid', 'price', 'season', 'subscription')
 
 # Register your models here.
 admin.site.register(Constant, ConstantAdmin)

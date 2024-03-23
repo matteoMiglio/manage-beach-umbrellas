@@ -8,7 +8,7 @@ class Umbrella(models.Model):
     sunbeds = models.PositiveSmallIntegerField()
     row = models.SmallIntegerField(default=0)
     column = models.SmallIntegerField(default=0)
-    # season = models.ForeignKey(season.Season, on_delete=models.CASCADE, null=True, blank=True)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

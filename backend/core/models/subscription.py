@@ -19,6 +19,7 @@ class Subscription(models.Model):
     total = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, null=True, blank=True)
     paid = models.BooleanField()
     # freePeriodList:
     created_at = models.DateTimeField(auto_now_add=True)

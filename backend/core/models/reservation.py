@@ -13,6 +13,7 @@ class Reservation(models.Model):
     date = models.DateField(blank=True)
     paid = models.BooleanField(null=True)
     price = models.PositiveSmallIntegerField(default=0)
+    season = models.ForeignKey(Season, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
