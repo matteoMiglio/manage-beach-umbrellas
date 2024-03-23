@@ -9,12 +9,15 @@ EXPOSE 8000
 
 WORKDIR /src
 
-COPY Pipfile /src/
-RUN pip3 install --upgrade pip && pip3 install pipenv && pipenv install
+RUN pip3 install --upgrade pip
+COPY ./requirements.txt .
+RUN pip3 install -r requirements.txt
 
-COPY . /src/
+RUN mkdir -p database
 
-RUN mkdir -p database && pipenv run python3 manage.py migrate --noinput
+COPY ./entrypoint.sh .
 
-ENTRYPOINT [ "pipenv", "run" ]
+COPY . .
+
+ENTRYPOINT ["/src/entrypoint.sh"]
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -21,7 +21,7 @@ services:
     restart: always
     volumes:
       - ./backend/:/src
-      - ./backend/database/db.sqlite3:/src/database/db.sqlite3
+      - sqlite_data:/src/database
     ports:
       - "8001:8000"
     env_file:
@@ -42,3 +42,4 @@ volumes:
   static:
   media:
   node_modules:
+  sqlite_data:
