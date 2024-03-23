@@ -16,7 +16,7 @@ from django.db import IntegrityError, transaction
 import json
 import calendar
 import pytz
-from .printer.printer import Printer
+from .printer.main import Printer
 
 ELEMENT_PER_PAGE = 10
 
