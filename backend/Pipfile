@@ -39,6 +39,7 @@ virtualenv = "==20.21.0"
 virtualenv-clone = "==0.5.7"
 django-seed = "*"
 python-escpos = "*"
+python-decouple = "*"
 
 [dev-packages]
 
