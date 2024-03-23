@@ -1,6 +1,9 @@
 from django.db import models
 from .season import Season
 from .umbrella import Umbrella
+from datetime import datetime
+
+season = datetime.now().year
 
 class Subscription(models.Model):
     id = models.AutoField(primary_key=True)
@@ -32,7 +35,7 @@ class Subscription(models.Model):
         # This means that the model isn't saved to the database yet
         if self._state.adding:
             # Get the maximum display_id value from the database
-            last_id = Subscription.objects.all().aggregate(largest=models.Max('code')).get('largest')
+            last_id = Subscription.objects.filter(season__exact=season).aggregate(largest=models.Max('code')).get('largest')
 
             # aggregate can return None! Check it first.
             # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
