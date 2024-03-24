@@ -21,6 +21,7 @@ from core import views
 router = routers.DefaultRouter()
 router.register(r'umbrellas', views.UmbrellaView, 'umbrella')
 router.register(r'constants', views.ConstantView, 'constant')
+router.register(r'seasons', views.SeasonView, 'season')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

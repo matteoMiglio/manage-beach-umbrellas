@@ -22,14 +22,22 @@ from datetime import datetime
 ELEMENT_PER_PAGE = 10
 
 tz_rome = pytz.timezone('Europe/Rome')
-season = datetime.now().year
+
+try:
+    current_season = Season.objects.get(active=True)
+except:
+    current_season = datetime.now().year
+
 
 class ConstantView(viewsets.ModelViewSet):
     serializer_class = ConstantSerializer
     queryset = Constant.objects.all()
 
-class SunbedsFreeView(generics.RetrieveAPIView):
+class SeasonView(viewsets.ModelViewSet):
+    serializer_class = SeasonSerializer
+    queryset = Season.objects.all()
 
+class SunbedsFreeView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
 
         date = self.request.query_params.get('date')
@@ -37,7 +45,7 @@ class SunbedsFreeView(generics.RetrieveAPIView):
         # total_beach_loungers = Constant.objects.all()
         total_sunbeds = 200
 
-        sunbeds = Reservation.objects.filter(umbrella__isnull=True, date__exact=date, season__exact=season).aggregate(Sum('sunbeds'))
+        sunbeds = Reservation.objects.filter(umbrella__isnull=True, date__exact=date, season__exact=current_season).aggregate(Sum('sunbeds'))
 
         umbrella_sunbeds_int = 0
 
@@ -49,7 +57,6 @@ class SunbedsFreeView(generics.RetrieveAPIView):
         return HttpResponse(total_sunbeds - umbrella_sunbeds_int - sunbeds_int)
 
 class ReservedUmbrellaView(generics.RetrieveAPIView):
-
     def get(self, request, *args, **kwargs):
 
         date = self.request.query_params.get('date')
@@ -57,10 +64,10 @@ class ReservedUmbrellaView(generics.RetrieveAPIView):
 
         if date:
             if reserved and reserved == 'True':
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False, season__exact=season).exclude(umbrella__code__exact="")
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False, season__exact=current_season).exclude(umbrella__code__exact="")
             else:
                 # gestire questo fatto. torna 0 non va bene
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True, season__exact=season)
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True, season__exact=current_season)
 
             return HttpResponse(len(reservations))
         else:
@@ -104,14 +111,14 @@ class PrintTicketView(generics.CreateAPIView):
 
 class UmbrellaView(viewsets.ModelViewSet):
     serializer_class = UmbrellaSerializer
-    queryset = Umbrella.objects.filter(season__exact=season).extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
+    queryset = Umbrella.objects.filter(season__exact=current_season).extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
 class SubscriptionList(generics.ListCreateAPIView):
     serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
 
-        queryset = Subscription.objects.filter(season__exact=season).order_by('id')
+        queryset = Subscription.objects.filter(season__exact=current_season).order_by('id')
 
         subscription_type = self.request.query_params.get('type')
         umbrella_id = self.request.query_params.get('umbrella')
@@ -143,24 +150,29 @@ class SubscriptionList(generics.ListCreateAPIView):
         umbrella = subscription_data.get('umbrella', None)
 
         if umbrella:
-            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella, season__exact=season).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella, season__exact=current_season).first()
         else:
             umbrella_obj = None
 
         subcription_type = subscription_data['type']
-        start_date = None if subscription_data['start_date'] == "" else subscription_data['start_date']
-        end_date = None if subscription_data['end_date'] == "" else subscription_data['end_date'] 
+        custom_period = None
 
-        if subcription_type == "C":
-            cd = subscription_data.get('customDays')
-            cd.sort()
+        if subcription_type == "S":
+            start_date = current_season.start_date
+            end_date = current_season.end_date
 
-            cm = subscription_data.get('customMonths')
-            cm.sort()
+        elif subcription_type == "P":
+            start_date = datetime.strptime(subscription_data['start_date'], '%Y-%m-%d')
+            end_date = datetime.strptime(subscription_data['end_date'] , '%Y-%m-%d')
 
-            custom_period = ','.join(cd) + '-' + ','.join(cm)
-        else:
-            custom_period = None
+        elif subcription_type == "C":
+            custom_days = subscription_data.get('customDays')
+            custom_days.sort()
+
+            custom_months = subscription_data.get('customMonths')
+            custom_months.sort()
+
+            custom_period = ','.join(custom_days) + '-' + ','.join(custom_months)
 
         try:
             with transaction.atomic():
@@ -175,7 +187,7 @@ class SubscriptionList(generics.ListCreateAPIView):
                     deposit=subscription_data['deposit'], 
                     custom_period=custom_period, 
                     total=subscription_data['total'],
-                    season=season
+                    season=current_season
                 )
                 new_subscription.save()
 
@@ -209,7 +221,7 @@ class SubscriptionList(generics.ListCreateAPIView):
                                     sunbeds=new_subscription.sunbeds, 
                                     paid=new_subscription.paid, 
                                     subscription=new_subscription,
-                                    season=season
+                                    season=current_season
                                 )
 
                                 reservation.save()
@@ -217,8 +229,8 @@ class SubscriptionList(generics.ListCreateAPIView):
                             start_date += delta
 
                 else:
-                    start_date = datetime.strptime(new_subscription.start_date, '%Y-%m-%d')
-                    end_date = datetime.strptime(new_subscription.end_date, '%Y-%m-%d')
+                    start_date = new_subscription.start_date
+                    end_date = new_subscription.end_date
                     delta = timedelta(days=1)
                     while start_date <= end_date:
 
@@ -229,7 +241,7 @@ class SubscriptionList(generics.ListCreateAPIView):
                             sunbeds=new_subscription.sunbeds, 
                             paid=new_subscription.paid, 
                             subscription=new_subscription,
-                            season=season
+                            season=current_season
                         )
 
                         reservation.save()
@@ -240,8 +252,9 @@ class SubscriptionList(generics.ListCreateAPIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except IntegrityError:
-
+        except IntegrityError as e:
+            
+            print(repr(e))
             print("Non è stato possibile creare l'abbonamento perchè va in overlap")
 
             audit_log = Audit.objects.create(
@@ -255,16 +268,16 @@ class SubscriptionList(generics.ListCreateAPIView):
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
-    queryset = Subscription.objects.filter(season__exact=season).order_by('id')
+    queryset = Subscription.objects.filter(season__exact=current_season).order_by('id')
 
     def put(self, request, *args, **kwargs):
         subscription_data = request.data
 
         umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
-        umbrella_object = Umbrella.objects.filter(season__exact=season).get(id=umbrella_id)
+        umbrella_object = Umbrella.objects.filter(season__exact=current_season).get(id=umbrella_id)
 
         with transaction.atomic():
-            subscription = Subscription.objects.filter(season__exact=season).get(id=subscription_data['id'])
+            subscription = Subscription.objects.filter(season__exact=current_season).get(id=subscription_data['id'])
 
             subscription.umbrella = umbrella_object
             subscription.type = subscription_data['type']
@@ -294,7 +307,7 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
         with transaction.atomic():
             subscription = self.get_object()
 
-            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id, season__exact=season)
+            reservation_list = Reservation.objects.filter(subscription__exact=subscription.id, season__exact=current_season)
 
             for reservation in reservation_list:
                 reservation.delete()
@@ -315,7 +328,7 @@ class ReservationList(generics.ListCreateAPIView):
 
     def get_queryset(self):
 
-        queryset = Reservation.objects.filter(season__exact=season).order_by('id')
+        queryset = Reservation.objects.filter(season__exact=current_season).order_by('id')
 
         date = self.request.query_params.get('date')
         start_date = self.request.query_params.get('start_date')
@@ -364,7 +377,7 @@ class ReservationList(generics.ListCreateAPIView):
         # se contiene umbrella vuol dire che è una prenotazione per un ombrellone
         umbrella_selected = reservation_data.get('umbrella')
         if umbrella_selected:
-            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected, season__exact=season).first()
+            umbrella_obj = Umbrella.objects.filter(code__exact=umbrella_selected, season__exact=current_season).first()
         else:
             umbrella_obj = None
 
@@ -382,7 +395,7 @@ class ReservationList(generics.ListCreateAPIView):
                     paid=reservation_data['paid'],
                     price=price,
                     code=1,
-                    season=season
+                    season=current_season
                 )
 
                 reservation.save()
@@ -446,7 +459,7 @@ class ReservationList(generics.ListCreateAPIView):
 
 class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
-    queryset = Reservation.objects.filter(season__exact=season).order_by('id')
+    queryset = Reservation.objects.filter(season__exact=current_season).order_by('id')
 
     def put(self, request, *args, **kwargs):
 
@@ -461,7 +474,7 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
             umbrella = reservation_data.get('umbrella', None)
 
             with transaction.atomic():
-                reservation = Reservation.objects.filter(season__exact=season).get(id=reservation_data['id'])
+                reservation = Reservation.objects.filter(season__exact=current_season).get(id=reservation_data['id'])
 
                 if reservation.subscription:
                     reservation.umbrella = umbrella
@@ -513,7 +526,7 @@ class HomeView(generics.RetrieveAPIView):
         matrix = list()
 
         for i in range(0, 12):
-            umbrella_list = Umbrella.objects.filter(row__exact=i, season__exact=season)
+            umbrella_list = Umbrella.objects.filter(row__exact=i, season__exact=current_season)
             
             row_list = []
             for umbrella in umbrella_list:
@@ -521,7 +534,7 @@ class HomeView(generics.RetrieveAPIView):
                 serializer = UmbrellaSerializer(umbrella)
                 el['tmp_umbrella'] = serializer.data
 
-                r = umbrella.reservation_set.filter(date__exact=date, season__exact=season).first()
+                r = umbrella.reservation_set.filter(date__exact=date, season__exact=current_season).first()
 
                 if r == None:
                     el['tmp_res'] = None
@@ -542,11 +555,11 @@ class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 
         date = self.request.query_params.get('date')
 
-        reservations = Reservation.objects.filter(date__exact=date, umbrella_id__isnull=False, season__exact=season)
+        reservations = Reservation.objects.filter(date__exact=date, umbrella_id__isnull=False, season__exact=current_season)
 
         object_id_list = [reservation.umbrella.id for reservation in reservations]
 
-        free_umbrellas = Umbrella.objects.filter(season__exact=season) \
+        free_umbrellas = Umbrella.objects.filter(season__exact=current_season) \
                             .exclude(id__in=object_id_list) \
                             .extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
 
