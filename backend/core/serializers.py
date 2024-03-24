@@ -22,7 +22,7 @@ class SeasonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Season
-        fields = ('season', 'start_date', 'end_date')
+        fields = ('season', 'start_date', 'end_date', 'active')
 
 class UmbrellaSerializer(serializers.ModelSerializer):
 

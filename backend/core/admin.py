@@ -13,7 +13,7 @@ class ConstantAdmin(admin.ModelAdmin):
     list_display = ('key', 'value')
 
 class SeasonAdmin(admin.ModelAdmin):
-    list_display = ('season', 'start_date', 'end_date')
+    list_display = ('season', 'start_date', 'end_date', 'active')
 
 class UmbrellaAdmin(admin.ModelAdmin):
     list_display = ('code', 'description', 'sunbeds', 'row', 'column', 'season')
