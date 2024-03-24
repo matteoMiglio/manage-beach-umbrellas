@@ -84,11 +84,6 @@ class Subscriptions extends Component {
         item.deposit = null
       }
 
-      if (item.type === "S") {
-        item.start_date = "2023-05-1";
-        item.end_date = "2023-09-30";
-      }
-
       if (item.paid === "on")
         item.paid = true;
 
