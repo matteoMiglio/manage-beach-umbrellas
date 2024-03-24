@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { NavigationBar } from './components/NavigationBar';
-import Reservations from './Views/Reservations';
-import Subscriptions from './Views/Subscriptions';
-import Umbrellas from './Views/Umbrellas';
-import Home from './Views/Home';
+import Reservations from './views/Reservations';
+import Subscriptions from './views/Subscriptions';
+import Umbrellas from './views/Umbrellas';
+import Home from './views/Home';
 
 function App() {
   return (
