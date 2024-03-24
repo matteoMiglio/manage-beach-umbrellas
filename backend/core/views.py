@@ -23,11 +23,6 @@ ELEMENT_PER_PAGE = 10
 
 tz_rome = pytz.timezone('Europe/Rome')
 
-try:
-    current_season = Season.objects.get(active=True)
-except:
-    current_season = datetime.now().year
-
 
 class ConstantView(viewsets.ModelViewSet):
     serializer_class = ConstantSerializer
@@ -38,7 +33,12 @@ class SeasonView(viewsets.ModelViewSet):
     queryset = Season.objects.all()
 
 class SunbedsFreeView(generics.RetrieveAPIView):
+
     def get(self, request, *args, **kwargs):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         date = self.request.query_params.get('date')
         
@@ -57,7 +57,12 @@ class SunbedsFreeView(generics.RetrieveAPIView):
         return HttpResponse(total_sunbeds - umbrella_sunbeds_int - sunbeds_int)
 
 class ReservedUmbrellaView(generics.RetrieveAPIView):
+
     def get(self, request, *args, **kwargs):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         date = self.request.query_params.get('date')
         reserved = self.request.query_params.get('reserved')
@@ -111,12 +116,25 @@ class PrintTicketView(generics.CreateAPIView):
 
 class UmbrellaView(viewsets.ModelViewSet):
     serializer_class = UmbrellaSerializer
-    queryset = Umbrella.objects.filter(season__exact=current_season).extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
+
+    def get_queryset(self):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
+
+        queryset = Umbrella.objects.filter(season__exact=current_season).extra(select={'int_code': 'CAST(code AS INTEGER)'}).order_by('int_code')
+
+        return queryset
 
 class SubscriptionList(generics.ListCreateAPIView):
     serializer_class = SubscriptionSerializer
 
     def get_queryset(self):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         queryset = Subscription.objects.filter(season__exact=current_season).order_by('id')
 
@@ -145,6 +163,11 @@ class SubscriptionList(generics.ListCreateAPIView):
         return queryset
 
     def create(self, request, *args, **kwargs): 
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
+
         subscription_data = request.data
 
         umbrella = subscription_data.get('umbrella', None)
@@ -268,9 +291,13 @@ class SubscriptionList(generics.ListCreateAPIView):
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
-    queryset = Subscription.objects.filter(season__exact=current_season).order_by('id')
 
     def put(self, request, *args, **kwargs):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
+
         subscription_data = request.data
 
         umbrella_id = subscription_data.get('umbrella', {}).get('id', None)
@@ -304,6 +331,11 @@ class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
 
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
+
         with transaction.atomic():
             subscription = self.get_object()
 
@@ -327,6 +359,10 @@ class ReservationList(generics.ListCreateAPIView):
     serializer_class = ReservationSerializer
 
     def get_queryset(self):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         queryset = Reservation.objects.filter(season__exact=current_season).order_by('id')
 
@@ -371,6 +407,10 @@ class ReservationList(generics.ListCreateAPIView):
         return queryset
 
     def create(self, request, *args, **kwargs): 
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         reservation_data = request.data
 
@@ -459,9 +499,12 @@ class ReservationList(generics.ListCreateAPIView):
 
 class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
-    queryset = Reservation.objects.filter(season__exact=current_season).order_by('id')
 
     def put(self, request, *args, **kwargs):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         reservation_data = request.data
 
@@ -520,6 +563,10 @@ class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
 class HomeView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         date = self.request.query_params.get('date')
 
@@ -552,6 +599,11 @@ class HomeView(generics.RetrieveAPIView):
 class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
+
+        try:
+            current_season = Season.objects.get(active=True)
+        except:
+            current_season = datetime.now().year
 
         date = self.request.query_params.get('date')
 
