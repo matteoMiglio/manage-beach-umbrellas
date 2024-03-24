@@ -32,6 +32,27 @@ class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
     queryset = Season.objects.all()
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        _ = SeasonSerializer(data=request.data)
+
+        # se passo il valore active a True e la season che sto modificando non era attiva, allora faccio lo switch della season
+        if 'active' in request.data and bool(request.data['active']) is True and not instance.active:
+
+            with transaction.atomic():
+                old_season = Season.objects.get(active=True)
+                old_season.active = False
+                old_season.save()
+
+                super().update(request)
+                instance = self.get_object()
+                return Response(SeasonSerializer(instance).data)
+        else:
+
+            super().update(request)
+            instance = self.get_object()
+            return Response(SeasonSerializer(instance).data)
+    
 class SunbedsFreeView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
