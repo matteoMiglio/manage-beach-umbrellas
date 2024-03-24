@@ -3,11 +3,9 @@ from .season import Season
 from .umbrella import Umbrella
 from datetime import datetime
 
-season = datetime.now().year
-
 class Subscription(models.Model):
     id = models.AutoField(primary_key=True)
-    code = models.PositiveSmallIntegerField(default=1, unique=True)
+    code = models.PositiveSmallIntegerField(default=1)
     umbrella = models.ForeignKey(Umbrella, on_delete=models.CASCADE, null=True, blank=True)
     customer = models.TextField(blank=True)
     sunbeds = models.PositiveSmallIntegerField(default=2)
@@ -28,14 +26,21 @@ class Subscription(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['code', 'season'], name='unique_code_within_season')
+        ]
+
     def _str_(self):
         return self.code
     
     def save(self, *args, **kwargs):
         # This means that the model isn't saved to the database yet
         if self._state.adding:
-            # Get the maximum display_id value from the database
-            last_id = Subscription.objects.filter(season__exact=season).aggregate(largest=models.Max('code')).get('largest')
+
+            current_season = Season.objects.get(active=True)
+
+            last_id = Subscription.objects.filter(season__exact=current_season).aggregate(largest=models.Max('code')).get('largest')
 
             # aggregate can return None! Check it first.
             # If it isn't none, just use the last ID specified (which should be the greatest) and add one to it
