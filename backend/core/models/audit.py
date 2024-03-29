@@ -11,8 +11,7 @@ class Audit(models.Model):
     type = models.CharField(max_length=1, choices=EVENT_TYPE, default="A")
     CATEGORY_TYPE = (
         ('R', 'reservation'),
-        ('S', 'subscription'),
-        ('C', 'constant'),
+        ('S', 'subscription')
     )
     category = models.CharField(max_length=1, choices=CATEGORY_TYPE, default="R")
     created_at = models.DateTimeField(auto_now_add=True)

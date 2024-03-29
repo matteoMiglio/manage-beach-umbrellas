@@ -4,19 +4,12 @@ from .models.audit import Audit
 from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
-from .models.constant import Constant
 
 class AuditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Audit
         fields = ('id', 'message', 'type', 'created_at')
-
-class ConstantSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Constant
-        fields = ('id', 'key', 'value', 'created_at', 'updated_at')
 
 class SeasonSerializer(serializers.ModelSerializer):
 

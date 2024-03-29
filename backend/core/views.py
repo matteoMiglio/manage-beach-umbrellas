@@ -8,7 +8,6 @@ from .models.audit import Audit
 from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
-from .models.constant import Constant
 from datetime import datetime, timedelta, time
 from django.db.models import Avg, Count, Min, Sum
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -23,10 +22,6 @@ ELEMENT_PER_PAGE = 10
 
 tz_rome = pytz.timezone('Europe/Rome')
 
-
-class ConstantView(viewsets.ModelViewSet):
-    serializer_class = ConstantSerializer
-    queryset = Constant.objects.all()
 
 class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
