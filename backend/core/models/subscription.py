@@ -10,9 +10,9 @@ class Subscription(models.Model):
     customer = models.TextField(blank=True)
     sunbeds = models.PositiveSmallIntegerField(default=2)
     SUBSCRIPTIONS_TYPE = (
-        ('S', 'seasonal'),
-        ('P', 'periodic'),
-        ('C', 'custom'),
+        ('S', 'seasonal'), # from the start to the end of the season
+        ('P', 'periodic'), # period of time fixed, i.e. the month of June
+        ('C', 'custom'), # custom period, i.e. every week-end
     )
     type = models.CharField(max_length=1, choices=SUBSCRIPTIONS_TYPE, default='S')
     custom_period = models.CharField(max_length=30, blank=True, null=True)
