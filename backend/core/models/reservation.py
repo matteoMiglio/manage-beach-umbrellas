@@ -26,10 +26,15 @@ class Reservation(models.Model):
     def save(self, *args, **kwargs):
         # This means that the model isn't saved to the database yet
 
+        # I don't care about codes when a reservation is related to a subcription
         if self._state.adding and not self._state.fields_cache.get('subscription'):
-            last_id = Reservation.objects.all().aggregate(largest=models.Max('code')).get('largest')
+
+            current_season = Season.objects.get(active=True)
+            last_id = Reservation.objects.filter(season__exact=current_season).aggregate(largest=models.Max('code')).get('largest')
 
             if last_id is not None:
                 self.code = last_id + 1
+            else:
+                self.code = 1
 
         super(Reservation, self).save(*args, **kwargs) 
