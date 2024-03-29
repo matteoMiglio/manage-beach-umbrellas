@@ -36,12 +36,15 @@ class SeasonModelTestCase(TestCase):
         )
         self.assertFalse(season_with_defaults.active)
 
-    # def test_unique_active_field(self):
-    #     another_season_active = Season.objects.create(
-    #         season='2025',
-    #         start_date='2025-06-01',
-    #         end_date='2025-09-30',
-    #         active=True,
-    #     )
-    #     active_seasons_count = Season.objects.filter(active=True).count()
-    #     self.assertEqual(active_seasons_count, 1)
+    def test_active_unique_constraint(self):
+
+        # there's already an active season
+        Season.objects.create(
+            season='2025',
+            start_date='2025-06-01',
+            end_date='2025-09-30',
+            active=True,
+        )
+
+        active_seasons_count = Season.objects.filter(active=True).count()
+        self.assertEqual(active_seasons_count, 1)

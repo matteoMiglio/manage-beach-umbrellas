@@ -10,3 +10,9 @@ class Season(models.Model):
 
     def _str_(self):
         return self.id
+    
+    def save(self, *args, **kwargs):
+        if self.active:
+            # Disattiva tutte le altre stagioni attive
+            Season.objects.filter(active=True).update(active=False)
+        super(Season, self).save(*args, **kwargs)
