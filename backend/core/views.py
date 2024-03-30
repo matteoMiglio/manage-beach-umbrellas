@@ -27,6 +27,12 @@ class SeasonView(viewsets.ModelViewSet):
     serializer_class = SeasonSerializer
     queryset = Season.objects.all()
 
+class ActiveSeasonView(generics.RetrieveAPIView):
+    def get(self, request):
+
+        active_season = Season.objects.filter(active=True).first()
+        return HttpResponse(active_season.season, content_type="application/json")
+
 class SunbedsFreeView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
@@ -589,7 +595,7 @@ class HomeView(generics.RetrieveAPIView):
             matrix.append(row_list)
 
         json_stuff = json.dumps(matrix)    
-        return HttpResponse(json_stuff, content_type ="application/json")
+        return HttpResponse(json_stuff, content_type="application/json")
 
 class FreeUmbrellaReservationView(generics.RetrieveAPIView):
 

@@ -25,6 +25,7 @@ router.register(r'seasons', views.SeasonView, 'season')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    re_path(r'api/season/active/$', views.ActiveSeasonView.as_view(), name='active-season'),
     re_path(r'api/reservations/$', views.ReservationList.as_view(), name='reservations-list'),
     re_path(r'api/reservations/(?P<pk>[0-9]+)/$', views.ReservationDetail.as_view(), name='reservation-detail'),
     re_path(r'api/subscriptions/$', views.SubscriptionList.as_view(), name='subscriptions-list'),
