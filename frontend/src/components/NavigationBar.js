@@ -1,38 +1,53 @@
-import React from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
-import styled from 'styled-components';
+import React, { Component } from 'react';
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+} from 'reactstrap';
 
-const Styles = styled.div`
-  .navbar { background-color: #784877; }
-  a, .navbar-nav, .navbar-light .nav-link {
-    color: #9FFFCB;
-    &:hover { color: white; }
-  }
-  .navbar-brand {
-    font-size: 1.4em;
-    color: #9FFFCB;
-    &:hover { color: white; }
-  }
-  .form-center {
-    position: absolute !important;
-    left: 25%;
-    right: 25%;
-  }
-`;
 
-export const NavigationBar = () => (
-  <Styles>
-    <Navbar fixed="top" expand="md">
-      <Navbar.Brand href="/home">Palm Beach</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Item><Nav.Link href="/umbrellas">Ombrelloni</Nav.Link></Nav.Item> 
-          <Nav.Item><Nav.Link href="/subscriptions">Abbonamenti</Nav.Link></Nav.Item>
-          <Nav.Item><Nav.Link href="/reservations">Prenotazioni</Nav.Link></Nav.Item>
-          {/* <Nav.Item><Nav.Link href="/settings">Impostazioni</Nav.Link></Nav.Item> */}
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
-  </Styles>
-)
+class NavigationBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false
+    };
+  }
+  toggle = () => {
+    this.setState({ 
+      isOpen: !this.state.isOpen 
+    });
+  }
+
+  render() {
+
+    return (
+      <Navbar color="light" light="true" fixed="top" expand="md">
+        <NavbarBrand href="/home" className="me-auto">Palm Beach</NavbarBrand>
+        <NavbarToggler onClick={this.toggle} className="me-2"/>
+        <Collapse isOpen={this.state.isOpen} navbar>
+          <Nav className="ml-auto" navbar>
+            <NavItem>
+              <NavLink href="/umbrellas">Ombrelloni</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/subscriptions">Abbonamenti</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/reservations">Prenotazioni</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/settings">Impostazioni</NavLink>
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
+    )
+  }
+}
+
+export default NavigationBar;

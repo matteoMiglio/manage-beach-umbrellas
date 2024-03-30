@@ -1,5 +1,5 @@
 import React from "react";
-import { Form,  Label, Input, FormGroup, CustomInput } from 'reactstrap';
+import { Form, Label, Input, FormGroup, CustomInput } from 'reactstrap';
 
 class SubscriptionsSearchBar extends React.Component {
 
