@@ -17,7 +17,7 @@ function App() {
           <Route path="/umbrellas" component={Umbrellas} />
           <Route path="/reservations" component={Reservations} />
           <Route path="/subscriptions" component={Subscriptions} />
-          {/* <Route path="/settings" component={Settings} /> */}
+          <Route path="/settings" component={Settings} />
           <Redirect to="/home" />
         </Switch>
       </Router>
