@@ -28,10 +28,14 @@ class SeasonView(viewsets.ModelViewSet):
     queryset = Season.objects.all()
 
 class ActiveSeasonView(generics.RetrieveAPIView):
+    serializer_class = SeasonSerializer
+
     def get(self, request):
 
         active_season = Season.objects.filter(active=True).first()
-        return HttpResponse(active_season.season, content_type="application/json")
+        serializer = SeasonSerializer(active_season)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class SunbedsFreeView(generics.RetrieveAPIView):
 

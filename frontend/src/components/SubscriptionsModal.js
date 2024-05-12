@@ -269,7 +269,7 @@ export default class SubscriptionsModal extends Component {
                 <CustomInput type="radio" id="type_seasonal" name="type" label="Stagionale" 
                              value="S" defaultChecked={this.state.activeItem.type === "S"} 
                              onChange={this.handleChange}
-                             disabled={this.state.activeItem.id}  />
+                             disabled={this.state.activeItem.id} />
                 <CustomInput type="radio" id="type_periodic" name="type" label="Periodo" 
                              value="P" defaultChecked={this.state.activeItem.type === "P"} 
                              onChange={this.handleChange}
