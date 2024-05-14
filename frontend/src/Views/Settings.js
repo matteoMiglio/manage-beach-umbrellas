@@ -326,7 +326,7 @@ class Settings extends Component {
             </Col>
           </Row>
         </Collapse>
-        <Row className="mb-3">
+        <Row className="mb-3 mt-5">
           <Col sm={{ size: 6, offset: 3 }}>
             <h3>Attiva altra stagione</h3>
             <Form inline>
@@ -335,7 +335,7 @@ class Settings extends Component {
                   { this.renderSeasonsSelection() }
                 </Input>
               </FormGroup>
-              <FormGroup>
+              <FormGroup className="mx-5">
                 <Button onClick={this.handleOpenModal} color="success">
                   Carica
                 </Button>
