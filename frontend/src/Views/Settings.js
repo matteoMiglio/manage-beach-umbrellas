@@ -10,6 +10,10 @@ import {
   Row,
   Col,
   Collapse,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import axios from "axios";
 import 'react-tiny-fab/dist/styles.css';
@@ -23,7 +27,8 @@ class Settings extends Component {
       isLoading: true,
       addingSeason: false,
       editingSeason: false,
-      invalidNewSeason: false
+      invalidNewSeason: false,
+      modal: false
     };
   }
 
@@ -209,6 +214,19 @@ class Settings extends Component {
     this.toggleCollapse()
   };
 
+  handleOpenModal = () => {
+    this.setState({ modal: true })
+  }
+
+  handleModalConfirm = () => {
+    this.setState({ modal: false })
+    this.handleSubmitLoadSeason()
+  }
+
+  handleModalDeny = () => {
+    this.setState({ modal: false })
+  }
+
   renderSeasonsSelection = () => {
 
     const list = this.state.seasonsList;
@@ -318,13 +336,29 @@ class Settings extends Component {
                 </Input>
               </FormGroup>
               <FormGroup>
-                <Button onClick={this.handleSubmitLoadSeason} color="success">
+                <Button onClick={this.handleOpenModal} color="success">
                   Carica
                 </Button>
               </FormGroup>
             </Form>
           </Col>
         </Row>
+        {this.state.modal ? (
+          <Modal isOpen={true}>
+            <ModalHeader>Conferma Operazione</ModalHeader>
+            <ModalBody>
+              Sei sicuro di voler caricare la stagione {this.state.selectedSeasonToLoad}?
+            </ModalBody>
+            <ModalFooter>
+              <Button color="success" onClick={this.handleModalConfirm}>
+                Sì
+              </Button>
+              <Button className="btn btn-danger" onClick={this.handleModalDeny}>
+                No
+              </Button>
+            </ModalFooter>
+        </Modal>
+        ) : null}
       </Container>
 
     );
