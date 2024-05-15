@@ -1016,7 +1016,7 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "84",
+            "code": "91",
             "description": "",
             "sunbeds": 2,
             "row": 6,
@@ -1029,14 +1029,105 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "83",
+            "code": "90",
             "description": "",
             "sunbeds": 2,
             "row": 6,
             "column": 1,
             "season": "2024",
-            "created_at": "2023-04-20T19:42:22.276Z",
-            "updated_at": "2023-04-20T19:42:22.276Z"
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "89",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 2,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "88",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 3,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "87",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 4,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "86",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 5,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "85",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 6,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "84",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 7,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "83",
+            "description": "",
+            "sunbeds": 2,
+            "row": 6,
+            "column": 8,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
         }
     },
     {
@@ -1046,10 +1137,10 @@
             "description": "",
             "sunbeds": 2,
             "row": 6,
-            "column": 2,
+            "column": 9,
             "season": "2024",
-            "created_at": "2023-04-20T19:42:22.324Z",
-            "updated_at": "2023-04-20T19:42:22.324Z"
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
         }
     },
     {
@@ -1059,10 +1150,10 @@
             "description": "",
             "sunbeds": 2,
             "row": 6,
-            "column": 3,
+            "column": 10,
             "season": "2024",
-            "created_at": "2023-04-20T19:42:22.334Z",
-            "updated_at": "2023-04-20T19:42:22.334Z"
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
         }
     },
     {
@@ -1072,10 +1163,10 @@
             "description": "",
             "sunbeds": 2,
             "row": 6,
-            "column": 4,
+            "column": 11,
             "season": "2024",
-            "created_at": "2023-04-20T19:42:22.344Z",
-            "updated_at": "2023-04-20T19:42:22.344Z"
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
         }
     },
     {
@@ -1085,7 +1176,98 @@
             "description": "",
             "sunbeds": 2,
             "row": 6,
+            "column": 12,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "98",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 0,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "97",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 1,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.212Z",
+            "updated_at": "2023-04-20T19:42:22.212Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "96",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 2,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.276Z",
+            "updated_at": "2023-04-20T19:42:22.276Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "95",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 3,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.324Z",
+            "updated_at": "2023-04-20T19:42:22.324Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "94",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 4,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.334Z",
+            "updated_at": "2023-04-20T19:42:22.334Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "93",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
             "column": 5,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.344Z",
+            "updated_at": "2023-04-20T19:42:22.344Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "92",
+            "description": "",
+            "sunbeds": 2,
+            "row": 7,
+            "column": 6,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.358Z",
             "updated_at": "2023-04-20T19:42:22.358Z"
@@ -1094,10 +1276,10 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "90",
+            "code": "105",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
+            "row": 8,
             "column": 0,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.373Z",
@@ -1107,11 +1289,24 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "89",
+            "code": "104",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
+            "row": 8,
             "column": 1,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.373Z",
+            "updated_at": "2023-04-20T19:42:22.373Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "103",
+            "description": "",
+            "sunbeds": 2,
+            "row": 8,
+            "column": 2,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.389Z",
             "updated_at": "2023-04-20T19:42:22.389Z"
@@ -1120,11 +1315,11 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "88",
+            "code": "102",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
-            "column": 2,
+            "row": 8,
+            "column": 3,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.404Z",
             "updated_at": "2023-04-20T19:42:22.404Z"
@@ -1133,11 +1328,11 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "87",
+            "code": "101",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
-            "column": 3,
+            "row": 8,
+            "column": 4,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.414Z",
             "updated_at": "2023-04-20T19:42:22.414Z"
@@ -1146,11 +1341,11 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "86",
+            "code": "100",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
-            "column": 4,
+            "row": 8,
+            "column": 5,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.426Z",
             "updated_at": "2023-04-20T19:42:22.426Z"
@@ -1159,11 +1354,102 @@
     {
         "model": "core.umbrella",
         "fields": {
-            "code": "85",
+            "code": "99",
             "description": "",
             "sunbeds": 2,
-            "row": 7,
+            "row": 8,
+            "column": 6,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.436Z",
+            "updated_at": "2023-04-20T19:42:22.436Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "112",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 0,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.373Z",
+            "updated_at": "2023-04-20T19:42:22.373Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "111",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 1,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.373Z",
+            "updated_at": "2023-04-20T19:42:22.373Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "110",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 2,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.389Z",
+            "updated_at": "2023-04-20T19:42:22.389Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "109",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 3,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.404Z",
+            "updated_at": "2023-04-20T19:42:22.404Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "108",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 4,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.414Z",
+            "updated_at": "2023-04-20T19:42:22.414Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "107",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
             "column": 5,
+            "season": "2024",
+            "created_at": "2023-04-20T19:42:22.426Z",
+            "updated_at": "2023-04-20T19:42:22.426Z"
+        }
+    },
+    {
+        "model": "core.umbrella",
+        "fields": {
+            "code": "106",
+            "description": "",
+            "sunbeds": 2,
+            "row": 9,
+            "column": 6,
             "season": "2024",
             "created_at": "2023-04-20T19:42:22.436Z",
             "updated_at": "2023-04-20T19:42:22.436Z"
