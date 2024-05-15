@@ -4,9 +4,13 @@ from .models.audit import Audit
 from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
+from .models.printer import Printer
 
 class AuditAdmin(admin.ModelAdmin):
     list_display = ('message', 'type')
+
+class PrinterAdmin(admin.ModelAdmin):
+    list_display = ('ip_address')
 
 class SeasonAdmin(admin.ModelAdmin):
     list_display = ('season', 'start_date', 'end_date', 'active')

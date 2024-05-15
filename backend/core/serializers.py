@@ -4,12 +4,19 @@ from .models.audit import Audit
 from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
+from .models.printer import Printer
 
 class AuditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Audit
         fields = ('id', 'message', 'type', 'created_at')
+
+class PrinterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Printer
+        fields = ('id', 'ip_address', 'updated_at', 'created_at')
 
 class SeasonSerializer(serializers.ModelSerializer):
 
