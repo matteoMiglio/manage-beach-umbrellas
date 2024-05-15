@@ -98,6 +98,15 @@ class Home extends Component {
       })
       .then((res) => this.setState({ reservedUmbrella: res.data }))
       .catch((err) => console.log(err));
+
+      axios
+      .get("/api/umbrellas/count", {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      })
+      .then((res) => this.setState({ totalUmbrellas: res.data }))
+      .catch((err) => console.log(err));
   };
 
   toggle = () => {
@@ -251,7 +260,7 @@ class Home extends Component {
   render() {
 
     const reservedUmbrella = this.state.reservedUmbrella;
-    const totalUmbrella = 90;
+    const totalUmbrella = this.state.totalUmbrellas;
 
     return (
       <Container fluid className="pt-5">
