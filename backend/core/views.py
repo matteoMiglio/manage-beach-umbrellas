@@ -61,7 +61,7 @@ class SunbedsFreeView(generics.RetrieveAPIView):
 
         return HttpResponse(total_sunbeds - umbrella_sunbeds_int - sunbeds_int)
 
-class ReservedUmbrellaView(generics.RetrieveAPIView):
+class CountUmbrellaView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
@@ -72,16 +72,18 @@ class ReservedUmbrellaView(generics.RetrieveAPIView):
         date = self.request.query_params.get('date')
         reserved = self.request.query_params.get('reserved')
 
-        if date:
-            if reserved and reserved == 'True':
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False, season__exact=current_season).exclude(umbrella__code__exact="")
-            else:
-                # gestire questo fatto. torna 0 non va bene
-                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=True, season__exact=current_season)
-
-            return HttpResponse(len(reservations))
+        if reserved and reserved.lower() == 'true':
+            reserved = True
         else:
-            return HttpResponse(0)
+            reserved = False
+
+        if date and reserved:
+                reservations = Reservation.objects.filter(date__exact=date, umbrella__isnull=False, season__exact=current_season).exclude(umbrella__code__exact="").count()
+
+                return HttpResponse(reservations)
+        else:
+            total = Umbrella.objects.filter(season__exact=current_season).count()
+            return HttpResponse(total)
 
 class PrintTicketView(generics.CreateAPIView):
 
