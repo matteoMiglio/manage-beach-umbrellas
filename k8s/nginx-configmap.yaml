@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  nginx.conf: |
+    server {
+      listen 80;
+
+      location /api_static/ {
+        alias /srv/app/static;
+      }
+
+      location /api_media/ {
+        alias /srv/app/media;
+      }
+
+      location ~ ^/(admin|api|ws) {
+        proxy_pass http://backend-service:8000;
+        proxy_redirect default;
+        include /etc/nginx/app/include.websocket;
+        include /etc/nginx/app/include.forwarded;
+      }
+
+      location / {
+        proxy_pass http://frontend-service:3000;
+        proxy_redirect default;
+        include /etc/nginx/app/include.websocket;
+        include /etc/nginx/app/include.forwarded;
+      }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-params
+data:
+  include.websocket: |
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  include.forwarded: |
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host $server_name;

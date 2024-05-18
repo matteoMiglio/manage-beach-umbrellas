@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      restartPolicy: Always
+      containers:
+        - env:
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  key: ALLOWED_HOSTS
+                  name: environment
+            - name: DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE
+                  name: environment
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DEBUG
+                  name: environment
+            - name: SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: SECRET_KEY
+                  name: environment
+          image: migliooo/manage-beach-umbrellas-fe:latest
+          name: manage-beach-umbrellas-fe
+          ports:
+            - containerPort: 3000
+              protocol: TCP

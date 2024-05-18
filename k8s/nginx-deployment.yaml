@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d
+            - name: nginx-proxy-params-volume
+              mountPath: /etc/nginx/app/
+            - name: static-files
+              mountPath: /srv/app/static
+            - name: media-files
+              mountPath: /srv/app/media
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config
+        - name: nginx-proxy-params-volume
+          configMap:
+            name: nginx-proxy-params
+        - name: static-files
+          persistentVolumeClaim:
+            claimName: static-pvc
+        - name: media-files
+          persistentVolumeClaim:
+            claimName: media-pvc

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - env:
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                configMapKeyRef:
+                  key: ALLOWED_HOSTS
+                  name: environment
+            - name: DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: DATABASE
+                  name: environment
+            - name: DEBUG
+              valueFrom:
+                configMapKeyRef:
+                  key: DEBUG
+                  name: environment
+            - name: SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  key: SECRET_KEY
+                  name: environment
+          image: migliooo/manage-beach-umbrellas-be:latest
+          name: manage-beach-umbrellas-be
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /src/database
+              name: sqlite-data-volume
+      restartPolicy: Always
+      volumes:
+        - name: sqlite-data-volume
+          persistentVolumeClaim:
+            claimName: sqlite-data-pvc
