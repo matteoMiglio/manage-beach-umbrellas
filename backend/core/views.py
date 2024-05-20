@@ -298,6 +298,7 @@ class SubscriptionList(generics.ListCreateAPIView):
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
 
     def put(self, request, *args, **kwargs):
         try:
@@ -506,6 +507,7 @@ class ReservationList(generics.ListCreateAPIView):
 
 class ReservationDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReservationSerializer
+    queryset = Reservation.objects.all()
 
     def put(self, request, *args, **kwargs):
         try:
