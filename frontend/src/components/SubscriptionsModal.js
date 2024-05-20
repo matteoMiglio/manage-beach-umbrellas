@@ -197,6 +197,7 @@ export default class SubscriptionsModal extends Component {
                 <Label sm={6}>{this.state.activeItem.code}</Label>
               </FormGroup>
             ) : null }
+            { this.state.activeItem.umbrella != null ? (
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
@@ -206,6 +207,7 @@ export default class SubscriptionsModal extends Component {
                 </Input>
               </Col>
             </FormGroup>
+            ) : null}
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Lettini</Label>
               <Col sm={6}>

@@ -98,16 +98,18 @@ export default class ReservationsModal extends Component {
                 <Label sm={6}>Codice Abbonamento</Label>
                 <Label sm={6}>{this.state.activeItem.subscription}</Label>
               </FormGroup> 
-            ) : null}            
-            <FormGroup row>
+            ) : null}
+            { this.state.activeItem.umbrella != null ? (
+              <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
                 <Input type="select" name="umbrella" id="umbrella-id" onChange={this.handleChange} disabled={input_disabled || this.state.activeItem.id}>
                   <option>-</option>
-                  { this.state.activeItem.id && this.state.activeItem.umbrella ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : this.renderUmbrellaSelection()}
+                  { this.state.activeItem.id ? (<option selected>{this.state.activeItem.umbrella.code}</option>) : this.renderUmbrellaSelection()}
                 </Input>
               </Col>
             </FormGroup>
+            ) : null}
             <FormGroup row>
               <Label for="sunbeds" sm={6}>Lettini</Label>
               <Col sm={6}>
