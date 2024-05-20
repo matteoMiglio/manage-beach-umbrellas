@@ -85,11 +85,54 @@ class CountUmbrellaView(generics.RetrieveAPIView):
             total = Umbrella.objects.filter(season__exact=current_season).count()
             return HttpResponse(total)
 
+class PrinterStatusView(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        ip = "192.168.1.100"
+
+        try:
+            printer = Printer(ip)
+        except Exception as e:
+            return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        printer_status = printer.is_online()
+
+        if printer_status:
+            return Response("OK", status=status.HTTP_200_OK)
+        else:
+            return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+class PrinterPaperStatusView(generics.RetrieveAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        ip = "192.168.1.100"
+        try:
+            printer = Printer(ip)
+        except Exception as e:
+            return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        paper_status = printer.paper_status()
+
+        if paper_status == 2:
+            return Response("Adeguato", status=status.HTTP_200_OK)
+        elif paper_status == 1:
+            return Response("In esaurimento", status=status.HTTP_200_OK)
+        elif paper_status == 0:
+            return Response("Terminata", status=status.HTTP_200_OK)
+        else:
+            return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
 class PrintTicketView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
+        ip = "192.168.1.100"
 
-        printer = Printer()
+        try:
+            printer = Printer(ip)
+        except Exception as e:
+            return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
         ticket = request.data
         type = ticket.get('type')

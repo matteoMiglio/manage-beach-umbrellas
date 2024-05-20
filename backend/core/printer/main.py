@@ -1,4 +1,5 @@
 from escpos.printer import Network, Dummy
+from escpos.exceptions import DeviceNotFoundError
 from datetime import datetime
 import os
 import pytz
@@ -8,11 +9,16 @@ month_names = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
 
 class Printer():
 
-    def __init__(self) -> None:
+    def __init__(self, ip) -> None:
 
-        ip = "192.168.1.100"
+        try:
+            self.printer_network = Network(ip, timeout=2)
+            # Test connection
+            self.printer_network.open()
+            self.printer_network.close()
+        except DeviceNotFoundError:
+            raise Exception("Printer not found")
 
-        self.printer_network = Network(ip)
         self.logo_image = os.path.join(os.path.dirname(__file__), "../images/palm_beach_400.png")
 
         self.tz = pytz.timezone('Europe/Rome')
@@ -117,3 +123,9 @@ class Printer():
         dummy.cut()
 
         self.printer_network._raw(dummy.output)
+
+    def is_online(self):
+        return self.printer_network.is_online()
+    
+    def paper_status(self):
+        return self.printer_network.paper_status()
