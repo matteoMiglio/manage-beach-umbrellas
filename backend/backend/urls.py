@@ -34,6 +34,8 @@ urlpatterns = [
     re_path(r'api/sunbeds/count/$', views.SunbedsFreeView.as_view(), name='sunbeds-count'),
     re_path(r'api/umbrellas/count$', views.CountUmbrellaView.as_view(), name='reserved-umbrellas-count'),
     re_path(r'api/printer/ticket/$', views.PrintTicketView.as_view(), name='print-ticket'),
+    re_path(r'api/printer/status/$', views.PrinterStatusView.as_view(), name='printer-status'),
+    re_path(r'api/printer/paper-status/$', views.PrinterPaperStatusView.as_view(), name='printer-paper-status'),
     re_path(r'api/home/$', views.HomeView.as_view(), name='home'),
     re_path(r'api/free-umbrella-reservation/$', views.FreeUmbrellaReservationView.as_view(), name='free-umbrellas-reservation')
 ]

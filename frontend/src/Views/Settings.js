@@ -28,7 +28,8 @@ class Settings extends Component {
       addingSeason: false,
       editingSeason: false,
       invalidNewSeason: false,
-      modal: false
+      modal: false,
+      printerError: false,
     };
   }
 
@@ -37,20 +38,28 @@ class Settings extends Component {
   }
 
   refreshList = () => {
+
     axios.all([
       axios.get("/api/seasons/"),
-      axios.get("/api/season/active/")
+      axios.get("/api/season/active/"),
+      axios.get("/api/printer/status/"),
+      axios.get("/api/printer/paper-status/")
     ])
-    .then(axios.spread((seasonsRes, activeSeason) => {
-      this.setState({ 
-        seasonsList: seasonsRes.data,
-        activeSeason: activeSeason.data
-      });
-    }))
-    .catch((err) => console.log(err))
-    .finally(() => {
-      this.setState({ isLoading: false });
-    })
+      .then(axios.spread((seasonsRes, activeSeason, printerStatus, printerPaperStatus) => {
+        this.setState({ 
+          seasonsList: seasonsRes.data,
+          activeSeason: activeSeason.data,
+          printerStatus: printerStatus.data,
+          printerPaperStatus: printerPaperStatus.data
+        })
+      }))
+      .catch((err) => {
+        console.log(err)
+        this.setState({ printerError: true })
+      })
+      .finally(() => {
+        this.setState({ isLoading: false })
+      })
   };
 
   handleSubmitLoadSeason = () => {
@@ -341,6 +350,19 @@ class Settings extends Component {
                 </Button>
               </FormGroup>
             </Form>
+          </Col>
+        </Row>
+        <Row className="mb-3 mt-5">
+          <Col sm={{ size: 6, offset: 3 }}>
+            <h3>Stampante</h3>
+            {this.state.printerError ? (
+              <p>Stato: Offline</p>
+            ) : (
+              <>
+                <p>Stato: {this.state.printerStatus}</p>
+                <p>Stato della carta: {this.state.printerPaperStatus}</p>
+              </>
+            )}
           </Col>
         </Row>
         {this.state.modal ? (
