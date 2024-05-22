@@ -186,15 +186,16 @@ class SubscriptionList(generics.ListCreateAPIView):
 
         subcription_type = subscription_data['type']
         custom_period = None
+        start_date = None
+        end_date = None
 
         if subcription_type == "S":
             start_date = current_season.start_date
             end_date = current_season.end_date
 
         elif subcription_type == "P":
-            start_date = datetime.strptime(subscription_data['start_date'], '%Y-%m-%d')
-            end_date = datetime.strptime(subscription_data['end_date'] , '%Y-%m-%d')
-
+            start_date = datetime.strptime(subscription_data['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.strptime(subscription_data['end_date'] , '%Y-%m-%d').date()
         elif subcription_type == "C":
             custom_days = subscription_data.get('customDays')
             custom_days.sort()
