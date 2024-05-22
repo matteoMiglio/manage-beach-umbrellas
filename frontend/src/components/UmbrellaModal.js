@@ -69,7 +69,7 @@ export default class UmbrellaModal extends Component {
 
     return (
       <Modal isOpen={true} toggle={toggle} size="xl">
-        <ModalHeader toggle={toggle}>{modalTitle} ombrellone con codice: {itemId}</ModalHeader>
+        <ModalHeader toggle={toggle}>{modalTitle} ombrellone numero: {itemId}</ModalHeader>
         <ModalBody>
           <Container>
             <Row className="d-flex justify-content-center align-items-center"> 
