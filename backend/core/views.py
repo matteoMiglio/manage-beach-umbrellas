@@ -9,7 +9,7 @@ from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
 from datetime import datetime, timedelta, time
-from django.db.models import Avg, Count, Min, Sum
+from django.db.models import Avg, Count, Min, Sum, Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError, transaction
 import json
@@ -581,7 +581,10 @@ class HomeView(generics.RetrieveAPIView):
 
         matrix = list()
 
-        for i in range(0, 12):
+        min_row = Umbrella.objects.aggregate(Min('row'))['row__min']
+        max_row = Umbrella.objects.aggregate(Max('row'))['row__max']
+
+        for i in range(min_row, max_row+1):
             umbrella_list = Umbrella.objects.filter(row__exact=i, season__exact=current_season)
             
             row_list = []
