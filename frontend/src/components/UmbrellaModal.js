@@ -17,11 +17,12 @@ import {
 import axios from "axios";
 import MyCalendar from "./MyCalendar";
 import SubscriptionsModal from "./SubscriptionsModal";
+import ReservationsModal from "./ReservationsModal";
 import Notification from "../components/Notification";
 
 const monthNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 
-const createEmptyItem = () => {
+const createEmptySubscriptionItem = () => {
   const item = {
     umbrella: "",
     customer: "",
@@ -39,14 +40,28 @@ const createEmptyItem = () => {
   return item;
 }
 
+const createEmptyReservationItem = () => {
+  const item = { 
+    umbrella: "", 
+    customer: "",
+    sunbeds: 2,
+    date: "", 
+    paid: false 
+  }
+
+  return item;
+}
+
 export default class UmbrellaModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentMonth: startOfMonth(new Date()),
       itemList: [],
-      activeItem: createEmptyItem(),
+      activeItemSubscription: createEmptySubscriptionItem(),
+      activeItemReservation: createEmptyReservationItem(),
       subscriptionModal: false,
+      reservationModal: false,
       myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
     };
   }
@@ -83,18 +98,27 @@ export default class UmbrellaModal extends Component {
     return Array(end - start + 1).fill().map((_, idx) => start + idx)
   }
 
-  handleToggleNested = () => {
+  handleToggleNestedSubscriptionModal = () => {
 
-    const activeItem = { ...this.state.activeItem, ['umbrella']: this.props.itemId }
+    const item = { ...this.state.activeItemSubscription, ['umbrella']: this.props.itemId }
 
     this.setState({ 
       subscriptionModal: !this.state.subscriptionModal,
-      activeItem: activeItem
+      activeItemSubscription: item
+    });
+  }
+  
+  handleToggleNestedReservationModal = () => {
+    const today = new Date().toISOString().substring(0, 10);
+    const item = { ...this.state.activeItemReservation, ['date']: today, ['umbrella']: this.props.itemId }
+    this.setState({ 
+      reservationModal: !this.state.reservationModal,
+      activeItemReservation: item
     });
   }
 
-  handleSubmit = (item, method) => {
-    this.handleToggleNested();
+  handleSubmitSubscription = (item, method) => {
+    this.handleToggleNestedSubscriptionModal();
 
     if (method.includes("save")) {
       if (item.umbrella === "" || item.umbrella === "-") {
@@ -122,7 +146,7 @@ export default class UmbrellaModal extends Component {
 
           if (method.includes("print")) {
             item.code = res.data.code;
-            this.printTicket(item);
+            this.printTicket(item, 'subscription');
           }
         })
         .catch((err) => {
@@ -133,17 +157,57 @@ export default class UmbrellaModal extends Component {
     }
   }
 
-  printTicket = (item) => {
+  handleSubmitReservation = (item, method) => {
+    this.handleToggleNestedReservationModal();
 
-    const obj = {
-      type: "subscription",
-      sunbeds: item.sunbeds,
-      umbrella: item.umbrella,
-      code: item.code,
-      start_date: item.start_date,
-      end_date: item.end_date,
-      subscription_type: item.type,
-      custom_period: item.custom_period
+    if (method.includes("save")) {
+
+      if (item.umbrella === "" || item.umbrella === "-") {
+        item.umbrella = null;
+      }
+
+      axios
+        .post("/api/reservations/", item)
+        .then((res) => {
+          this.refreshList();
+
+          this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
+          this.toggleAlert();
+
+          if (method.includes("print")) {
+            item.code = res.data.code;
+            this.printTicket(item, 'reservation');
+          } 
+        })
+        .catch((err) => {
+          console.log(err)
+          this.updateAlert("Inserimento fallito", "lightcoral");
+          this.toggleAlert();
+        });
+    }
+  };
+
+  printTicket = (item, type) => {
+
+    const obj = {}
+    if (type === 'subscription') {
+      obj = {
+        type: "subscription",
+        sunbeds: item.sunbeds,
+        umbrella: item.umbrella,
+        code: item.code,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        subscription_type: item.type,
+        custom_period: item.custom_period
+      }
+    } else {
+      obj = {
+        type: "reservation",
+        code: item.code,
+        sunbeds: item.sunbeds,
+        umbrella: item.umbrella
+      }
     }
 
     axios
@@ -173,7 +237,7 @@ export default class UmbrellaModal extends Component {
   };
 
   render() {
-    const { toggle, onSave, onDelete, modalTitle, itemId } = this.props;
+    const { toggle, modalTitle, itemId } = this.props;
 
     const currentMonth = this.state.currentMonth;
     const days = [...this.range(1, new Date(new Date().getFullYear(), currentMonth.getMonth()+1, 0).getDate())];
@@ -214,15 +278,26 @@ export default class UmbrellaModal extends Component {
             </Container>
           </ModalBody>
           <ModalFooter>
-            <Button color="success" onClick={this.handleToggleNested}>
+            <Button color="primary" onClick={this.handleToggleNestedSubscriptionModal}>
               Crea abbonamento
+            </Button>
+            <Button color="info" onClick={this.handleToggleNestedReservationModal}>
+              Prenota per oggi
             </Button>
             {this.state.subscriptionModal ? (
               <SubscriptionsModal
-                activeItem={this.state.activeItem}
-                toggle={this.handleToggleNested}
-                onSave={(item, method) => this.handleSubmit(item, method)}
+                activeItem={this.state.activeItemSubscription}
+                toggle={this.handleToggleNestedSubscriptionModal}
+                onSave={(item, method) => this.handleSubmitSubscription(item, method)}
                 modalTitle="Crea nuovo abbonamento"
+              />
+            ) : null}
+            {this.state.reservationModal ? (
+              <ReservationsModal
+                activeItem={this.state.activeItemReservation}
+                toggle={this.handleToggleNestedReservationModal}
+                onSave={(item, method) => this.handleSubmitReservation(item, method)}
+                modalTitle="Crea nuova prenotazione"
               />
             ) : null}
           </ModalFooter>

@@ -14,7 +14,7 @@ const mainButtonStyles = {
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
 }
 
-const createEmptyItem = () => {
+const createEmptySubscriptionItem = () => {
   const item = {
     umbrella: "",
     customer: "",
@@ -48,7 +48,7 @@ class Subscriptions extends Component {
       totalPages: null,
       pageLimit: 10,
       isLoading: true,
-      activeItem: createEmptyItem(),
+      activeItem: createEmptySubscriptionItem(),
     };
   }
 
@@ -153,7 +153,7 @@ class Subscriptions extends Component {
   };
 
   createItem = () => {
-    const item = createEmptyItem();
+    const item = createEmptySubscriptionItem();
 
     this.setState({ 
       activeItem: item, 
