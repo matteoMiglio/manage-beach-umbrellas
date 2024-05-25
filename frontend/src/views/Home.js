@@ -227,6 +227,7 @@ class Home extends Component {
   handleUmbrellaClick = (code) => {
     this.setState({ umbrellaCode: code, umbrellaModal: !this.state.umbrellaModal });
   }
+
   renderFloatingActionButton = () => {
     return (
       <Fab
@@ -235,11 +236,6 @@ class Home extends Component {
         event="click"
         alwaysShowTitle={true}
       >
-        <Action text="Prenota un ombrellone" 
-                style={actionButtonStyles}
-                onClick={() => this.createItem()}>
-          <UmbrellaLogo width={25} color="white" />
-        </Action>
         <Action text="Prenota un lettino" 
                 style={actionButtonStyles}
                 onClick={() => this.createItem()}>
@@ -248,7 +244,7 @@ class Home extends Component {
         <Action text={this.state.showSunbeds ? "Nascondi lettini" : "Mostra lettini"}
                 style={actionButtonStyles}
                 onClick={() => this.setState({showSunbeds: !this.state.showSunbeds})}>  
-          <GrView />   
+          <GrView />
         </Action>
         <Action text="Stampa piantina"
                 style={actionButtonStyles}>
