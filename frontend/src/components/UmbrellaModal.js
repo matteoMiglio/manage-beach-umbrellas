@@ -16,16 +16,38 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import MyCalendar from "./MyCalendar";
+import SubscriptionsModal from "./SubscriptionsModal";
+import Notification from "../components/Notification";
 
 const monthNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+
+const createEmptyItem = () => {
+  const item = {
+    umbrella: "",
+    customer: "",
+    sunbeds: 2,
+    start_date: null,
+    end_date: null,
+    type: "",
+    paid: false,
+    deposit: null,
+    total: null,
+    customDays: [],
+    customMonths: [],
+  }
+
+  return item;
+}
 
 export default class UmbrellaModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalSize: '',
       currentMonth: startOfMonth(new Date()),
       itemList: [],
+      activeItem: createEmptyItem(),
+      subscriptionModal: false,
+      myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
     };
   }
 
@@ -61,6 +83,95 @@ export default class UmbrellaModal extends Component {
     return Array(end - start + 1).fill().map((_, idx) => start + idx)
   }
 
+  handleToggleNested = () => {
+
+    const activeItem = { ...this.state.activeItem, ['umbrella']: this.props.itemId }
+
+    this.setState({ 
+      subscriptionModal: !this.state.subscriptionModal,
+      activeItem: activeItem
+    });
+  }
+
+  handleSubmit = (item, method) => {
+    this.handleToggleNested();
+
+    if (method.includes("save")) {
+      if (item.umbrella === "" || item.umbrella === "-") {
+        item.umbrella = null;
+      }
+
+      if (item.total === "") {
+        item.total = null
+      }
+
+      if (item.deposit === "") {
+        item.deposit = null
+      }
+
+      if (item.paid === "on")
+        item.paid = true;
+
+      axios
+        .post("/api/subscriptions/", item)
+        .then((res) => {
+          this.refreshList();
+          
+          this.updateAlert("Inserimento avvenuto con successo", "lightgreen");
+          this.toggleAlert();
+
+          if (method.includes("print")) {
+            item.code = res.data.code;
+            this.printTicket(item);
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+          this.updateAlert("Inserimento fallito", "lightcoral");
+          this.toggleAlert();
+        });
+    }
+  }
+
+  printTicket = (item) => {
+
+    const obj = {
+      type: "subscription",
+      sunbeds: item.sunbeds,
+      umbrella: item.umbrella,
+      code: item.code,
+      start_date: item.start_date,
+      end_date: item.end_date,
+      subscription_type: item.type,
+      custom_period: item.custom_period
+    }
+
+    axios
+      .post("/api/printer/ticket/", obj)
+      .then((res) => console.log(res.data));
+  }
+
+  updateAlert = (text, color) => {
+    var myAlert = {...this.state.myAlert};
+    myAlert.text = text;
+    myAlert.backgroundColor = color;
+    
+    this.setState({ myAlert })
+  }
+
+  toggleAlert = () => {
+    let myAlert = {...this.state.myAlert};
+    myAlert.show = !myAlert.show;
+
+    this.setState({ myAlert }, () => {
+      window.setTimeout(() => {
+        let myAlert = {...this.state.myAlert};
+        myAlert.show = !myAlert.show;
+        this.setState({ myAlert })
+      }, 4000)
+    });
+  };
+
   render() {
     const { toggle, onSave, onDelete, modalTitle, itemId } = this.props;
 
@@ -68,33 +179,55 @@ export default class UmbrellaModal extends Component {
     const days = [...this.range(1, new Date(new Date().getFullYear(), currentMonth.getMonth()+1, 0).getDate())];
 
     return (
-      <Modal isOpen={true} toggle={toggle} size="xl">
-        <ModalHeader toggle={toggle}>{modalTitle} ombrellone numero: {itemId}</ModalHeader>
-        <ModalBody>
-          <Container>
-            <Row className="d-flex justify-content-center align-items-center"> 
-              <div className="mb-4">
-                <Button size="sm" onClick={() => this.setCurrentMonth(subMonths(currentMonth, 1))}>
-                  Precedente
-                </Button>
-              </div>
-              <div className="mx-4 mb-4" aria-label="Current Month">
-                {monthNames[currentMonth.getMonth()+1]}
-              </div>
-              <div className="mb-4">
-                <Button size="sm" onClick={() => this.setCurrentMonth(addMonths(currentMonth, 1))}>
-                  Prossimo
-                </Button>
-              </div>
-            </Row>
-            <Row>
-              <Col md={10} sm={12} className="mx-auto p-0">
-                <MyCalendar days={days} data={this.state.itemList} currentMonth={this.state.currentMonth} />
-              </Col>
-            </Row>
-          </Container>
-        </ModalBody>
-      </Modal>
+      <Container>
+        <Notification 
+          // onToggle={this.toggleAlert}
+          show={this.state.myAlert.show}
+          title={this.state.myAlert.title}
+          text={this.state.myAlert.text}
+          backgroundColor={this.state.myAlert.backgroundColor}
+        />
+        <Modal isOpen={true} toggle={toggle} size="xl">
+          <ModalHeader toggle={toggle}>{modalTitle} ombrellone numero: {itemId}</ModalHeader>
+          <ModalBody>
+            <Container>
+              <Row className="d-flex justify-content-center align-items-center"> 
+                <div className="mb-4">
+                  <Button size="sm" onClick={() => this.setCurrentMonth(subMonths(currentMonth, 1))}>
+                    Precedente
+                  </Button>
+                </div>
+                <div className="mx-4 mb-4" aria-label="Current Month">
+                  {monthNames[currentMonth.getMonth()+1]}
+                </div>
+                <div className="mb-4">
+                  <Button size="sm" onClick={() => this.setCurrentMonth(addMonths(currentMonth, 1))}>
+                    Prossimo
+                  </Button>
+                </div>
+              </Row>
+              <Row>
+                <Col md={10} sm={12} className="mx-auto p-0">
+                  <MyCalendar days={days} data={this.state.itemList} currentMonth={this.state.currentMonth} />
+                </Col>
+              </Row>
+            </Container>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="success" onClick={this.handleToggleNested}>
+              Crea abbonamento
+            </Button>
+            {this.state.subscriptionModal ? (
+              <SubscriptionsModal
+                activeItem={this.state.activeItem}
+                toggle={this.handleToggleNested}
+                onSave={(item, method) => this.handleSubmit(item, method)}
+                modalTitle="Crea nuovo abbonamento"
+              />
+            ) : null}
+          </ModalFooter>
+        </Modal>
+      </Container>
     );
   }
 }

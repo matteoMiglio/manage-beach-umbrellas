@@ -27,7 +27,6 @@ const createEmptyItem = () => {
     total: null,
     customDays: [],
     customMonths: [],
-    // freePeriodList: []
   }
 
   return item;
@@ -164,7 +163,7 @@ class Subscriptions extends Component {
   };
 
   editItem = (item) => {
-
+    console.log(item)
     const customDays = item.custom_period ? item.custom_period.split("-")[0].split(",") : null;
     const customMonths = item.custom_period ? item.custom_period.split("-")[1].split(",") : null;
 
@@ -214,8 +213,6 @@ class Subscriptions extends Component {
   toggleAlert = () => {
     let myAlert = {...this.state.myAlert};
     myAlert.show = !myAlert.show;
-
-    // this.setState({ myAlert });
 
     this.setState({ myAlert }, () => {
       window.setTimeout(() => {
