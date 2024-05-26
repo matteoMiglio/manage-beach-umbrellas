@@ -89,9 +89,14 @@ export default class UmbrellaModal extends Component {
   setCurrentMonth = (month) => {
 
     const currentMonth = month;
-    this.setState({ currentMonth });
+    const may = 4
+    const september = 8
 
-    setTimeout(() => { this.refreshList() }, 50);
+    // check if the month is between May and September, otherwise do not update the month
+    if (currentMonth.getMonth() >= may && currentMonth.getMonth() <= september){
+      this.setState({ currentMonth });
+      setTimeout(() => { this.refreshList() }, 50);
+    }
   }
 
   range = (start, end) => {
