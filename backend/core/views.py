@@ -9,7 +9,7 @@ from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
 from datetime import datetime, timedelta, time
-from django.db.models import Avg, Count, Min, Sum
+from django.db.models import Avg, Count, Min, Sum, Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError, transaction
 import json
@@ -229,15 +229,16 @@ class SubscriptionList(generics.ListCreateAPIView):
 
         subcription_type = subscription_data['type']
         custom_period = None
+        start_date = None
+        end_date = None
 
         if subcription_type == "S":
             start_date = current_season.start_date
             end_date = current_season.end_date
 
         elif subcription_type == "P":
-            start_date = datetime.strptime(subscription_data['start_date'], '%Y-%m-%d')
-            end_date = datetime.strptime(subscription_data['end_date'] , '%Y-%m-%d')
-
+            start_date = datetime.strptime(subscription_data['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.strptime(subscription_data['end_date'] , '%Y-%m-%d').date()
         elif subcription_type == "C":
             custom_days = subscription_data.get('customDays')
             custom_days.sort()
@@ -325,19 +326,19 @@ class SubscriptionList(generics.ListCreateAPIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except IntegrityError as e:
+        except IntegrityError:
             
-            print(repr(e))
-            print("Non è stato possibile creare l'abbonamento perchè va in overlap")
+            overlap_error = "Non è stato possibile creare l'abbonamento perchè le date vanno in overlap"
+            print(f"IntegrityError: {overlap_error}")
 
             audit_log = Audit.objects.create(
-                message=f"Non è stato possibile creare l'abbonamento perchè va in overlap",
+                message=overlap_error,
                 type="A",
                 category="S"
             )
-            audit_log.save()            
+            audit_log.save()
 
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)       
+            return Response(overlap_error, status=status.HTTP_409_CONFLICT)
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
@@ -504,16 +505,17 @@ class ReservationList(generics.ListCreateAPIView):
 
         except IntegrityError:
 
-            print("Non è stato possibile creare la prenotazione perchè va in overlap")
+            overlap_error = "Non è stato possibile creare la prenotazione perchè va in overlap"
+            print(f"IntegrityError: {overlap_error}")
 
             audit_log = Audit.objects.create(
-                message=f"Non è stato possibile creare la prenotazione perchè va in overlap",
+                message=overlap_error,
                 type="A",
                 category="R"
-            )
-            audit_log.save()         
+            )            
+            audit_log.save()
 
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)  
+            return Response(overlap_error, status=status.HTTP_409_CONFLICT)
 
     def get_reservation_price(self, umbrella, sunbeds):
 
@@ -624,7 +626,10 @@ class HomeView(generics.RetrieveAPIView):
 
         matrix = list()
 
-        for i in range(0, 12):
+        min_row = Umbrella.objects.aggregate(Min('row'))['row__min']
+        max_row = Umbrella.objects.aggregate(Max('row'))['row__max']
+
+        for i in range(min_row, max_row+1):
             umbrella_list = Umbrella.objects.filter(row__exact=i, season__exact=current_season)
             
             row_list = []

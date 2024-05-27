@@ -14,7 +14,7 @@ const mainButtonStyles = {
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
 }
 
-const createEmptyItem = () => {
+const createEmptySubscriptionItem = () => {
   const item = {
     umbrella: "",
     customer: "",
@@ -27,7 +27,6 @@ const createEmptyItem = () => {
     total: null,
     customDays: [],
     customMonths: [],
-    // freePeriodList: []
   }
 
   return item;
@@ -49,7 +48,7 @@ class Subscriptions extends Component {
       totalPages: null,
       pageLimit: 10,
       isLoading: true,
-      activeItem: createEmptyItem(),
+      activeItem: createEmptySubscriptionItem(),
     };
   }
 
@@ -123,8 +122,11 @@ class Subscriptions extends Component {
           }
         })
         .catch((err) => {
-          console.log(err)
-          this.updateAlert("Inserimento fallito", "lightcoral");
+          let errorText = "Inserimento fallito"
+          if (err.response.data != null && err.response.data != "")
+            errorText = err.response.data
+
+          this.updateAlert(errorText, "lightcoral");
           this.toggleAlert();
         });
 
@@ -154,7 +156,7 @@ class Subscriptions extends Component {
   };
 
   createItem = () => {
-    const item = createEmptyItem();
+    const item = createEmptySubscriptionItem();
 
     this.setState({ 
       activeItem: item, 
@@ -164,7 +166,7 @@ class Subscriptions extends Component {
   };
 
   editItem = (item) => {
-
+    console.log(item)
     const customDays = item.custom_period ? item.custom_period.split("-")[0].split(",") : null;
     const customMonths = item.custom_period ? item.custom_period.split("-")[1].split(",") : null;
 
@@ -214,8 +216,6 @@ class Subscriptions extends Component {
   toggleAlert = () => {
     let myAlert = {...this.state.myAlert};
     myAlert.show = !myAlert.show;
-
-    // this.setState({ myAlert });
 
     this.setState({ myAlert }, () => {
       window.setTimeout(() => {

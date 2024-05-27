@@ -9,6 +9,7 @@ import { GrFormAdd, GrView } from "react-icons/gr";
 import BeachLoungerLogo from "../images/BeachLoungerLogo";
 import UmbrellaLogo from "../images/UmbrellaLogo";
 import ReservationsModal from '../components/ReservationsModal';
+import UmbrellaModal from '../components/UmbrellaModal';
 import Notification from "../components/Notification";
 import { FaPrint } from "react-icons/fa";
 import ReactToPrint from 'react-to-print';
@@ -109,8 +110,12 @@ class Home extends Component {
       .catch((err) => console.log(err));
   };
 
-  toggle = () => {
-    this.setState({ modal: !this.state.modal });
+  toggleReservationModal = () => {
+    this.setState({ reservationModal: !this.state.reservationModal });
+  };
+
+  toggleUmbrellaModal = () => {
+    this.setState({ umbrellaModal: !this.state.umbrellaModal });
   };
 
   updateAlert = (text, color) => {
@@ -135,7 +140,7 @@ class Home extends Component {
   };
 
   handleSubmit = (item, method) => {
-    this.toggle();
+    this.toggleReservationModal();
 
     if (method.includes("save")) {
 
@@ -199,13 +204,13 @@ class Home extends Component {
 
     this.setState({ 
       activeItem: item, 
-      modal: !this.state.modal, 
+      reservationModal: !this.state.reservationModal, 
       modalTitle: "Crea nuova prenotazione" 
     });
   };
 
   editItem = (item) => {
-    this.setState({ activeItem: item, modal: !this.state.modal });
+    this.setState({ activeItem: item, reservationModal: !this.state.reservationModal });
   };
 
   handleFilterDateChange = (e) => {
@@ -219,6 +224,13 @@ class Home extends Component {
     setTimeout(() => { this.refreshList() }, 50);
   };
 
+  handleUmbrellaClick = (code, color) => {
+    this.setState({ 
+      umbrellaCode: code, 
+      umbrellaStatus: color,
+      umbrellaModal: !this.state.umbrellaModal });
+  }
+
   renderFloatingActionButton = () => {
     return (
       <Fab
@@ -227,20 +239,15 @@ class Home extends Component {
         event="click"
         alwaysShowTitle={true}
       >
-        <Action text="Prenota un ombrellone" 
-                style={actionButtonStyles}
-                onClick={() => this.createItem()}>            
-          <UmbrellaLogo width={25} color="white" />
-        </Action>
         <Action text="Prenota un lettino" 
                 style={actionButtonStyles}
-                onClick={() => this.createItem()}>            
+                onClick={() => this.createItem()}>
           <BeachLoungerLogo width={25} color="white" />
         </Action>
         <Action text={this.state.showSunbeds ? "Nascondi lettini" : "Mostra lettini"}
                 style={actionButtonStyles}
                 onClick={() => this.setState({showSunbeds: !this.state.showSunbeds})}>  
-          <GrView />   
+          <GrView />
         </Action>
         <Action text="Stampa piantina"
                 style={actionButtonStyles}>
@@ -286,6 +293,7 @@ class Home extends Component {
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane testMatrix={this.state.testMatrix}
                              showSunbeds={this.state.showSunbeds}
+                             onUmbrellaClick={(code, color) => this.handleUmbrellaClick(code, color)}
                              ref={el => (this.componentRef = el)} />
           </Col>
         </Row>
@@ -293,12 +301,20 @@ class Home extends Component {
         <Row className="mt-5"></Row>
         <Row className="mt-4"></Row>
         {this.renderFloatingActionButton()}
-        {this.state.modal ? (
+        {this.state.reservationModal ? (
           <ReservationsModal
             activeItem={this.state.activeItem}
-            toggle={this.toggle}
+            toggle={this.toggleReservationModal}
             onSave={(item, method) => this.handleSubmit(item, method)}
             modalTitle={this.state.modalTitle}
+          />
+        ) : null}
+        {this.state.umbrellaModal ? (
+          <UmbrellaModal
+            itemId={this.state.umbrellaCode}
+            itemStatus={this.state.umbrellaStatus}
+            toggle={this.toggleUmbrellaModal}
+            modalTitle="Visualizza occupazione"
           />
         ) : null}
       </Container>

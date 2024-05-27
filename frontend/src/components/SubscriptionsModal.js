@@ -154,9 +154,9 @@ export default class SubscriptionsModal extends Component {
   renderUmbrellaSelection = () => {
 
     const list = this.state.umbrellaList;
-
+    const activeUmbrellaCode = this.state.activeItem.id ? this.state.activeItem.umbrella.code : this.state.activeItem.umbrella
     return list.map((item, index) => (
-      <option key={index} selected={item.code == this.state.activeItem.umbrella.code}>
+      <option key={index} selected={item.code == activeUmbrellaCode}>
         {item.code}
       </option>
     ));
@@ -197,6 +197,7 @@ export default class SubscriptionsModal extends Component {
                 <Label sm={6}>{this.state.activeItem.code}</Label>
               </FormGroup>
             ) : null }
+            { this.state.activeItem.umbrella != null ? (
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Ombrellone</Label>
               <Col sm={6}>
@@ -206,6 +207,7 @@ export default class SubscriptionsModal extends Component {
                 </Input>
               </Col>
             </FormGroup>
+            ) : null}
             <FormGroup row>
               <Label for="exampleSelect" sm={6}>Lettini</Label>
               <Col sm={6}>
@@ -376,12 +378,6 @@ export default class SubscriptionsModal extends Component {
               </Row>
             ) : null}
           </Form>
-
-          {/* <FormFreePeriod 
-            values={this.state.activeItem.freePeriodList}
-            onChangeInput={(event, i) => this.handleChangeFreePeriod(event, i)}
-            onAddClick={() => this.handleAddClickFreePeriod()}
-            onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} /> */}
         </ModalBody>   
         <ModalFooter>
           { this.state.activeItem.id ? (

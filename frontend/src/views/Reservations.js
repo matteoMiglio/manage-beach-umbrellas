@@ -14,10 +14,23 @@ const mainButtonStyles = {
   boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
 }
 
+const createEmptyReservationItem = () => {
+  const item = { 
+    umbrella: "", 
+    customer: "",
+    sunbeds: 2,
+    date: "", 
+    paid: false 
+  }
+
+  return item;
+}
+
 class Reservations extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeItem: createEmptyReservationItem(),
       itemList: [],
       currentItems: [],
       modal: false,
@@ -97,8 +110,11 @@ class Reservations extends Component {
           } 
         })
         .catch((err) => {
-          console.log(err)
-          this.updateAlert("Inserimento fallito", "lightcoral");
+          let errorText = "Inserimento fallito"
+          if (err.response.data != null && err.response.data != "")
+            errorText = err.response.data
+
+          this.updateAlert(errorText, "lightcoral");
           this.toggleAlert();
         });
     } else {
@@ -152,11 +168,8 @@ class Reservations extends Component {
   createItem = () => {
     let tmp = this.state.filterDate.toISOString();
     const newDate = tmp.substring(0, tmp.indexOf('T'));
-    const item = { umbrella: "", 
-                  customer: "",
-                  sunbeds: 1,
-                  date: newDate, 
-                  paid: false };
+
+    const item = { ...this.state.activeItem, ['date']: newDate }
 
     this.setState({ 
       activeItem: item, 
