@@ -271,7 +271,7 @@ export default class UmbrellaModal extends Component {
                     Precedente
                   </Button>
                 </div>
-                <div className="mx-4 mb-4" aria-label="Current Month">
+                <div className="mx-4 mb-4" aria-label="Current Month" style={{fontSize: '20px'}}>
                   {monthNames[currentMonth.getMonth()+1]}
                 </div>
                 <div className="mb-4">
