@@ -22,8 +22,8 @@ class CardUmbrella extends React.Component {
     return color;
   }
 
-  onClick = (code) => {
-    this.props.onClick(code)
+  onClick = (code, color) => {
+    this.props.onClick(code, color)
   }
 
   render() {
@@ -83,7 +83,7 @@ class CardUmbrella extends React.Component {
 
     return (
       <td className="p-0">
-          <Card className={this.props.className} onClick={() => this.onClick(umbrellaCode)} style={{ cursor: "pointer" }}>
+          <Card className={this.props.className} onClick={() => this.onClick(umbrellaCode, color)} style={{ cursor: "pointer" }}>
             <CardTitle tag="h5" className="mb-2" id={"umbrella_" + item.tmp_umbrella.id}>{umbrellaCode}</CardTitle>
             {item.tmp_res ? (
                 <UncontrolledTooltip placement="right" target={"umbrella_" + item.tmp_umbrella.id}>
@@ -106,8 +106,8 @@ class CardUmbrella extends React.Component {
 
 class HomeCentralPane extends React.Component {
 
-  handleUmbrellaClick = (code) => {
-    this.props.onUmbrellaClick(code);
+  handleUmbrellaClick = (code, color) => {
+    this.props.onUmbrellaClick(code, color);
   }
 
   renderSingleRow = (items, showSunbeds) => {
@@ -121,7 +121,7 @@ class HomeCentralPane extends React.Component {
         );
       } 
 
-      row.push(<CardUmbrella onClick={(code) => this.handleUmbrellaClick(code)} item={item} key={item.tmp_umbrella.id} showSunbeds={showSunbeds} className="mb-4 text-center border-0" />);
+      row.push(<CardUmbrella onClick={(code, color) => this.handleUmbrellaClick(code, color)} item={item} key={item.tmp_umbrella.id} showSunbeds={showSunbeds} className="mb-4 text-center border-0" />);
     });
 
     return row;

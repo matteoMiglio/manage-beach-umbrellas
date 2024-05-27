@@ -248,8 +248,7 @@ export default class UmbrellaModal extends Component {
   };
 
   render() {
-    const { toggle, modalTitle, itemId } = this.props;
-
+    const { toggle, modalTitle, itemId, itemStatus } = this.props;
     const currentMonth = this.state.currentMonth;
     const days = [...this.range(1, new Date(new Date().getFullYear(), currentMonth.getMonth()+1, 0).getDate())];
 
@@ -292,15 +291,17 @@ export default class UmbrellaModal extends Component {
             <Button color="primary" onClick={this.handleToggleNestedSubscriptionModal}>
               Crea abbonamento
             </Button>
-            <Button color="info" onClick={this.handleToggleNestedReservationModal}>
-              Prenota per oggi
-            </Button>
+            {itemStatus === "green" ? (
+              <Button color="info" onClick={this.handleToggleNestedReservationModal}>
+                Prenota per oggi
+              </Button>
+            ) : null}
             {this.state.subscriptionModal ? (
               <SubscriptionsModal
-                activeItem={this.state.activeItemSubscription}
-                toggle={this.handleToggleNestedSubscriptionModal}
-                onSave={(item, method) => this.handleSubmitSubscription(item, method)}
-                modalTitle="Crea nuovo abbonamento"
+              activeItem={this.state.activeItemSubscription}
+              toggle={this.handleToggleNestedSubscriptionModal}
+              onSave={(item, method) => this.handleSubmitSubscription(item, method)}
+              modalTitle="Crea nuovo abbonamento"
               />
             ) : null}
             {this.state.reservationModal ? (

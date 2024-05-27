@@ -224,8 +224,11 @@ class Home extends Component {
     setTimeout(() => { this.refreshList() }, 50);
   };
 
-  handleUmbrellaClick = (code) => {
-    this.setState({ umbrellaCode: code, umbrellaModal: !this.state.umbrellaModal });
+  handleUmbrellaClick = (code, color) => {
+    this.setState({ 
+      umbrellaCode: code, 
+      umbrellaStatus: color,
+      umbrellaModal: !this.state.umbrellaModal });
   }
 
   renderFloatingActionButton = () => {
@@ -290,7 +293,7 @@ class Home extends Component {
           <Col md={12} sm={12} className="px-0">
             <HomeCentralPane testMatrix={this.state.testMatrix}
                              showSunbeds={this.state.showSunbeds}
-                             onUmbrellaClick={(code) => this.handleUmbrellaClick(code)}
+                             onUmbrellaClick={(code, color) => this.handleUmbrellaClick(code, color)}
                              ref={el => (this.componentRef = el)} />
           </Col>
         </Row>
@@ -309,6 +312,7 @@ class Home extends Component {
         {this.state.umbrellaModal ? (
           <UmbrellaModal
             itemId={this.state.umbrellaCode}
+            itemStatus={this.state.umbrellaStatus}
             toggle={this.toggleUmbrellaModal}
             modalTitle="Visualizza occupazione"
           />
