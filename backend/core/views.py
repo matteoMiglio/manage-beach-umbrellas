@@ -283,19 +283,19 @@ class SubscriptionList(generics.ListCreateAPIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except IntegrityError as e:
+        except IntegrityError:
             
-            print(repr(e))
-            print("Non è stato possibile creare l'abbonamento perchè va in overlap")
+            overlap_error = "Non è stato possibile creare l'abbonamento perchè le date vanno in overlap"
+            print(f"IntegrityError: {overlap_error}")
 
             audit_log = Audit.objects.create(
-                message=f"Non è stato possibile creare l'abbonamento perchè va in overlap",
+                message=overlap_error,
                 type="A",
                 category="S"
             )
-            audit_log.save()            
+            audit_log.save()
 
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)       
+            return Response(overlap_error, status=status.HTTP_409_CONFLICT)
 
 class SubscriptionDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubscriptionSerializer
@@ -462,16 +462,17 @@ class ReservationList(generics.ListCreateAPIView):
 
         except IntegrityError:
 
-            print("Non è stato possibile creare la prenotazione perchè va in overlap")
+            overlap_error = "Non è stato possibile creare la prenotazione perchè va in overlap"
+            print(f"IntegrityError: {overlap_error}")
 
             audit_log = Audit.objects.create(
-                message=f"Non è stato possibile creare la prenotazione perchè va in overlap",
+                message=overlap_error,
                 type="A",
                 category="R"
-            )
-            audit_log.save()         
+            )            
+            audit_log.save()
 
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)  
+            return Response(overlap_error, status=status.HTTP_409_CONFLICT)
 
     def get_reservation_price(self, umbrella, sunbeds):
 

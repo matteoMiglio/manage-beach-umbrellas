@@ -155,8 +155,11 @@ export default class UmbrellaModal extends Component {
           }
         })
         .catch((err) => {
-          console.log(err)
-          this.updateAlert("Inserimento fallito", "lightcoral");
+          let errorText = "Inserimento fallito"
+          if (err.response.data != null && err.response.data != "")
+            errorText = err.response.data
+
+          this.updateAlert(errorText, "lightcoral");
           this.toggleAlert();
         });
     }
@@ -185,8 +188,11 @@ export default class UmbrellaModal extends Component {
           } 
         })
         .catch((err) => {
-          console.log(err)
-          this.updateAlert("Inserimento fallito", "lightcoral");
+          let errorText = "Inserimento fallito"
+          if (err.response.data != null && err.response.data != "")
+            errorText = err.response.data
+
+          this.updateAlert(errorText, "lightcoral");
           this.toggleAlert();
         });
     }
