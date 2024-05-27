@@ -108,6 +108,7 @@ class PrinterPaperStatusView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
 
         ip = "192.168.1.100"
+
         try:
             printer = Printer(ip)
         except Exception as e:

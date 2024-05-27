@@ -16,7 +16,19 @@ import {
   ModalFooter,
 } from "reactstrap";
 import axios from "axios";
-import 'react-tiny-fab/dist/styles.css';
+import { usePromiseTracker, trackPromise } from "react-promise-tracker";
+import Loader from 'react-loader-spinner';
+
+const LoadingIndicator = (props) => {
+  const { promiseInProgress } = usePromiseTracker();
+
+  return (
+    promiseInProgress && 
+      <div style={{display: "flex", alignItems: "center"}}>
+        <Loader type="TailSpin" color="#774876" height={30} width={30}/>
+      </div>
+  );  
+}
 
 class Settings extends Component {
   constructor(props) {
@@ -25,6 +37,7 @@ class Settings extends Component {
       isOpenCollapse: false,
       myAlert: {show: false, title: "Notifica", text: "", backgroundColor: ""},
       isLoading: true,
+      isLoadingPrinterInfo: true,
       addingSeason: false,
       editingSeason: false,
       invalidNewSeason: false,
@@ -41,25 +54,50 @@ class Settings extends Component {
 
     axios.all([
       axios.get("/api/seasons/"),
-      axios.get("/api/season/active/"),
-      axios.get("/api/printer/status/"),
-      axios.get("/api/printer/paper-status/")
+      axios.get("/api/season/active/")
     ])
-      .then(axios.spread((seasonsRes, activeSeason, printerStatus, printerPaperStatus) => {
-        this.setState({ 
-          seasonsList: seasonsRes.data,
-          activeSeason: activeSeason.data,
-          printerStatus: printerStatus.data,
-          printerPaperStatus: printerPaperStatus.data
+    .then(axios.spread((seasonsRes, activeSeason) => {
+      this.setState({ 
+        seasonsList: seasonsRes.data,
+        activeSeason: activeSeason.data,
+      })
+    }))
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => {
+      this.setState({ isLoading: false })
+    })
+
+    trackPromise(
+      axios
+        .get("/api/printer/status/")
+        .then((res) => {
+          this.setState({ printerStatus: res.data })
+          axios
+            .get("/api/printer/paper-status/")
+            .then((res) => {
+              this.setState({ printerPaperStatus: res.data })
+            })
+            .catch((err) => {
+              if (err.response.status === 503) {
+                this.setState({ printerPaperStatus: err.response.data })
+              } else {
+                console.log(err.response)
+              }
+            })
         })
-      }))
-      .catch((err) => {
-        console.log(err)
-        this.setState({ printerError: true })
-      })
-      .finally(() => {
-        this.setState({ isLoading: false })
-      })
+        .catch((err) => {
+          if (err.response.status === 503) {
+            this.setState({ printerStatus: err.response.data })
+          } else {
+            console.log(err.response)
+          }
+        })
+        .finally(() => {
+          this.setState({ isLoadingPrinterInfo: false })
+        })
+    )
   };
 
   handleSubmitLoadSeason = () => {
@@ -355,14 +393,15 @@ class Settings extends Component {
         <Row className="mb-3 mt-5">
           <Col sm={{ size: 6, offset: 3 }}>
             <h3>Stampante</h3>
-            {this.state.printerError ? (
-              <p>Stato: Offline</p>
-            ) : (
+            <LoadingIndicator/>
+            {!this.state.isLoadingPrinterInfo ? (
               <>
                 <p>Stato: {this.state.printerStatus}</p>
-                <p>Stato della carta: {this.state.printerPaperStatus}</p>
+                {this.state.printerStatus === "OK" ? (
+                  <p>Stato della carta: {this.state.printerPaperStatus}</p>
+                ) : null}
               </>
-            )}
+            ) : null}
           </Col>
         </Row>
         {this.state.modal ? (
