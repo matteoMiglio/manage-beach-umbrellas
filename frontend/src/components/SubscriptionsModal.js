@@ -378,12 +378,6 @@ export default class SubscriptionsModal extends Component {
               </Row>
             ) : null}
           </Form>
-
-          {/* <FormFreePeriod 
-            values={this.state.activeItem.freePeriodList}
-            onChangeInput={(event, i) => this.handleChangeFreePeriod(event, i)}
-            onAddClick={() => this.handleAddClickFreePeriod()}
-            onRemoveClick={(i) => this.handleRemoveClickFreePeriod(i)} /> */}
         </ModalBody>   
         <ModalFooter>
           { this.state.activeItem.id ? (

@@ -3,31 +3,39 @@ import { Table } from 'reactstrap';
 
 class MyCalendar extends Component {
   
-    renderSingleRow = (items, data) => {
+    renderSingleRow = (items, data, currentMonth) => {
 
       const row = [];
+      const today = new Date();
   
       if (items.length < 7)
         items = items.concat(Array(7-items.length).fill(0));
   
       items.slice(0, items.length).forEach((item, index) => {
-  
+
         var color = "#c3f5c3";
-        var text = "";
+        var customerName = "";
 
         data.forEach((reservation, index) => {
           const date = new Date(reservation.date);
           if (date.getDate() === item && reservation.paid != null) {
             color = "#fdaeae";
-            text = reservation.customer
+            customerName = reservation.customer
           }
         })
 
+        // highlight today
+        if (today.getDate() === item && today.getMonth() === currentMonth.getMonth()) {
+          color = "#f5f5c3";
+        }
+
         row.push( 
           <td key={index} style={ item === 0 ? {} : { backgroundColor: color }}>
-            <span style={{ fontWeight: 'bold' }}>{item === 0 ? "" : item}</span>
+            <span style={{ fontWeight: 'bold' }}>
+              {item === 0 ? "" : item}
+            </span>
             <br />
-            {text}
+            {customerName}
           </td>
         );
       });
@@ -58,11 +66,11 @@ class MyCalendar extends Component {
       matrix.slice(0, matrix.length).map((row, index) => {
         return calendar.push(
           <tr key={index} style={{ height: 90 }}>
-            {this.renderSingleRow(row, data)}
+            {this.renderSingleRow(row, data, currentMonth)}
           </tr>
         );
       });
-  
+
       return (
         <Table bordered>
           <thead>
