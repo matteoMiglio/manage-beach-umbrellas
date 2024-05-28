@@ -8,6 +8,7 @@ from .models.audit import Audit
 from .models.reservation import Reservation
 from .models.subscription import Subscription
 from .models.umbrella import Umbrella
+from .models.printer import Printer
 from datetime import datetime, timedelta, time
 from django.db.models import Avg, Count, Min, Sum, Max
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -15,7 +16,7 @@ from django.db import IntegrityError, transaction
 import json
 import calendar
 import pytz
-from .printer.main import Printer
+from .printer.main import Printer as PrinterWrapper
 from datetime import datetime
 
 ELEMENT_PER_PAGE = 10
@@ -89,10 +90,10 @@ class PrinterStatusView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
 
-        ip = "192.168.1.100"
+        ip = Printer.objects.get(id=1).ip_address
 
         try:
-            printer = Printer(ip)
+            printer = PrinterWrapper(ip)
         except Exception as e:
             return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
@@ -107,10 +108,10 @@ class PrinterPaperStatusView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
 
-        ip = "192.168.1.100"
+        ip = Printer.objects.get(id=1).ip_address
 
         try:
-            printer = Printer(ip)
+            printer = PrinterWrapper(ip)
         except Exception as e:
             return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
@@ -128,10 +129,11 @@ class PrinterPaperStatusView(generics.RetrieveAPIView):
 class PrintTicketView(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
-        ip = "192.168.1.100"
+
+        ip = Printer.objects.get(id=1).ip_address
 
         try:
-            printer = Printer(ip)
+            printer = PrinterWrapper(ip)
         except Exception as e:
             return Response("KO", status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
