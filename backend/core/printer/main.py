@@ -1,5 +1,5 @@
 from escpos.printer import Network, Dummy
-from escpos.exceptions import DeviceNotFoundError
+# from escpos.exceptions import DeviceNotFoundError <- compatibile solo con versioni maggiori di 3.0.0
 from datetime import datetime
 import os
 import pytz
@@ -16,7 +16,8 @@ class Printer():
             # Test connection
             self.printer_network.open()
             self.printer_network.close()
-        except DeviceNotFoundError:
+        # except DeviceNotFoundError:
+        except Exception:
             raise Exception("Printer not found")
 
         self.logo_image = os.path.join(os.path.dirname(__file__), "../images/palm_beach_400.png")
