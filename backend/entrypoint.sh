@@ -21,4 +21,11 @@ python3 manage.py makemigrations core
 python3 manage.py migrate
 python3 manage.py collectstatic --noinput
 
+## Seed data
+python3 manage.py shell -c "from core.models.umbrella import Umbrella; Umbrella.objects.all().delete()"
+python3 manage.py loaddata core/seed/seasons.json
+python3 manage.py loaddata core/seed/umbrellas_2023.json
+python3 manage.py loaddata core/seed/umbrellas_2024.json
+##
+
 exec "$@"
